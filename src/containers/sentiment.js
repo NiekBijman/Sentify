@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PieChart from 'react-simple-pie-chart';
 import SentimentPie from '../components/sentiment-pie';
+import { modelInstance } from '../model/model'
 import '../styles/sentiment-pie.css';
 
 class Sentiment extends Component {
@@ -8,15 +9,10 @@ class Sentiment extends Component {
     super(props)
     this.state = {
       status: 'INITIAL',
-      data: '',
       positive: null,
       negative: null,
       neutral: null,
-      callBack: {"data": [{"text": "I love Titanic.", "id":1234, "polarity": 4},
-                {"text": "I love Titanic.", "id":1234, "polarity": 4},
-                {"text": "I don't mind Titanic.", "id":1234, "polarity": 2},
-                {"text": "I don't mind Titanic.", "id":1234, "polarity": 2},
-                {"text": "I hate Titanic.", "id":4567, "polarity": 0}]}
+      result: modelInstance.getSentimentData()
     }
   }
 
@@ -25,7 +21,7 @@ class Sentiment extends Component {
       var negative = 0;
       var neutral = 0;
 
-        var count = this.state.callBack.data.map((data) => {
+        var count = this.state.result.data.map((data) => {
               if(data.polarity === 4){
                 positive = positive + 1;
                 return positive;
@@ -56,18 +52,6 @@ class Sentiment extends Component {
   componentDidMount = () => {
     this.dataCount();
 
-    // // API Call should be made here, for now it's hardcoded
-    // model.sentimentAnalysis().then(callBack => {
-    //   this.setState({
-    //     status: 'LOADED',
-    //     // callBack:
-    //   })
-    //
-    // }).catch(() => {
-    //   this.setState({
-    //     status: 'ERROR'
-    //     })
-    //   })
   }
 
   render(){

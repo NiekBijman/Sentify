@@ -6,21 +6,40 @@ import Sentiment from '../containers/sentiment';
 //This is the Presentation component
 const SentimentPie = ({positive, negative, neutral, status}) =>
   <React.Fragment>
-         <PieChart slices={[
-               {
-                 color: '#fce176',
-                 value: neutral
-               },
-               {
-                 color: '#94fc9d',
-                 value: negative
-               },
-               {
-                 color: '#ed3b41',
-                 value: positive
-               },
-             ]}
-           />
+    <div className="container-fluid">
+        <div className='col-xs-4 labels'>
+              <div className='row'>
+                <div className='box negative'/>
+                <p> positive </p>
+              </div>
+              <div className='row'>
+                <div className='box positive'/>
+                <p> negative </p>
+              </div>
+              <div className='row'>
+                <div className='box neutral'/>
+                <p> neutral </p>
+              </div>
+        </div>
+
+        <div className='col-xs-8 pie'>
+           <PieChart slices={[
+                 {
+                   color: '#fce176',
+                   value: neutral
+                 },
+                 {
+                   color: '#94fc9d',
+                   value: positive
+                 },
+                 {
+                   color: '#ed3b41',
+                   value: negative
+                 },
+               ]}
+             />
+        </div>
+    </div>
   </React.Fragment>
 
   export default SentimentPie;
