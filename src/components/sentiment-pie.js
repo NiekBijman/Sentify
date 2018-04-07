@@ -10,15 +10,15 @@ const SentimentPie = ({positive, negative, neutral, status}) =>
         <div className='col-xs-4 labels'>
               <div className='row'>
                 <div className='box negative'/>
-                <p> positive </p>
+                <p> positive: {positive}% </p>
               </div>
               <div className='row'>
                 <div className='box positive'/>
-                <p> negative </p>
+                <p> negative: {negative}% </p>
               </div>
               <div className='row'>
                 <div className='box neutral'/>
-                <p> neutral </p>
+                <p> neutral: {neutral}% </p>
               </div>
         </div>
 
