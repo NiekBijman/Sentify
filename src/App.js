@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import './App.css';
+import './styles/app.css';
 import { Route } from 'react-router-dom';
-import Welcome from './Welcome/Welcome';
-import Main from './Main/Main';
-import { modelInstance } from './data/Model'
+import Welcome from './welcome';
+import Discover from './discover';
+import { modelInstance } from './model/model'
 
 class App extends Component {
   constructor(props) {
@@ -21,7 +21,7 @@ class App extends Component {
 
           {/* We rended diffrent component based on the path */}
           <Route exact path="/" component={Welcome}/>
-          <Route path="/search" component={Main}/>
+          <Route path="/search" component={Discover}/>
 
 
         </header>

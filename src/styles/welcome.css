@@ -1,0 +1,11 @@
+.hide-mobile {
+  @media (max-width: 480px) {
+    display: none;
+  }
+}
+
+.hide-desktop {
+  @media not all and (max-width: 480px) {
+    display: none;
+  }
+}
