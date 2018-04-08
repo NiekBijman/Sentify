@@ -9,7 +9,7 @@ const Model = function () {
   let sentimentData = {"data": [{"text": "I love Titanic.", "id":1234, "polarity": 4},
                       {"text": "I love Titanic.", "id":1234, "polarity": 4},
                       {"text": "I don't mind Titanic.", "id":1234, "polarity": 2},
-                      {"text": "I dislike Titanic.", "id":1234, "polarity": 4},
+                      {"text": "I like Titanic.", "id":1234, "polarity": 4},
                       {"text": "I hate Titanic.", "id":4567, "polarity": 0}]};
 
 

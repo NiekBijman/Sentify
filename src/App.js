@@ -15,17 +15,18 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">{this.state.title}</h1>
+      <MuiThemeProvider>
+        <div className="App">
+          <header className="App-header">
+            <h1 className="App-title">{this.state.title}</h1>
+            {/* We rended diffrent component based on the path */}
+            <Route exact path="/" component={Welcome}/>
+            <Route path="/search" component={Discover}/>
 
-          {/* We rended diffrent component based on the path */}
-          <Route exact path="/" component={Welcome}/>
-          <Route path="/search" component={Discover}/>
 
-
-        </header>
-      </div>
+          </header>
+        </div>
+      </MuiThemeProvider>
     );
   }
 }

@@ -5,6 +5,8 @@ import Sentiment from './containers/sentiment';
 import SentimentPie from './components/sentiment-pie';
 import Search from './containers/search';
 import './styles/welcome.css';
+import ButtonImportant from './components/button-important'
+
 
 const Welcome = ({}) =>
   <div className='row'>
@@ -12,6 +14,7 @@ const Welcome = ({}) =>
       <Search/>
       <Link to="/search">
           <button className='btn btn-xs'>Go to Map</button>
+          <ButtonImportant/>
       </Link>
     </div>
     <div className='col-xs-5'>
