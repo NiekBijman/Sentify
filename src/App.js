@@ -4,6 +4,7 @@ import { Route } from 'react-router-dom';
 import Welcome from './welcome';
 import Discover from './discover';
 import { modelInstance } from './model/model'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 class App extends Component {
   constructor(props) {
