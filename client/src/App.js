@@ -8,8 +8,6 @@ import Map from './containers/map';
 import { modelInstance } from './model/model'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-
 class App extends Component {
   constructor(props) {
     super(props)
