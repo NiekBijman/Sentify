@@ -7,7 +7,8 @@
 	export TW_KEY=<your key>
 	export TW_SECRET=<your secret>
 	```
-Restart your shell and make sure that the environment variables are set with `echo $TW_KEY` and `echo $TW_SECRET`.
+	Restart your shell and make sure that the environment variables are set with `echo $TW_KEY` and `echo $TW_SECRET`.
+	
 3. Make sure that you have node.js installed. To check if you have Node.js installed, run this command in your terminal:`node -v`.
 4. Make sure that you have **Node Package Manager** (npm) installed on your system. To confirm that you have npm installed you can run this command in your terminal:`npm -v`. To update your npm, type this into your terminal: `npm install npm@latest -g`
 5. Make sure you have yarn installed on your machine. `npm i yarn -g`. If you need more help: https://yarnpkg.com/lang/en/docs/install/
