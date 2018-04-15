@@ -3,10 +3,10 @@
 ## Setup
 1. Get an account at apps.twitter.com to get a consumer key and consumer secret for twitter API calls.
 2. Set twitter key and secret environment variables by adding the following lines to your ~/.bash_profile: 
-```
-export TW_KEY=<your key>
-export TW_SECRET=<your secret>
-```
+	```
+	export TW_KEY=<your key>
+	export TW_SECRET=<your secret>
+	```
 Restart your shell and make sure that the environment variables are set with `echo $TW_KEY` and `echo $TW_SECRET`.
 3. Make sure that you have **Node Package Manager** (npm) installed on your system. To check if you have Node.js installed, run this command in your terminal:`node -v` To confirm that you have npm installed you can run this command in your terminal:`npm -v`. To update your npm, type this into your terminal: `npm install npm@latest -g`
 4. Make sure you have yarn installed on your machine. `npm i yarn -g`. If you need more help: https://yarnpkg.com/lang/en/docs/install/
