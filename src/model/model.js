@@ -1,5 +1,7 @@
+import {Key} from '../config';
+
 const httpOptions = {
-  headers: {'X-Mashape-Key': 'YOUR_API_KEY'}
+  headers: {'authorization': Key.getApiKey()},
 };
 
 const Model = function () {
@@ -41,7 +43,34 @@ const Model = function () {
     //   .catch(handleError)
   }
 
+  this.popularKeywords = function () {
+    const url = 'https://api.twitter.com/1.1/trends/place.json?id=1'
 
+    console.log(httpOptions);
+    return fetch(url, httpOptions)
+      .then(processResponse)
+      .catch(handleError)
+  }
+
+
+  // API Helper methods
+
+  const processResponse = function (response) {
+    if (response.ok) {
+      return response.json()
+    }
+    throw response;
+  }
+
+  const handleError = function (error) {
+    if (error.json) {
+      error.json().then(error => {
+        console.error('API Error:', error.message || error)
+      })
+    } else {
+      console.error('API Error:', error.message || error)
+    }
+  }
 
 
   // Observer pattern
