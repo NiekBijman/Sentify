@@ -1,13 +1,23 @@
 # Sentify
 
 ## Setup
-1. First, make sure that you have **Node Package Manager** (npm) installed on your system. To check if you have Node.js installed, run this command in your terminal:`node -v` To confirm that you have npm installed you can run this command in your terminal:`npm -v`. To update your npm, type this into your terminal: `npm install npm@latest -g`
-2. Go to the root of the Repository and run `npm install`. Let it
-   install all the dependencies.
-3. Run `npm start` through the terminal. This will start the webserver and the application should pop up in your
-   browser ready for use. Alternatively you can open in through [http://localhost:3000]. Whenever you make changes in your code and save, the browser will update automatically, so you don't have to click refresh anymore.
-4. **IMPORTANT** Our config.js file contains our API Keys which is why we put it in .gitignore.  @team, you can find the config.js file in the Slack channel.   
-4. Make sure to update the dependencies in the **package.json**. Updating all the dependencies is possble by `npm install <pkg> --save`. It will append the dependencies to your existing **package.json** file.
+1. Get an account at apps.twitter.com to get a consumer key and consumer secret for twitter API calls.
+2. Set twitter key and secret environment variables by adding the following lines to your ~/.bash_profile: 
+	```
+	export TW_KEY=<your key>
+	export TW_SECRET=<your secret>
+	```
+	Restart your shell and make sure that the environment variables are set with `echo $TW_KEY` and `echo $TW_SECRET`.
+	
+3. Make sure that you have node.js installed. To check if you have Node.js installed, run this command in your terminal:`node -v`.
+4. Make sure that you have **Node Package Manager** (npm) installed on your system. To confirm that you have npm installed you can run this command in your terminal:`npm -v`. To update your npm, type this into your terminal: `npm install npm@latest -g`
+5. Make sure you have yarn installed on your machine. `npm i yarn -g`. If you need more help: https://yarnpkg.com/lang/en/docs/install/
+6. Install nodemon globally: `npm i nodemon -g`.
+7. Install server dependencies by running `yarn` in home folder.
+8. Go into the /client directory and run `yarn` to install all the dependencies for the client application.
+9. Go back to the root folder and run `yarn dev` to start both user client and server.
+10. **IMPORTANT** Our config.js file contains our API Keys which is why we put it in .gitignore.  @team, you can find the config.js file in the Slack channel.   
+11. **IMPORTANT** If you add dependencies, make sure to also add them to package.json. This can be done when installing a package with `npm install <pkg> --save`. Make sure to run this command in the correct directory, client/ if you're adding dependencies for the client app and home/ otherwise.
 
 ### @Sentify-team
 
@@ -27,3 +37,4 @@ These components contain links to the websites where I found libraries and refer
 I annotated which components trigger certain API calls
 - The numerals **A-D** represent my opinion about which should be implemented first. **A high priority, D last**
 - The dotted lines represent API calls and responses that are made by the system rather than a user interaction
+

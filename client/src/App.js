@@ -6,6 +6,7 @@ import Welcome from './welcome';
 import Discover from './discover';
 import Map from './containers/map';
 import { modelInstance } from './model/model'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
