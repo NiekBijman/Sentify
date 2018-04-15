@@ -8,12 +8,14 @@ const Model = function () {
   let container = 'Map';
   let observers = [];
   let searchInput = '';
-  let sentimentData = {"data": [{"text": "I love Titanic.", "id":1234, "polarity": 4},
-                      {"text": "I love Titanic.", "id":1234, "polarity": 4},
-                      {"text": "I don't mind Titanic.", "id":1234, "polarity": 2},
-                      {"text": "I like Titanic.", "id":1234, "polarity": 4},
-                      {"text": "I hate Titanic.", "id":4567, "polarity": 0}]};
+  let sentimentData = null;
 
+
+  // {"data": [{"text": "I love Titanic.", "id":1234, "polarity": 4},
+  // {"text": "I love Titanic.", "id":1234, "polarity": 4},
+  // {"text": "I don't mind Titanic.", "id":1234, "polarity": 2},
+  // {"text": "I like Titanic.", "id":1234, "polarity": 4},
+  // {"text": "I hate Titanic.", "id":4567, "polarity": 0}]};
 
 
   // API Calls
@@ -27,8 +29,17 @@ const Model = function () {
     return container;
   }
 
+  this.setSearch = function(search){
+    searchInput = search
+  }
+
+  this.getSearch = function(){
+    return searchInput;
+  }
+
   this.setSentimentData = function(result){
-    let sentimentData = result;
+    sentimentData = result;
+    notifyObservers('tweetSearch');
   }
 
   this.getSentimentData = function(){
@@ -43,10 +54,8 @@ const Model = function () {
     //   .catch(handleError)
   }
 
-  this.popularKeywords = function () {
-    const url = 'https://api.twitter.com/1.1/trends/place.json?id=1'
-
-    console.log(httpOptions);
+  this.searchTweets = function () {
+    const url = '/api/sentiment?q=' + searchInput
     return fetch(url, httpOptions)
       .then(processResponse)
       .catch(handleError)

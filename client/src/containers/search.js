@@ -12,6 +12,7 @@ class Search extends Component {
   constructor(props){
     super(props)
     this.state = {
+      data: null,
       searchInput: 'Search Input Value',
       anchorEl: null,
       date: 'Today'
@@ -20,11 +21,11 @@ class Search extends Component {
 
     }
 
-
-
-    componentDidMount = () =>{
+    buttonClicked = () =>{
       // TO DO: API Call should be made here
-      modelInstance.popularKeywords().then(result => {
+      modelInstance.searchTweets().then(result => {
+        console.log(result);
+        modelInstance.setSentimentData(result);
         this.setState({
           status: 'LOADED',
           data: result
@@ -35,14 +36,17 @@ class Search extends Component {
           status: 'ERROR'
           })
         })
+    }
 
+    componentDidMount = () =>{
     }
 
 
   searchInput(input){
-    console.log(input);
+    console.log(input.target.value);
+    modelInstance.setSearch(input.target.value);
     this.setState({
-      searchInput:input.target.value
+      // searchInput:input.target.value
     })
   }
 
@@ -98,12 +102,13 @@ class Search extends Component {
       <div className='search'>
         <div className='row'>
           <h1>Sentiment</h1>
-          {/* <input onChange={(input) => this.searchInput(input)}></input> */}
-          <SearchInput searchInput = {this.state.searchInput}/>
+          <input onChange={(input) => this.searchInput(input)}></input>
+          {/* <SearchInput searchInput = {this.state.searchInput}/> */}
         </div>
         <div className='row'>
+          <button onClick={this.buttonClicked}>Search</button>
           {/* <ButtonImportant onClick={this.buttonClick} className='btn btn-danger btn-xs'/> */}
-          <div>
+          {/* <div>
             <Button
               aria-owns={anchorEl ? 'simple-menu' : null}
               aria-haspopup="true"
@@ -117,7 +122,7 @@ class Search extends Component {
               open={Boolean(anchorEl)}
               onClose={this.onDayChange}
             >
-              {/* {daysList} */}
+              {/* {daysList}
 
               <MenuItem onClick={this.onDayChange}>Yesterday</MenuItem>
               <MenuItem onClick={this.onDayChange}>2 Days past</MenuItem>
@@ -127,7 +132,7 @@ class Search extends Component {
               <MenuItem onClick={this.onDayChange}>6 Days past</MenuItem>
               <MenuItem onClick={this.onDayChange}>7 Days past</MenuItem>
             </Menu>
-          </div>
+          </div>*/}
 
         </div>
         </div>
