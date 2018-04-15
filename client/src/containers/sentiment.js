@@ -20,9 +20,9 @@ class Sentiment extends Component {
       // if (details==="tweetSearch") {
       console.log(modelInstance.getSentimentData());
       this.setState({
-        positive: modelInstance.getSentimentData().positive,
-        negative: modelInstance.getSentimentData().negative,
-        neutral: modelInstance.getSentimentData().neutral,
+        positive: Math.round(modelInstance.getSentimentData().positive*100),
+        negative:  Math.round(modelInstance.getSentimentData().negative*100),
+        neutral: Math.round(modelInstance.getSentimentData().neutral*100),
 
       })
       // }
