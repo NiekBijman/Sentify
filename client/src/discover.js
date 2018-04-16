@@ -2,18 +2,17 @@ import React, { Component } from 'react';
 import './styles/discover.css';
 import { Link } from 'react-router-dom';
 import Map from './containers/map';
-import MapLive from './components/map-live';
+import Search from './containers/search';
 
 const Discover = ({}) =>
-      <React.Fragment>
-        <div className="row">
-          <div className="col-xs-10">
-          </div>
-          <div className="col-xs-2">
-            <Map/>
-          </div>
-        </div>
-      </React.Fragment>
-
+  <React.Fragment>
+      <div className='map'>
+          <Map/>
+      </div>
+      <div className='content'>
+        <p>This is where your foreground code should be.</p>
+        <Search/>
+      </div>
+  </React.Fragment>
 
 export default Discover;
