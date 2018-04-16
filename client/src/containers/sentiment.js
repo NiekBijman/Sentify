@@ -12,45 +12,25 @@ class Sentiment extends Component {
       positive: null,
       negative: null,
       neutral: null,
-      result: modelInstance.getSentimentData()
+      sentiment: modelInstance.getSentimentData()
     }
   }
 
-  dataCount = () => {
-      var positive = 0;
-      var negative = 0;
-      var neutral = 0;
+  update(details){
+      // if (details==="tweetSearch") {
+      console.log(modelInstance.getSentimentData());
+      this.setState({
+        positive: Math.round(modelInstance.getSentimentData().positive*100),
+        negative:  Math.round(modelInstance.getSentimentData().negative*100),
+        neutral: Math.round(modelInstance.getSentimentData().neutral*100),
 
-        var count = this.state.result.data.map((data) => {
-              if(data.polarity === 4){
-                positive = positive + 1;
-                return positive;
-              }
-              if(data.polarity === 0){
-                negative = negative + 1;
-                return negative;
-              }
-              if(data.polarity === 2){
-                neutral = neutral + 1;
-                return neutral;
-              }
-            }
-          )
-      this.percentage( positive, negative, neutral);
+      })
+      // }
     }
-
-  percentage(negative, positive, neutral){
-    var total = positive + negative + neutral;
-
-    this.setState({
-      positive: (positive / total) * 100,
-      negative: (negative / total) * 100,
-      neutral: (neutral / total) * 100
-    })
-  }
 
   componentDidMount = () => {
-    this.dataCount();
+    // this.dataCount();
+    modelInstance.addObserver(this);
 
   }
 
@@ -64,3 +44,38 @@ class Sentiment extends Component {
   }
 }
 export default Sentiment;
+
+
+
+// dataCount = () => {
+//     var positive = 0;
+//     var negative = 0;
+//     var neutral = 0;
+//
+//       var count = this.state.result.data.map((data) => {
+//             if(data.polarity === 4){
+//               positive = positive + 1;
+//               return positive;
+//             }
+//             if(data.polarity === 0){
+//               negative = negative + 1;
+//               return negative;
+//             }
+//             if(data.polarity === 2){
+//               neutral = neutral + 1;
+//               return neutral;
+//             }
+//           }
+//         )
+//     this.percentage( positive, negative, neutral);
+//   }
+//
+// percentage(negative, positive, neutral){
+//   var total = positive + negative + neutral;
+//
+//   this.setState({
+//     positive: (positive / total) * 100,
+//     negative: (negative / total) * 100,
+//     neutral: (neutral / total) * 100
+//   })
+// }
