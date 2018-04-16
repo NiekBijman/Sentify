@@ -2,11 +2,7 @@
 
 # dependencies
 /node_modules
-<<<<<<< HEAD
 client/node_modules
-=======
-../node_modules
->>>>>>> 231a5716e7f912056f7eb4fd99938cfbdb99239a
 
 # testing
 coverage/
@@ -24,11 +20,5 @@ coverage/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-<<<<<<< HEAD
 yarn.lock
 client/yarn-lock
-=======
-
-
-src/config.js
->>>>>>> 231a5716e7f912056f7eb4fd99938cfbdb99239a
