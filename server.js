@@ -26,7 +26,7 @@ app.get('/favicon.ico', (req, res) => {
 app.get('/api/twitter', async (req, res) => {
     console.log("Getting tweets")
     const options = {
-      q : req.query.q || "nasa",
+      q : req.query.q,
       lang: "en",
       result_type: "popular",
       count: 100,
@@ -85,8 +85,6 @@ app.get('/api/sentiment', async (req, res) => {
       response.positive = numPos/tot
       response.neutral = numNeu/tot
       response.negative = numNeg/tot
-      console.log("in server: ")
-      console.log(response)
       // send response
       res.send(response)
     })
