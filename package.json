@@ -9,6 +9,7 @@
   "dependencies": {
     "express": "^4.16.3",
     "fetch-tweets": "^0.1.7",
+    "firebase": "^4.12.1",
     "node-fetch": "^2.1.2",
     "request": "^2.85.0"
   },
