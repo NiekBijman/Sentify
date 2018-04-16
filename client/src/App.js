@@ -4,10 +4,10 @@ import './styles/app.css';
 import { Route } from 'react-router-dom';
 import Welcome from './welcome';
 import Discover from './discover';
+import MySearches from './my-searches';
+import Login from './login';
 import Map from './containers/map';
 import { modelInstance } from './model/model'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 class App extends Component {
@@ -27,6 +27,8 @@ class App extends Component {
             {/* We rended diffrent component based on the path */}
             <Route exact path="/" component={Welcome}/>
             <Route path="/discover" component={Discover}/>
+            <Route path="/my-searches" component={MySearches}/>
+            <Route path="/login" component={Login}/>
           </header>
         </div>
       </MuiThemeProvider>
