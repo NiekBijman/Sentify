@@ -1,0 +1,49 @@
+tbody tr:hover {
+    cursor: pointer
+}
+
+tr i {
+    color: #7f8c8d;
+}
+
+tr i:hover {
+    color: #2c3e50;
+}
+
+.container {
+    margin: 10%;
+    margin-top: 5%;
+}
+
+#delete-my-searches {
+    float: right;
+    margin-top: 1%;
+}
+
+[class*="DeleteMySearchesModal-"] h2 {
+    margin-bottom: 10%;
+}
+
+[class*="DeleteMySearchesModal-"] h3 {
+    margin-bottom: 5%;
+}
+
+[class*="DeleteMySearchesModal-"] button {
+    float: right;
+}
+
+@media screen and (max-width: 1219px) {
+    [class*="SearchNav-"] {
+        width: 60vw !important;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .container {
+        margin: 5%;
+    }
+
+    [class*="SearchNav-"] {
+        width: 100% !important;
+    }
+}
