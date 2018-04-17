@@ -22,7 +22,13 @@ const port = process.env.PORT || 5000;
 //   app.use(express.static('client/public'));
 // }
 
-app.use(express.static(__dirname + 'client/public'));
+// app.use(express.static(__dirname + 'client/public'));
+
+// set the home page route
+app.get('/client/public', function(req, res) {
+    // ejs render automatically looks in the views folder
+    res.render('index');
+});
 
 // To silence favico.ico errors. Ignore.
 app.get('/client/src/media/favicon.ico', (req, res) => {
