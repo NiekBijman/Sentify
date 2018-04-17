@@ -5,8 +5,7 @@
     "client": "cd client && yarn start",
     "server": "nodemon server.js",
     "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
-    "build": "node server.js",
-    "start": "yarn client"
+    "heroku-postbuild": "yarn client"
   },
   "dependencies": {
     "dotenv": "^5.0.1",
