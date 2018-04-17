@@ -1,7 +1,7 @@
-const express = require('express')
-const fetch = require('node-fetch')
-const FetchTweets = require('fetch-tweets')
-const request = require('request')
+const express = require('express');
+const fetch = require('node-fetch');
+const FetchTweets = require('fetch-tweets');
+const request = require('request');
 // var favicon = require('serve-favicon');
 
 const TW_URL = "http://1.1/search/tweets.json"  // Twitter search URL
@@ -12,10 +12,10 @@ var TW_KEYS = {
   consumer_secret: process.env.TW_SECRET
 }
 
-const app = express()
-const fetchTweets = new FetchTweets(TW_KEYS)
+const app = express();
+const fetchTweets = new FetchTweets(TW_KEYS);
 
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 5000;
 
 // Express only serves static assets in production
 // if (process.env.NODE_ENV === 'production') {
