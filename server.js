@@ -30,7 +30,7 @@ if (process.env.NODE_ENV === 'production') {
 
 // app.use('/favicon.ico', express.static('client/src/media/favicon.ico'));
 
-app.use(favicon(__dirname + '/favicon.ico'));
+app.use(favicon(__dirname + './favicon.ico'));
 
 // For getting tweets like /api/twitter?q=hello&geocode=234523 etc.
 app.get('/api/twitter', async (req, res) => {
