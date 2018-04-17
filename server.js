@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // To silence favico.ico errors. Ignore.
-app.get('/favicon.ico', (req, res) => {
+app.get('/client/src/media/favicon.ico', (req, res) => {
   console.log("got to server")
   res.send("favicon placeholder")
 });
