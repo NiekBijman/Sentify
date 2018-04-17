@@ -2,6 +2,7 @@ const express = require('express')
 const fetch = require('node-fetch')
 const FetchTweets = require('fetch-tweets')
 const request = require('request')
+var favicon = require('serve-favicon');
 
 const TW_URL = "http://1.1/search/tweets.json"  // Twitter search URL
 const SEN_URL =  "http://www.sentiment140.com/api/bulkClassifyJson" // URL of sentiment analysis
@@ -28,6 +29,8 @@ if (process.env.NODE_ENV === 'production') {
 // });
 
 // app.use('/favicon.ico', express.static('client/src/media/favicon.ico'));
+
+app.use(favicon(__dirname + '/client/src/media/favicon.ico'));
 
 // For getting tweets like /api/twitter?q=hello&geocode=234523 etc.
 app.get('/api/twitter', async (req, res) => {
