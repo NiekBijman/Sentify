@@ -17,9 +17,9 @@ const fetchTweets = new FetchTweets(TW_KEYS)
 const port = process.env.SENTIFY_PORT || 5000
 
 // Express only serves static assets in production
-if (process.env.NODE_ENV === 'production') {
+// if (process.env.NODE_ENV === 'production') {
   app.use(express.static('client/public'));
-}
+// }
 
 // To silence favico.ico errors. Ignore.
 app.get('/favicon.ico', (req, res) => {
