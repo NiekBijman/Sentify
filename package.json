@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "client": "cd client && yarn start",
+    "client-production": "cd client && yarn build && yarn start",
     "server": "nodemon server.js",
     "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
     "heroku-postbuild": "yarn client"
