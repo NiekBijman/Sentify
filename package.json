@@ -4,9 +4,11 @@
   "scripts": {
     "client": "cd client && yarn start",
     "server": "nodemon server.js",
-    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
+    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
+    "heroku": "server.js && yarn client"
   },
   "dependencies": {
+    "dotenv": "^5.0.1",
     "ejs": "^2.5.8",
     "express": "^4.16.3",
     "fetch-tweets": "^0.1.7",
