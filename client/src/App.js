@@ -7,7 +7,7 @@ import Discover from './discover';
 import MySearches from './my-searches';
 import Login from './login';
 import Map from './containers/map';
-import { modelInstance } from './model/model'
+import { modelInstance } from './model/model';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 class App extends Component {

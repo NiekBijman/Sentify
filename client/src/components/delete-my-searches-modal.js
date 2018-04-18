@@ -44,10 +44,10 @@ class DeleteMySearchesModal extends React.Component {
         >
           <div style={getModalStyle()} className={classes.paper}>
             <Typography variant="title" id="modal-title">
-              Confirm deleting my searches
+              Confirm deleting selected searches
             </Typography>
             <Typography variant="subheading" id="simple-modal-description">
-              Delete history of your searches ?
+              Delete the selected searches ?
             </Typography>
             <Button onClick={this.props.handleConfirm}>Confirm</Button>
             <Button onClick={this.props.handleCancel}>Cancel</Button>
