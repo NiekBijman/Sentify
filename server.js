@@ -15,7 +15,7 @@ var TW_KEYS = {
 const app = express();
 const fetchTweets = new FetchTweets(TW_KEYS);
 
-const port = process.env.SENTIFY_PORT || 5000;
+const port = process.env.PORT || 5000;
 
 // Express only serves static assets in production
 // if (process.env.NODE_ENV === 'production') {
