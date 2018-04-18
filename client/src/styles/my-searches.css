@@ -15,11 +15,6 @@ tr i:hover {
     margin-top: 5%;
 }
 
-#delete-my-searches {
-    float: right;
-    margin-top: 1%;
-}
-
 [class*="DeleteMySearchesModal-"] h2 {
     margin-bottom: 10%;
 }

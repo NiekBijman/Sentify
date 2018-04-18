@@ -59,16 +59,11 @@ const Model = function () {
     return searchHistory;
   }
 
-  this.deleteSearchHistory = function() {
-    searchHistory = {"data": []};
+  this.deleteSearchHistory = function(selectedSearches) {
+    searchHistory.data = searchHistory.data.filter(function(el) {
+      return !selectedSearches.includes(el.id);
+    });
     notifyObservers();
-  }
-
-  this.isSearchHistoryEmpty = function() {
-    if (searchHistory.data.length > 0)
-      return false;
-    else
-      return true;
   }
 
   // API Calls

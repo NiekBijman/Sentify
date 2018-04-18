@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import DeleteIcon from '@material-ui/icons/Delete';
+import HistoryIcon from '@material-ui/icons/History';
 import IconButton from 'material-ui/IconButton';
 import Tooltip from 'material-ui/Tooltip';
 
@@ -16,20 +16,20 @@ const styles = theme => ({
   },
 });
 
-function DeleteMySearches(props) {
+function HistoryMySearches(props) {
   return (
-    <div id="delete-my-searches">
-      <Tooltip id="tooltip-icon" title="Delete Selected">
-        <IconButton aria-label="Delete" onClick={props.handleClick}>
-          <DeleteIcon />
+    <div id="history-my-searches">
+      <Tooltip id="tooltip-icon" title="History">
+        <IconButton aria-label="History">
+          <HistoryIcon />
         </IconButton>
       </Tooltip>
     </div>
   );
 }
 
-DeleteMySearches.propTypes = {
+HistoryMySearches.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(DeleteMySearches);
+export default withStyles(styles)(HistoryMySearches);
