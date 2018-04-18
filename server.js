@@ -1,7 +1,9 @@
-const express = require('express')
-const fetch = require('node-fetch')
-const FetchTweets = require('fetch-tweets')
-const request = require('request')
+const express = require('express');
+const fetch = require('node-fetch');
+const FetchTweets = require('fetch-tweets');
+const request = require('request');
+var path = require("path");
+// var favicon = require('serve-favicon');
 
 const TW_URL = "http://1.1/search/tweets.json"  // Twitter search URL
 const SEN_URL =  "http://www.sentiment140.com/api/bulkClassifyJson" // URL of sentiment analysis
@@ -11,16 +13,41 @@ var TW_KEYS = {
   consumer_secret: process.env.TW_SECRET
 }
 
-const app = express()
-const fetchTweets = new FetchTweets(TW_KEYS)
+const app = express();
+const fetchTweets = new FetchTweets(TW_KEYS);
 
-const port = process.env.SENTIFY_PORT || 5000
+const port = process.env.PORT || 5000;
+
+// Express only serves static assets in production
+// if (process.env.NODE_ENV === 'production') {
+//   app.use(express.static('client/public'));
+// }
+
+// app.use(express.static(__dirname + 'client/public'));
+
+// set the home page route
+// app.get('/client/public', function(req, res) {
+//     // ejs render automatically looks in the views folder
+//     res.render('index');
+// });
+
+// Priority serve any static files.
+app.use(express.static(path.resolve(__dirname, 'client/build')));
+
+// All remaining requests return the React app, so it can handle routing.
+app.get('*', function(request, response) {
+  response.sendFile(path.resolve(__dirname, 'client/build', 'index.html'));
+});
 
 // To silence favico.ico errors. Ignore.
-app.get('/favicon.ico', (req, res) => {
+app.get('/client/src/media/favicon.ico', (req, res) => {
   console.log("got to server")
   res.send("favicon placeholder")
 });
+
+// app.use('/favicon.ico', express.static('client/src/media/favicon.ico'));
+
+// app.use(favicon(__dirname + './favicon.ico'));
 
 // For getting tweets like /api/twitter?q=hello&geocode=234523 etc.
 app.get('/api/twitter', async (req, res) => {
@@ -54,12 +81,12 @@ app.get('/api/sentiment', async (req, res) => {
         return {"text": tweet.body, "query": options.q}
       })}
       var body = JSON.stringify(tweets)
-      
+
       // get sentiments
       const sentiments = await fetch(SEN_URL, {method: "POST", body: body})
       const json = await sentiments.json()
       const data = json.data
-      
+
       //console.log(data)
 
       // calculate percentages
