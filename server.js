@@ -20,10 +20,12 @@ const port = process.env.PORT || 5000;
 // Priority serve any static files.
 app.use('/NiekBijman/Sentify', express.static(path.resolve(__dirname, 'client/build')));
 
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname+'/client/build/index.html'));
-});
+if (process.env.NODE_ENV === "production"){
+  console.log(process.env.NODE_ENV)
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname+'/client/build/index.html'));
+  });
+}
 
 // To silence favico.ico errors. Ignore.
 app.get('/client/src/media/favicon.ico', (req, res) => {
