@@ -36,7 +36,7 @@ const port = process.env.PORT || 5000;
 
 // All remaining requests return the React app, so it can handle routing.
 app.get('*', function(request, response) {
-  response.sendFile(path.resolve(__dirname, '../client/public', 'index.html'));
+  response.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
 });
 
 // To silence favico.ico errors. Ignore.
