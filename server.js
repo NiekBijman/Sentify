@@ -2,6 +2,7 @@ const express = require('express');
 const fetch = require('node-fetch');
 const FetchTweets = require('fetch-tweets');
 const request = require('request');
+var path = require("path");
 // var favicon = require('serve-favicon');
 
 const TW_URL = "http://1.1/search/tweets.json"  // Twitter search URL
