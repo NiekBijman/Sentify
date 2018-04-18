@@ -3,7 +3,6 @@ const fetch = require('node-fetch');
 const FetchTweets = require('fetch-tweets');
 const request = require('request');
 var path = require("path");
-// var favicon = require('serve-favicon');
 
 const TW_URL = "http://1.1/search/tweets.json"  // Twitter search URL
 const SEN_URL =  "http://www.sentiment140.com/api/bulkClassifyJson" // URL of sentiment analysis
@@ -18,26 +17,9 @@ const fetchTweets = new FetchTweets(TW_KEYS);
 
 const port = process.env.PORT || 5000;
 
-// Express only serves static assets in production
-// if (process.env.NODE_ENV === 'production') {
-//   app.use(express.static('client/public'));
-// }
-
-// app.use(express.static(__dirname + 'client/public'));
-
-// set the home page route
-// app.get('/client/public', function(req, res) {
-//     // ejs render automatically looks in the views folder
-//     res.render('index');
-// });
-
 // Priority serve any static files.
 app.use('/NiekBijman/Sentify', express.static(path.resolve(__dirname, 'client/build')));
 
-// All remaining requests return the React app, so it can handle routing.
-// app.get('*', function(request, response) {
-//   response.sendFile(path.resolve(__dirname, 'client/build', 'index.html'));
-// });
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
@@ -48,10 +30,6 @@ app.get('/client/src/media/favicon.ico', (req, res) => {
   console.log("got to server")
   res.send("favicon placeholder")
 });
-
-// app.use('/favicon.ico', express.static('client/src/media/favicon.ico'));
-
-// app.use(favicon(__dirname + './favicon.ico'));
 
 // For getting tweets like /api/twitter?q=hello&geocode=234523 etc.
 app.get('/api/twitter', async (req, res) => {
