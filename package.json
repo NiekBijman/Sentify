@@ -1,12 +1,13 @@
 {
   "name": "sentify-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node index.js",
     "client": "cd client && yarn start",
-    "server": "nodemon server.js",
+    "server": "nodemon index.js",
     "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
-    "heroku-postbuild": "cd client && yarn install && yarn build"
+    "heroku-postbuild": "cd client && yarn --production=false && yarn run build"
   },
   "dependencies": {
     "dotenv": "^5.0.1",
