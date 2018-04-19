@@ -1,23 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './styles/welcome.css';
-import { Link } from 'react-router-dom';
-import Sentiment from './containers/sentiment';
-import SentimentPie from './components/sentiment-pie';
-import Search from './containers/search';
-import './styles/welcome.css';
-
+import WelcomeView from './containers/welcome-view';
 
 const Welcome = ({}) =>
-  <div className='row'>
-    <div className='col-xs-5'>
-      <Search/>
-      <Link to="/discover">
-          <button className='btn btn-xs'>Go to Map</button>
-      </Link>
-    </div>
-    <div className='col-xs-5'>
-      <Sentiment/>
-    </div>
+  <div className="container-welcome">
+    <WelcomeView/>
   </div>
 
 export default Welcome;

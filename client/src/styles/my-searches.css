@@ -10,9 +10,8 @@ tr i:hover {
     color: #2c3e50;
 }
 
-.container {
-    margin: 10%;
-    margin-top: 5%;
+.container-my-searches {
+    margin: 0 10% 0 10%;
 }
 
 [class*="DeleteMySearchesModal-"] h2 {
@@ -27,6 +26,11 @@ tr i:hover {
     float: right;
 }
 
+[class*="SearchNav-"] {
+    padding-top: 5%;
+    margin-top: 0 !important;
+}
+
 @media screen and (max-width: 1219px) {
     [class*="SearchNav-"] {
         width: 60vw !important;
@@ -34,7 +38,7 @@ tr i:hover {
 }
 
 @media screen and (max-width: 767px) {
-    .container {
+    .container-my-searches {
         margin: 5%;
     }
 

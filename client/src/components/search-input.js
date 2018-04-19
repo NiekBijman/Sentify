@@ -1,22 +1,18 @@
-import React, { Component } from 'react';
-import PieChart from 'react-simple-pie-chart';
+import React from 'react';
 import '../styles/search.css';
-import Search from '../containers/search';
-
 import { withStyles } from 'material-ui/styles';
 import TextField from 'material-ui/TextField';
 
 //This is the Presentation component
 const styles = theme => ({
   container: {
-    // display: 'flex',
+    display: 'flex',
     flexWrap: 'wrap',
-    textalign: 'right'
   },
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 200
+    width: "100%",
   },
 });
 
@@ -26,13 +22,12 @@ const SearchInput = props => { //({onChange = this.handleChange})
   return (
     <div className={classes.container}>
       <TextField
-        // label="None"
-        id="margin-none"
-        defaultValue="Search"
-        className={classes.textField}
-        helperText="Search for hashtags and keywords"
-        textalign='right'
-      />
+          id="search"
+          label="Search"
+          type="search"
+          className={classes.textField}
+          margin="normal"
+        />
     </div>
   );
 };

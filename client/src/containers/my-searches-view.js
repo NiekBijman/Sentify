@@ -13,7 +13,7 @@ class MySearchesView extends Component {
 
   render(){
     return(
-      <div className="container">
+      <div className="container-my-searches">
         <SearchNav page={this.state.page}/>
         <MySearchesTable/>
       </div>
