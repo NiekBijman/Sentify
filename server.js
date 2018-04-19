@@ -18,20 +18,13 @@ const fetchTweets = new FetchTweets(TW_KEYS);
 const port = process.env.PORT || 5000;
 
 // Priority serve any static files.
-app.use('/NiekBijman/Sentify', express.static(path.resolve(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, 'client/build')));
 
 if (process.env.NODE_ENV === "production"){
-  console.log(process.env.NODE_ENV)
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname+'/client/build/index.html'));
   });
 }
-
-// To silence favico.ico errors. Ignore.
-app.get('/client/src/media/favicon.ico', (req, res) => {
-  console.log("got to server")
-  res.send("favicon placeholder")
-});
 
 // For getting tweets like /api/twitter?q=hello&geocode=234523 etc.
 app.get('/api/twitter', async (req, res) => {
