@@ -1,7 +1,7 @@
 {
   "name": "sentify-server",
   "version": "1.0.1",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "start": "node server.js",
     "client": "cd client && yarn start",
