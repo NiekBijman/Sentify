@@ -20,12 +20,6 @@ const port = process.env.PORT || 5000;
 // Priority serve any static files.
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-if (process.env.NODE_ENV === "production"){
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname+'/client/build/index.html'));
-  });
-}
-
 // For getting tweets like /api/twitter?q=hello&geocode=234523 etc.
 app.get('/api/twitter', async (req, res) => {
     console.log("Getting tweets")
@@ -96,5 +90,11 @@ app.get('/api/sentiment', async (req, res) => {
     console.log(error)
   }
 })
+
+if (process.env.NODE_ENV === "production"){
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname+'/client/build/index.html'));
+  });
+}
 
 app.listen(port, () => console.log(`Listening on port ${port}`))
