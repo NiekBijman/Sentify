@@ -3121,6 +3121,12 @@ flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
 
+flexboxgrid2@^7.0.0-alpha7:
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/flexboxgrid2/-/flexboxgrid2-7.2.1.tgz#3ffb9661ca5a9e96468eae648f8caf279bd0b2a4"
+  dependencies:
+    normalize.css "^7.0.0"
+
 flow-remove-types@^1.1.2:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/flow-remove-types/-/flow-remove-types-1.2.3.tgz#6131aefc7da43364bb8b479758c9dec7735d1a18"
@@ -5314,6 +5320,10 @@ normalize-url@^1.4.0:
     query-string "^4.1.0"
     sort-keys "^1.0.0"
 
+normalize.css@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/normalize.css/-/normalize.css-7.0.0.tgz#abfb1dd82470674e0322b53ceb1aaf412938e4bf"
+
 npm-run-path@^2.0.0:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/npm-run-path/-/npm-run-path-2.0.2.tgz#35a9232dfa35d7067b4cb2ddf2357b1871536c5f"
@@ -6301,6 +6311,13 @@ react-faux-dom@^2.1.0, react-faux-dom@^2.3.0:
   dependencies:
     query-selector "^1.0.9"
     style-attr "^1.0.1"
+
+react-flexbox-grid@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-flexbox-grid/-/react-flexbox-grid-2.0.0.tgz#6ffbe30a28fc6113e147715a5adc1f6a6f472e54"
+  dependencies:
+    flexboxgrid2 "^7.0.0-alpha7"
+    prop-types "^15.5.8"
 
 react-jss@^8.1.0:
   version "8.4.0"
