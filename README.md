@@ -19,22 +19,32 @@
 10. **IMPORTANT** Our config.js file contains our API Keys which is why we put it in .gitignore.  @team, you can find the config.js file in the Slack channel.   
 11. **IMPORTANT** If you add dependencies, make sure to also add them to package.json. This can be done when installing a package with `npm install <pkg> --save`. Make sure to run this command in the correct directory, client/ if you're adding dependencies for the client app and home/ otherwise.
 
-### @Sentify-team
-
 ## the App
-Go to this site: https://marvelapp.com/867200h to explore the app, and press the settings symbol in the top right corner (only certain screens) to display the annotations.
+Sentify is an application that provides sentiment analysis based on user-chosen string and geographical area. The string will be able to contain hashtags/words/sentences for which the app will generate sentimental analysis within the chosen geographical area. The user will be able to explore specific countries by looking for information of a certain region, or explore differences between countries if he or she chooses a continent.
+
+Go to this site: https://marvelapp.com/867200h to explore the prototyped app, and press the settings symbol in the top right corner (only certain screens) to display the annotations.
+
+## What we have done
+- Setup the backend
+- Created the initial layout of our application
+
+## What remains to be done
+- Implement more interaction with the map
+- Setup the live-tweets
+- Setup the login -> replace the hardcoded data in my-searches with data from the database
+- Implement the localStorage
+- Clean the code, retest the app
 
 ### Architecture
-This is the file structure I think is appropriate for our project.
-- The file structure is according to this reference https://reactjs.org/docs/faq-structure.html  Paragraph: **‘Grouping by file type’**
-- Views with interaction have a **container** that supplies the functionality
-- The highest order presentational component is named  **-view**, it’s children are named after their function. For example: **-input, -button** etc.
+This is the file structure of our project:
 
-### Components
-These components contain links to the websites where I found libraries and reference projects that implement the needed functionality
-
-### API Calls
-I annotated which components trigger certain API calls
-- The numerals **A-D** represent my opinion about which should be implemented first. **A high priority, D last**
-- The dotted lines represent API calls and responses that are made by the system rather than a user interaction
-
+* `~` - contains the `/node_modules` setup for the back-end, `index.js` which is responsible for making the API calls (implemented to solve the CORS problem)
+* `/client` - contains the react application
+* `/client/public/index.html` - this is the static html file
+* `/client/src/components` - contains all the presentation components that we use in our application
+* `/client/src/containers` - includes the container components responsible for fetching and changing the data shown in the presentation components
+* `/helpers` - contains files that will help with the authentication through google
+* `/img` - contains images
+* `/media` - contains icons and loaders
+* `/styles` - contains the css files for our containers and components
+* `discover.js`, `my-searches.js` and `welcome.js` correspond to the pages the user can visit, they reference container components
