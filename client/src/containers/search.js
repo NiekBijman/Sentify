@@ -17,8 +17,6 @@ class Search extends Component {
       anchorEl: null,
       date: 'Today'
       }
-
-
     }
 
     buttonClicked = () =>{
