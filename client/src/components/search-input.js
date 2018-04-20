@@ -2,6 +2,8 @@ import React from 'react';
 import '../styles/search.css';
 import { withStyles } from 'material-ui/styles';
 import TextField from 'material-ui/TextField';
+import Typist from 'react-typist';
+
 
 //This is the Presentation component
 const styles = theme => ({
@@ -12,23 +14,28 @@ const styles = theme => ({
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: "100%",
+    width: "100%"
   },
+  input:{
+    fontSize: '3rem',
+    align: 'right'
+  }
 });
+
 
 const SearchInput = props => { //({onChange = this.handleChange})
   const { classes } = props;
 
   return (
-    <div className={classes.container}>
       <TextField
-          id="search"
-          label="Search"
-          type="search"
           className={classes.textField}
+          fontSize='30px'
           margin="normal"
-        />
-    </div>
+          placeholder="Search for tweets"
+          helperText="Data about trending topics around the world"
+          InputProps={{className: classes.input}}
+      />
+
   );
 };
 

@@ -2,20 +2,28 @@ import React, { Component } from 'react';
 import PieChart from 'react-simple-pie-chart';
 import SentimentPie from '../components/sentiment-pie';
 import SearchInput from '../components/search-input';
+import SearchNav from '../components/search-nav';
+import SearchDate from '../components/search-date';
+import SearchLocation from '../components/search-location';
 import { modelInstance } from '../model/model'
 import '../styles/search.css';
 import ButtonImportant from '../components/button-important'
 import Button from 'material-ui/Button';
 import Menu, { MenuItem } from 'material-ui/Menu';
+import { Row, Col } from 'react-flexbox-grid';
+import Typist from 'react-typist';
+import Hidden from 'material-ui/Hidden';
+
 
 class Search extends Component {
   constructor(props){
     super(props)
     this.state = {
       data: null,
-      searchInput: 'Search Input Value',
+      searchSuggestion: 'Search for tweets here',
       anchorEl: null,
-      date: 'Today'
+      date: 'Today',
+
       }
 
 
@@ -39,8 +47,8 @@ class Search extends Component {
     }
 
     componentDidMount = () =>{
-    }
 
+    }
 
   searchInput(input){
     console.log(input.target.value);
@@ -76,66 +84,44 @@ class Search extends Component {
     this.setState({ anchorEl: null });
   };
 
+
   render(){
     const { anchorEl } = this.state;
-    // const days = [
-    //     {date: 'Today'},
-    //     {date: 'Yesterday'},
-    //     {date: '2 days ago'},
-    //     {date: '3 days ago'},
-    //     {date: '4 days ago'},
-    //     {date: '5 days ago'},
-    //     {date: '6 days ago '},
-    //     {date: '7 days ago'},
-    //     ];
-    //
-    // let daysList = null;
-    // {daysList = days.map((date, index) => (
-    //   console.log(days, index),
-    //   <MenuItem
-    //       key={index}
-    //       onClick={this.onDayChange(date.date)}
-    //   >{date.date}</MenuItem>)
-    // )}
+
 
     return(
-      <div className='search'>
-        <div className='row'>
-          <h1>Sentiment</h1>
-          <input onChange={(input) => this.searchInput(input)}></input>
-          {/* <SearchInput searchInput = {this.state.searchInput}/> */}
-        </div>
-        <div className='row'>
-          <button onClick={this.buttonClicked}>Search</button>
-          {/* <ButtonImportant onClick={this.buttonClick} className='btn btn-danger btn-xs'/> */}
-          {/* <div>
-            <Button
-              aria-owns={anchorEl ? 'simple-menu' : null}
-              aria-haspopup="true"
-              onClick={this.handleClick}
-            >
-              {this.state.date}
-            </Button>
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={this.onDayChange}
-            >
-              {/* {daysList}
+      <div className='container-discover'>
+        <div className='search'>
+          <Hidden only="xs">
+            <Row id='searchInput'>
+              {/* <h1>Sentiment</h1> */}
+              {/* <input onChange={(input) => this.searchInput(input)}></input> */}
+              <SearchInput searchInput = {this.state.searchInput} searchSuggestion = {this.state.searchSuggestion}/>
+              {/* <Typist className='container-type'>
+                #Lastweektonight
+              </Typist> */}
+            </Row>
+          </Hidden>
+          <Row>
+            <SearchNav/>
+          </Row>
+          <Row id='date-location'>
+            {/* <button onClick={this.buttonClicked}>Search</button> */}
+            {/* <ButtonImportant onClick={this.buttonClick} className='btn btn-danger btn-xs'/> */}
+            <Col sm={2} md={2}>
+              From
+            </Col>
+            <Col sm={4} md={4}>
+              <SearchDate date= {this.state.date} anchorEl={this.state.anchorEl} click={this.handleClick} dayChange={this.onDayChange}/>
+            </Col>
 
-              <MenuItem onClick={this.onDayChange}>Yesterday</MenuItem>
-              <MenuItem onClick={this.onDayChange}>2 Days past</MenuItem>
-              <MenuItem onClick={this.onDayChange}>3 Days past</MenuItem>
-              <MenuItem onClick={this.onDayChange}>4 Days past</MenuItem>
-              <MenuItem onClick={this.onDayChange}>5 Days past</MenuItem>
-              <MenuItem onClick={this.onDayChange}>6 Days past</MenuItem>
-              <MenuItem onClick={this.onDayChange}>7 Days past</MenuItem>
-            </Menu>
-          </div>*/}
+            <Col sm={4} md={4}>
+              <SearchLocation searchInput = {this.state.searchInput}/>
+            </Col>
 
+          </Row>
         </div>
-        </div>
+      </div>
 
 
     )

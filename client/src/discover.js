@@ -9,8 +9,7 @@ const Discover = ({}) =>
       <div className='map'>
           <Map/>
       </div>
-      <div className='content'>
-        <p>This is where your foreground code should be.</p>
+      <div className='container-search'>
         <Search/>
       </div>
   </React.Fragment>

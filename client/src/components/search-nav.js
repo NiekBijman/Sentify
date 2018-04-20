@@ -9,6 +9,7 @@ const styles = theme => ({
     flexGrow: 1,
     marginTop: theme.spacing.unit * 3,
     width: '44vw',
+    padding: '0'
   },
 });
 
