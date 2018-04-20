@@ -12,7 +12,8 @@ class SentimentView extends Component {
       positive: 50,
       negative: 40,
       neutral: 10,
-      sentiment: modelInstance.getSentimentData()
+      sentiment: modelInstance.getSentimentData(),
+      searchInput: modelInstance.getSearch(),
     }
   }
 
@@ -26,14 +27,17 @@ class SentimentView extends Component {
 
   update(details){
       // if (details==="tweetSearch") {
-      console.log(modelInstance.getSentimentData());
-      this.setState({
-        positive: Math.round(modelInstance.getSentimentData().positive*100),
-        negative:  Math.round(modelInstance.getSentimentData().negative*100),
-        neutral: Math.round(modelInstance.getSentimentData().neutral*100),
-      })
+    let result = modelInstance.getSentimentData();
+    console.log(result);
+
+    this.setState({
+      positive: (result !== null) ? Math.round(result.positive*100) : 50,
+      negative:  (result !== null) ? Math.round(result.negative*100) : 40,
+      neutral: (result !== null) ? Math.round(result.neutral*100) : 10,
+      searchInput: modelInstance.getSearch(),
+    })
       // }
-    }
+  }
 
   componentDidMount = () => {
     // this.dataCount();
@@ -55,6 +59,28 @@ class SentimentView extends Component {
             <Hidden smUp>
               <p>Tweets</p>
             </Hidden>
+            <div className="tweets-info">
+              <Row>
+                <Col xs={6} className="tweets-info-title">Search:</Col>
+                <Col xs={6} className="tweets-info-value">{this.state.searchInput}</Col>
+              </Row>
+              <Row>
+                <Col xs={6} className="tweets-info-title">Amount of tweets:</Col>
+                <Col xs={6} className="tweets-info-value">100</Col>
+              </Row>
+              <Row>
+                <Col xs={6} className="tweets-info-title">Geography:</Col>
+                <Col xs={6} className="tweets-info-value">World</Col>
+              </Row>
+              <Row>
+                <Col xs={6} className="tweets-info-title">Date Range:</Col>
+                <Col xs={6} className="tweets-info-value">14-04-2018 / 20-04-2018</Col>
+              </Row>
+              <Row>
+                <Col xs={6} className="tweets-info-title">Timestamp:</Col>
+                <Col xs={6}className="tweets-info-value">28-02-2018</Col>
+              </Row>
+            </div>
           </Col>
           <Col sm={4} md={4} xs={12}>
             <Hidden smUp>

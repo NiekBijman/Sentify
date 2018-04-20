@@ -40,6 +40,7 @@ const Model = function () {
 
   this.setSearch = function(search){
     searchInput = search;
+    notifyObservers();
   }
 
   this.getSearch = function(){

@@ -37,8 +37,18 @@
   margin: 0;
 }
 
-#content-steps:nth-child(2) {
-  text-align: center;
+.tweets-info {
+  padding-top: 10%;
+}
+
+.tweets-info-title {
+  text-align: right;
+  color: #3e4040;
+}
+
+.tweets-info-value {
+  text-align: left;
+  font-weight: bold;
 }
 
 #content-steps svg {
