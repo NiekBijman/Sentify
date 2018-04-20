@@ -1,9 +1,10 @@
-.locationinfo {
+.container-locationinfo {
   position: absolute;
-  display: inline-block;
-  text-align: right;
+  flex: 1 0 auto;
+  margin: -6% 0 0 0;
   width: 100%;
+  text-align: right;
   font-style: italic;
   font-size: 9px;
-  z-index: 1;
+
 }

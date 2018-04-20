@@ -1,5 +1,9 @@
 #root, .App, .App-header {
   height: 100%;
+  width: 100%;
+  font-family: Roboto light;
+  margin: 0;
+  /* overflow: hidden; */
 }
 
 .container-welcome {
@@ -38,15 +42,17 @@
 }
 
 #nb-steps {
+  font-family: Roboto medium;
   height: auto;
-  margin: -5% 0 0 0;
+  margin: -4% 0 0 0;
   font-size: xx-large;
   color: #3e4040;
 }
 
 #description-steps {
+  font-family: Roboto thin;
   color: #fff;
-  font-size: medium;
+  font-size: small;
   padding-top: 3%;
   margin-right: 0;
   margin-left: 0;
@@ -72,11 +78,6 @@
 
   #stepper {
     height: auto;
-  }
-
-  .container-search {
-    width: 60%;
-    margin: 20% 20% 0 20%;
   }
 }
 

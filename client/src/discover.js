@@ -11,7 +11,7 @@ const Discover = ({}) =>
       <div className='map'>
           <Map/>
       </div>
-      <div className='content'>
+      <div className='container-search'>
         <Search/>
       </div>
       <SentimentView/>

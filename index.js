@@ -88,6 +88,7 @@ app.get('/api/sentiment', async (req, res) => {
     })
   }catch (error){
     console.log(error)
+    res.send(error)
   }
 })
 

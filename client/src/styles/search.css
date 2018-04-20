@@ -11,3 +11,16 @@ h1{
 .searchInput{
   text-align: right;
 }
+
+#date-location{
+  height:20px;
+}
+
+.container-searchdate{
+  /* margin-top: 5px; */
+}
+
+.container-type{
+  position: absolute;
+  display: inline-block;
+}

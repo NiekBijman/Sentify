@@ -10,7 +10,7 @@ const WelcomeView = ({}) =>
     <div className="container-top">
       <div className="container-search">
         <SearchInput/>
-        <p>Data about trending topics around the world</p>
+        {/* <p>Data about trending topics around the world</p> */}
         <Link to="/discover">
             <ButtonDiscover/>
         </Link>
