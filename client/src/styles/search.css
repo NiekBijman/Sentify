@@ -24,3 +24,9 @@ h1{
   position: absolute;
   display: inline-block;
 }
+
+@media screen and (max-width: 767px) {
+  .container-discover-top .container-search {
+    width: 100%;
+  }
+}

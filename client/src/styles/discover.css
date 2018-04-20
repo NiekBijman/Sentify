@@ -4,13 +4,54 @@
   position: absolute;
 }
 
-.content {
-  position: absolute;
+.container-discover {
+  /* margin: 0;
+  display: flex;
+  flex-direction: column;*/
+  height: 100%;
 }
 
-.container-discover {
+.container-discover-top {
+  height: 70%;
+}
+
+#title-steps {
+  font-family: Roboto medium;
+  height: auto;
+  margin: -4% 0 0 0;
+  font-size: x-large;
+  color: #3e4040;
+  text-align: center;
+}
+
+.container-discover-bottom {
+  height: 30%;
+  position: absolute;
+  width: 100%;
+  background-color: #fff;
+  text-align: center;
+}
+
+#content-steps {
+  width: 100%;
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+}
+
+#content-steps:nth-child(2) {
+  text-align: center;
+}
+
+#content-steps svg {
+  width: 60%;
+  height: 60%;
+  padding-top: 10%;
+}
+
+.modal_loading {    
+  position: absolute;
+  height: 85%;
+  width: 75%;
+  background: url('../media/loading.gif') 
+              50% 50% 
+              no-repeat;
 }

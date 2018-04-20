@@ -1,4 +1,4 @@
-.container-locationinfo {
+.container-location-info {
   position: absolute;
   flex: 1 0 auto;
   margin: -6% 0 0 0;
@@ -6,5 +6,19 @@
   text-align: right;
   font-style: italic;
   font-size: 9px;
-
 }
+
+.mapboxgl-map {
+  left: 0 !important;
+}
+
+.mapboxgl-canvas {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.mapboxgl-ctrl-bottom-right {
+  display: none;
+}
+
+

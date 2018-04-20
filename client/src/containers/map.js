@@ -1,8 +1,6 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom'
-import mapboxgl from 'mapbox-gl'
-import { Link } from 'react-router-dom';
-import LocationInfo from '../components/map-locationinfo';
+import React from 'react';
+import mapboxgl from 'mapbox-gl';
+import LocationInfo from '../components/map-location-info';
 import '../styles/map.css';
 
 

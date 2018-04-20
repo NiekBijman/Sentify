@@ -2,8 +2,6 @@ import React from 'react';
 import '../styles/search.css';
 import { withStyles } from 'material-ui/styles';
 import TextField from 'material-ui/TextField';
-import Typist from 'react-typist';
-
 
 //This is the Presentation component
 const styles = theme => ({
@@ -22,8 +20,7 @@ const styles = theme => ({
   }
 });
 
-
-const SearchInput = props => { //({onChange = this.handleChange})
+const SearchInput = props => {
   const { classes } = props;
 
   return (
@@ -34,6 +31,10 @@ const SearchInput = props => { //({onChange = this.handleChange})
           placeholder="Search for tweets"
           helperText="Data about trending topics around the world"
           InputProps={{className: classes.input}}
+          onChange={((props.page === 1)
+                      ? evt => props.handleInput(evt)    
+                      : console.log("Searching")
+                    )}
       />
 
   );

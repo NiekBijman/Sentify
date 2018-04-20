@@ -1,79 +1,82 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PieChart from 'react-simple-pie-chart';
 import '../styles/sentiment-pie.css';
-import Sentiment from '../containers/sentiment';
+import { Row, Col } from 'react-flexbox-grid';
 
 //This is the Presentation component
-const SentimentPie = ({positive, negative, neutral, status}) =>
-  <React.Fragment>
-    <div className="container-fluid">
-        <div className='col-xs-4 labels'>
-              <div className='row'>
-                <div className='box negative'/>
-                <p> positive: {positive}% </p>
-              </div>
-              <div className='row'>
-                <div className='box positive'/>
-                <p> negative: {negative}% </p>
-              </div>
-              <div className='row'>
-                <div className='box neutral'/>
-                <p> neutral: {neutral}% </p>
-              </div>
-        </div>
+class SentimentPie extends React.Component {
+  render () {
+    return (
+      <PieChart slices={[
+          {
+            color: '#fce176',
+            value: this.props.neutral
+          },
+          {
+            color: '#94fc9d',
+            value: this.props.positive
+          },
+          {
+            color: '#ed3b41',
+            value: this.props.negative
+          },
+        ]}
+      />
+    );
+  }
+}
 
-        <div className='col-xs-8 pie'>
-           <PieChart slices={[
-                 {
-                   color: '#fce176',
-                   value: neutral
-                 },
-                 {
-                   color: '#94fc9d',
-                   value: positive
-                 },
-                 {
-                   color: '#ed3b41',
-                   value: negative
-                 },
-               ]}
-             />
-        </div>
-    </div>
-  </React.Fragment>
+export default SentimentPie;
 
-  export default SentimentPie;
+// render () {
+//   let pieChart = null;
 
-// console.log(negative);
-// let pieChart = null;
-//
-//   switch (status){
+//   switch (this.props.status) {
 //     case 'INITIAL':
-//           pieChart =  <em>Loading ...</em>
-//           break;
+//         pieChart = <div className="modal_loading"></div>
+//         break;
 //     case 'LOADED':
-//           pieChart =
-//           <React.Fragment>
-//              <PieChart slices={[
-//                    {
-//                      color: '#f00',
-//                      value: negative
-//                    },
-//                    {
-//                      color: '#0f0',
-//                      value: positive
-//                    },
-//                  ]}
-//                />
-//            </React.Fragment>
-//      case 'ERROR':
-//           window.alert("Hey! There seems to be an error in your request ")
-//           break;
-//
-//      default:
-//           pieChart = <b>Failed to load data, please try again</b>
-//           break;
-//     }
-//     return(
+//         pieChart =            
+//             /*{ <Col xs={4} className='labels'>
+//               <Row>
+//                 <div className='box negative'/>
+//                 <p> positive: {positive}% </p>
+//               </Row>
+//               <Row>
+//                 <div className='box positive'/>
+//                 <p> negative: {negative}% </p>
+//               </Row>
+//               <Row>
+//                 <div className='box neutral'/>
+//                 <p> neutral: {neutral}% </p>
+//               </Row>
+//             </Col>
+//             <Col xs={8} className='pie'> }*/
+//               <PieChart slices={[
+//                   {
+//                     color: '#fce176',
+//                     value: this.props.neutral
+//                   },
+//                   {
+//                     color: '#94fc9d',
+//                     value: this.props.positive
+//                   },
+//                   {
+//                     color: '#ed3b41',
+//                     value: this.props.negative
+//                   },
+//                 ]}
+//               />
+//             {/* </Col> */}
+//       break;
+//     default:
+//       pieChart = <b>Failed to load data, please try again</b>
+//       break;
+//   }
+
+//   return (
+//     <div className="container-fluid">
 //       {pieChart}
-//       )
+//     </div>
+//   );
+// }

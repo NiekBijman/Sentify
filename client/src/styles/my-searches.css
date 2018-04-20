@@ -11,7 +11,7 @@ tr i:hover {
 }
 
 .container-my-searches {
-    margin: 0 10% 0 10%;
+    margin: 5% 10% 0 10%;
 }
 
 [class*="DeleteMySearchesModal-"] h2 {

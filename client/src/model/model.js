@@ -30,7 +30,7 @@ const Model = function () {
   // API Calls
 
   this.setContainer = function(input){
-    let container = input;
+    container = input;
     notifyObservers();
   }
 
@@ -39,7 +39,7 @@ const Model = function () {
   }
 
   this.setSearch = function(search){
-    searchInput = search
+    searchInput = search;
   }
 
   this.getSearch = function(){
@@ -75,15 +75,14 @@ const Model = function () {
   }
 
   this.searchTweets = function () {
-    const url = '/api/sentiment?q=' + searchInput
+    const url = '/api/sentiment?q=' + searchInput;
     return fetch(url, httpOptions)
       .then(processResponse)
       .catch(handleError)
+    notifyObservers();
   }
 
-
   // API Helper methods
-
   const processResponse = function (response) {
     if (response.ok) {
       return response.json()
@@ -101,9 +100,7 @@ const Model = function () {
     }
   }
 
-
   // Observer pattern
-
   this.addObserver = function (observer) {
     observers.push(observer);
   };
