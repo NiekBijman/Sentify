@@ -97,7 +97,7 @@ class Search extends Component {
             <Row id='searchInput'>
               {/* <h1>Sentiment</h1> */}
               {/* <input onChange={(input) => this.searchInput(input)}></input> */}
-              <SearchInput handleInput={this.handleInput} searchInput = {this.state.searchInput} searchSuggestion = {this.state.searchSuggestion} page={1}/>
+              <SearchInput handleInput={this.handleInput.bind(this)} searchInput = {this.state.searchInput} searchSuggestion = {this.state.searchSuggestion} page={1}/>
               {/* <Typist className='container-type'>
                 #Lastweektonight
               </Typist> */}
