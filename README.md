@@ -1,6 +1,8 @@
 # Sentify
 
 ## the App
+https://sentify-kth.herokuapp.com/
+
 Sentify is an application that provides sentiment analysis based on user-chosen string and geographical area. The string will be able to contain hashtags/words/sentences for which the app will generate sentimental analysis within the chosen geographical area. The user will be able to explore specific countries by looking for information of a certain region, or explore differences between countries if he or she chooses a continent.
 
 Go to this site: https://marvelapp.com/867200h to explore the prototyped app, and press the settings symbol in the top right corner (only certain screens) to display the annotations.
