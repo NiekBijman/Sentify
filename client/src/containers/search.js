@@ -74,7 +74,6 @@ class Search extends Component {
   handleInput = function(evt) {
     modelInstance.setSearch(evt.target.value);
     modelInstance.searchTweets().then(result => {
-      console.log(result);
       modelInstance.setSentimentData(result);
       this.setState({
         status: 'LOADED',

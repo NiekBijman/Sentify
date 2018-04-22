@@ -7,7 +7,23 @@ const httpOptions = {
 const Model = function () {
   let container = 'Map';
   let observers = [];
+
+  //Searchinput
   let searchInput = '';
+
+  //Date
+  let date ='';
+  let dateRange = '';
+
+  //Geocode
+  let locationString = '';
+  let locationCoordinate = [];
+  let locationRadius = 0;
+
+  //Tweets
+  let tweets = [];
+
+  //Sentiment data
   let sentimentData = null;
 
   let searchHistory = {"data": [
@@ -47,6 +63,17 @@ const Model = function () {
     return searchInput;
   }
 
+  this.setDistance = function(distance){
+    locationRadius = distance;
+    notifyObservers('distanceSet');
+  }
+
+  this.setTweets = function(data){
+    tweets = data;
+    console.log(tweets);
+    notifyObservers('tweetsSet');
+  }
+
   this.setSentimentData = function(result){
     sentimentData = result;
     notifyObservers('tweetSearch');
@@ -76,7 +103,7 @@ const Model = function () {
   }
 
   this.searchTweets = function () {
-    const url = '/api/sentiment?q=' + searchInput;
+    const url = '/api/sentiment?' + 'q=' + searchInput; //+ 'geocode=' + locationCoordinate
     return fetch(url, httpOptions)
       .then(processResponse)
       .catch(handleError)

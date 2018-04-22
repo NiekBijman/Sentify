@@ -5,7 +5,6 @@ import Welcome from './welcome';
 import Discover from './discover';
 import MySearches from './my-searches';
 import Login from './login';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 class App extends Component {
   constructor(props) {
@@ -17,7 +16,6 @@ class App extends Component {
 
   render() {
     return (
-      <MuiThemeProvider>
         <div className="App">
           <header className="App-header">
             {/* <h1 className="App-title">{this.state.title}</h1> */}
@@ -28,7 +26,6 @@ class App extends Component {
             {/* <Route path="/login" component={Login}/> */}
           </header>
         </div>
-      </MuiThemeProvider>
     );
   }
 }
