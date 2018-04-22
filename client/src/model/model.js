@@ -17,8 +17,7 @@ const Model = function () {
 
   //Geocode
   let locationString = '';
-  let locationCoordinate = [];
-  let locationRadius = 0;
+  let location = '';
 
   //Tweets
   let tweets = [];
@@ -63,9 +62,9 @@ const Model = function () {
     return searchInput;
   }
 
-  this.setDistance = function(distance){
-    locationRadius = distance;
-    notifyObservers('distanceSet');
+  this.setGeocode = function(geocode){
+    location = geocode;
+    notifyObservers('locationSet');
   }
 
   this.setTweets = function(data){

@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { modelInstance } from '../model/model';
 
 const DrawCircle = function(svg) {
   var that = this;
@@ -14,7 +15,7 @@ const DrawCircle = function(svg) {
   var unproject = d3.geo.mercator().invert;
 
   //we expose events on our component
-  var dispatch = d3.dispatch("update", "clear");
+  var dispatch = d3.dispatch("update","clear");
 
   // The user provides an svg element to listen on events
   svg.on("mouseup.circle", function() {
@@ -41,10 +42,11 @@ const DrawCircle = function(svg) {
     }
 
     if(circleSelected && !circleRemoved){
-      console.log('Distance = ' + calcDist (circleCenter, circleOuter).toFixed(0) + ' km');
+      console.log('Distance = ' + calcDist(circleCenter, circleOuter).toFixed(0) + ' km');
     }
 
     // we let the user know
+    geoCode(ll.lat, ll.lng, calcDist(circleCenter, circleOuter));
     update()
   })
   svg.on("mousemove.circle", function() {
@@ -151,7 +153,9 @@ const DrawCircle = function(svg) {
 
     dispatch.update();
   }
+  this.geocode = geoCode;
   this.update = update;
+
   this.projection = function(val) {
     if(!val) return project;
     project = val;
@@ -199,6 +203,16 @@ const DrawCircle = function(svg) {
 
       return(eR * d2);
    }
+
+  function geoCode (lat, lng, distance) {
+    if(circleSelected && !circleRemoved){
+      var location = lat + ',' + lng + ',' + distance.toFixed(0) + ' km';
+      modelInstance.setGeocode(location);
+      console.log(location);
+      return location
+    }
+    // dispatch.geoCode();
+  }
 
   d3.rebind(this, dispatch, "on")
   return this;
