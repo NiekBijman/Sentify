@@ -4,6 +4,7 @@ import SearchNav from '../components/search-nav';
 import SearchDate from '../components/search-date';
 import SearchLocation from '../components/search-location';
 import { modelInstance } from '../model/model';
+import {debounce} from 'throttle-debounce';
 import '../styles/search.css';
 import { Row, Col } from 'react-flexbox-grid';
 import Hidden from 'material-ui/Hidden';
@@ -18,6 +19,8 @@ class Search extends Component {
       date: 'Today',
       page: 0,
     }
+    // Defining debounce is needed in constructor https://goo.gl/3D3vdf
+    this.searchTweets = debounce(500, this.searchTweets);
   }
 
   buttonClicked = () =>{
@@ -37,31 +40,6 @@ class Search extends Component {
       })
   }
 
-  searchInput(input){
-    console.log(input.target.value);
-    modelInstance.setSearch(input.target.value);
-    this.setState({
-      // searchInput:input.target.value
-    })
-  }
-
-  buttonClick(){
-    console.log('clicked');
-    // TO DO: API Call should be made here
-  //   modelInstance.sentimentAnalysis(this.state.searchInput).then(result => {
-  //     modelInstance.setSentimentData(result);
-  //     this.setState({
-  //       status: 'LOADED',
-  //       data: result
-  //     })
-  //
-  //   }).catch(() => {
-  //     this.setState({
-  //       status: 'ERROR'
-  //       })
-  //     })
-  }
-
   handleClick = event => {
     this.setState({ anchorEl: event.currentTarget });
   };
@@ -71,9 +49,14 @@ class Search extends Component {
     this.setState({ anchorEl: null });
   };
 
-  handleInput = function(evt) {
-    modelInstance.setSearch(evt.target.value);
+  handleInput = event => {
+    modelInstance.setSearch(event.target.value);
+    this.searchTweets();
+  }
+
+  searchTweets = () => {
     modelInstance.searchTweets().then(result => {
+      console.log(result);
       modelInstance.setSentimentData(result);
       this.setState({
         status: 'LOADED',

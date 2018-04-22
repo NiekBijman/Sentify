@@ -85,7 +85,7 @@ app.get('/api/sentiment', async (req, res) => {
       response.positive = numPos/tot
       response.neutral = numNeu/tot
       response.negative = numNeg/tot
-      response.tweets = tweets
+      // response.tweets = tweets
 
       // send response
       res.send(response)

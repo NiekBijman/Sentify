@@ -28,7 +28,9 @@ class SentimentView extends Component {
   update(details){
       // if (details==="tweetSearch") {
     let result = modelInstance.getSentimentData();
-    console.log(result);
+    if(result !== null){
+      console.log(result);
+    }
 
     this.setState({
       positive: (result !== null) ? Math.round(result.positive*100) : 50,

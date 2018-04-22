@@ -22,7 +22,6 @@ const styles = theme => ({
 
 const SearchInput = props => {
   const { classes } = props;
-
   return (
       <TextField
           className={classes.textField}
@@ -32,7 +31,7 @@ const SearchInput = props => {
           helperText="Data about trending topics around the world"
           InputProps={{className: classes.input}}
           onChange={((props.page === 1)
-                      ? evt => props.handleInput(evt)    
+                      ? evt => props.handleInput(evt)
                       : console.log("Searching")
                     )}
       />
