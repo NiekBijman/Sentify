@@ -39,6 +39,10 @@
   margin: 0;
 }
 
+.sentiment-pie svg {
+  position: inherit;
+}
+
 .tweets-info {
   padding-top: 10%;
 }
