@@ -16,10 +16,14 @@ const styles = theme => ({
   },
 });
 
-function ButtonDiscover(props) {
+const ButtonDiscover = props =>  {
   const { classes } = props;
   return (
-    <Button variant="raised" className={classes.button}>
+    <Button
+      variant="raised"
+      className={classes.button}
+      onClick = {props.handleClick}
+      >
       Discover
     </Button>
   );

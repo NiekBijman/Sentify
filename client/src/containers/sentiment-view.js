@@ -3,6 +3,8 @@ import Hidden from 'material-ui/Hidden';
 import { Row, Col } from 'react-flexbox-grid';
 import SentimentPie from '../components/sentiment-pie';
 import { modelInstance } from '../model/model';
+import Dimensions from 'react-dimensions';
+import PropTypes from 'prop-types';
 
 class SentimentView extends Component {
   constructor(props){
@@ -10,11 +12,16 @@ class SentimentView extends Component {
     this.state = {
       status: 'INITIAL',
       positive: 50,
-      negative: 40,
-      neutral: 10,
+      negative: 50,
+      neutral: 0,
       sentiment: modelInstance.getSentimentData(),
       searchInput: modelInstance.getSearch(),
     }
+  }
+
+  static propTypes = {
+    containerWidth: PropTypes.number.isRequired,
+    containerHeight: PropTypes.number.isRequired
   }
 
   componentDidMount() {
@@ -28,7 +35,9 @@ class SentimentView extends Component {
   update(details){
       // if (details==="tweetSearch") {
     let result = modelInstance.getSentimentData();
-    console.log(result);
+    // if(result !== null){
+    //   console.log(result);
+    // }
 
     this.setState({
       positive: (result !== null) ? Math.round(result.positive*100) : 50,
@@ -39,14 +48,19 @@ class SentimentView extends Component {
       // }
   }
 
-  componentDidMount = () => {
-    // this.dataCount();
-    modelInstance.addObserver(this);
-  }
-
   render(){
+    let width = this.props.containerWidth / 3;
+    let height = this.props.containerHeight;
+    let minViewportSize = Math.min(width, height);
+    // This sets the radius of the pie chart to fit within
+    // the current window size, with some additional padding
+    let radius = (minViewportSize * .9) / 2;
+    // Centers the pie chart
+    let x = width / 2;
+    let y = height / 2;
+
     return(
-      <div className="container-discover-bottom">
+      <div>
         <Hidden only="xs">
           <Row id="title-steps">
             <Col sm={4} md={4}>Tweets</Col>
@@ -82,14 +96,25 @@ class SentimentView extends Component {
               </Row>
             </div>
           </Col>
-          <Col sm={4} md={4} xs={12}>
+          <Col sm={4} md={4} xs={12}
+            style={{
+              width: this.props.containerWidth,
+              height: this.props.containerHeight
+            }}
+            className="sentiment-pie"
+          >
             <Hidden smUp>
               <p>Sentiment</p>
             </Hidden>
-            <SentimentPie positive = {this.state.positive}
-              negative = {this.state.negative}
-              neutral = {this.state.neutral}
-              status ={this.state.status}/>
+            <svg width="100%" height="100%">
+              <SentimentPie x={x}
+                            y={y}
+                            innerRadius={radius * .35}
+                            outerRadius={radius}
+                            cornerRadius={7}
+                            padAngle={.02}
+                            data={[this.state.positive, this.state.negative, this.state.neutral]}/>
+            </svg>
           </Col>
           <Col sm={4} md={4} xs={12}>
             <Hidden smUp>
@@ -101,37 +126,4 @@ class SentimentView extends Component {
     );
   }
 }
-export default SentimentView;
-
-// dataCount = () => {
-//     var positive = 0;
-//     var negative = 0;
-//     var neutral = 0;
-//
-//       var count = this.state.result.data.map((data) => {
-//             if(data.polarity === 4){
-//               positive = positive + 1;
-//               return positive;
-//             }
-//             if(data.polarity === 0){
-//               negative = negative + 1;
-//               return negative;
-//             }
-//             if(data.polarity === 2){
-//               neutral = neutral + 1;
-//               return neutral;
-//             }
-//           }
-//         )
-//     this.percentage( positive, negative, neutral);
-//   }
-//
-// percentage(negative, positive, neutral){
-//   var total = positive + negative + neutral;
-//
-//   this.setState({
-//     positive: (positive / total) * 100,
-//     negative: (negative / total) * 100,
-//     neutral: (neutral / total) * 100
-//   })
-// }
+export default Dimensions()(SentimentView);

@@ -39,7 +39,7 @@ const SearchDate = ({date, anchorEl, click, dayChange}) => {
     // )}
     return(
 
-    <div className='container-searchdate' >
+    <div className='container-search-date' >
       <Button
         // variant="raised"
         aria-owns={anchorEl ? 'simple-menu' : null}

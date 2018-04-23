@@ -5,7 +5,6 @@ const DrawCircle = function(svg) {
   var that = this;
   var circleCenter, circleOuter; //control points
   var circleSelected = false; //have we completed the circle?
-  var circleRemoved = false;
   var dragging = false; //track whether we are dragging
   var active = false; // user can turn on/off this behavior
   var container = svg; // the container we render our points in
@@ -18,7 +17,7 @@ const DrawCircle = function(svg) {
   var dispatch = d3.dispatch("update","clear");
 
   // The user provides an svg element to listen on events
-  svg.on("mouseup.circle", function() {
+  svg.on("click", function() {
     if(!active) return;
     if(dragging && circleSelected) return;
 
@@ -27,7 +26,6 @@ const DrawCircle = function(svg) {
     console.log(ll);
 
     if(circleCenter) {
-      var circleRemoved = false;
       // if we already have the circle's center and the circle
       // is finished selecting, another click means destroy the circle
       if(!circleSelected) {
@@ -41,12 +39,14 @@ const DrawCircle = function(svg) {
       circleOuter = ll;
     }
 
-    if(circleSelected && !circleRemoved){
-      console.log('Distance = ' + calcDist(circleCenter, circleOuter).toFixed(0) + ' km');
-    }
+    // if(circleSelected){
+    //   console.log('Distance = ' + calcDist(circleCenter, circleOuter).toFixed(0) + ' km');
+    // }
 
+    if(circleCenter) {
+      geoCode(circleCenter.lat, circleCenter.lng, calcDist(circleCenter, circleOuter));
+    }
     // we let the user know
-    geoCode(ll.lat, ll.lng, calcDist(circleCenter, circleOuter));
     update()
   })
   svg.on("mousemove.circle", function() {
@@ -95,11 +95,11 @@ const DrawCircle = function(svg) {
     circleLasso.enter().append("circle").classed("lasso", true)
     .on("click", function() {
       if(!active) return;
+      d3.event.stopPropagation();
       // start over
       circleCenter = null;
       circleOuter = null;
       circleSelected = false;
-      circleRemoved = true;
       container.selectAll("circle.lasso").remove();
       container.selectAll("circle.control").remove();
       container.selectAll("line.lasso").remove();
@@ -153,7 +153,6 @@ const DrawCircle = function(svg) {
 
     dispatch.update();
   }
-  this.geocode = geoCode;
   this.update = update;
 
   this.projection = function(val) {
@@ -205,13 +204,12 @@ const DrawCircle = function(svg) {
    }
 
   function geoCode (lat, lng, distance) {
-    if(circleSelected && !circleRemoved){
+    if(circleSelected){
       var location = lat + ',' + lng + ',' + distance.toFixed(0) + ' km';
       modelInstance.setGeocode(location);
       console.log(location);
       return location
     }
-    // dispatch.geoCode();
   }
 
   d3.rebind(this, dispatch, "on")
