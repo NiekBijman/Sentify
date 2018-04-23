@@ -24,7 +24,6 @@ class WelcomeView extends React.Component {
 
 
   handleClick = () => {
-    console.log('hey')
     modelInstance.searchTweets().then(result => {
       console.log(result);
       modelInstance.setSentimentData(result);
@@ -38,6 +37,7 @@ class WelcomeView extends React.Component {
       });
     });
   }
+
   render () {
     return (
       <div className="container-welcome">
