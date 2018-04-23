@@ -103,11 +103,10 @@ const Model = function () {
 
   this.searchTweets = function () {
     const url = '/api/sentiment?' + 'q=' + searchInput; //+ 'geocode=' + locationCoordinate
-    // const url = 'search/tweets'
+    notifyObservers();
     return fetch(url, httpOptions)
       .then(processResponse)
       .catch(handleError)
-    notifyObservers();
   }
 
   // API Helper methods
