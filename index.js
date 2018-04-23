@@ -4,6 +4,7 @@ const FetchTweets = require('fetch-tweets');
 const request = require('request');
 const path = require("path");
 
+
 const TW_URL = "http://1.1/search/tweets.json"  // Twitter search URL
 const SEN_URL =  "http://www.sentiment140.com/api/bulkClassifyJson" // URL of sentiment analysis
 
@@ -43,6 +44,7 @@ app.get('/api/twitter', async (req, res) => {
 app.get('/api/sentiment', async (req, res) => {
   const options = {
     q : req.query.q,
+    // geocode : req.lat, req.long, req.distance,
     lang : "en",
     count : 100,
   }
@@ -83,6 +85,8 @@ app.get('/api/sentiment', async (req, res) => {
       response.positive = numPos/tot
       response.neutral = numNeu/tot
       response.negative = numNeg/tot
+      // response.tweets = tweets
+
       // send response
       res.send(response)
     })

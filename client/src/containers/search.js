@@ -4,6 +4,7 @@ import SearchNav from '../components/search-nav';
 import SearchDate from '../components/search-date';
 import SearchLocation from '../components/search-location';
 import { modelInstance } from '../model/model';
+import {debounce} from 'throttle-debounce';
 import '../styles/search.css';
 import { Row, Col } from 'react-flexbox-grid';
 
@@ -17,6 +18,8 @@ class Search extends Component {
       date: 'Today',
       page: 0,
     }
+    // Defining debounce is needed in constructor https://goo.gl/3D3vdf
+    this.searchTweets = debounce(500, this.searchTweets);
   }
 
   searchInput(input){
@@ -36,8 +39,12 @@ class Search extends Component {
     this.setState({ anchorEl: null });
   };
 
-  handleInput = function(evt) {
-    modelInstance.setSearch(evt.target.value);
+  handleInput = event => {
+    modelInstance.setSearch(event.target.value);
+    this.searchTweets();
+  }
+
+  searchTweets = () => {
     modelInstance.searchTweets().then(result => {
       console.log(result);
       modelInstance.setSentimentData(result);

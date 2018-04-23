@@ -17,7 +17,6 @@ class App extends Component {
 
   render() {
     return (
-      <MuiThemeProvider>
         <div className="App">
           <header className="App-header">
             {/* <h1 className="App-title">{this.state.title}</h1> */}
@@ -28,7 +27,6 @@ class App extends Component {
             {/* <Route path="/login" component={Login}/> */}
           </header>
         </div>
-      </MuiThemeProvider>
     );
   }
 }

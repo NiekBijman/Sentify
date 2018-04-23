@@ -4,17 +4,50 @@ import ButtonDiscover from '../components/button-discover';
 import SearchInput from '../components/search-input';
 import { Row, Col } from 'react-flexbox-grid';
 import Hidden from 'material-ui/Hidden';
+import { modelInstance } from '../model/model';
+
 
 class WelcomeView extends React.Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      status: 'INITIAL',
+      data: null,
+      page: 0,
+    }
+  }
+
+  handleInput = event => {
+    modelInstance.setSearch(event.target.value);
+    console.log(event.target.value);
+  }
+
+
+  handleClick = () => {
+    console.log('hey')
+    modelInstance.searchTweets().then(result => {
+      console.log(result);
+      modelInstance.setSentimentData(result);
+      this.setState({
+        status: 'LOADED',
+        data: result
+      });
+    }).catch(() => {
+      this.setState({
+        status: 'ERROR'
+      });
+    });
+  }
   render () {
     return (
       <div className="container-welcome">
         <div className="container-top">
           <div className="container-search">
-            <SearchInput page={0}/>
+            <SearchInput handleInput= {this.handleInput.bind(this)} page={1}/>
             {/* <p>Data about trending topics around the world</p> */}
+            {/* <Link to={"/dish/" + dish.id} > */}
             <Link to="/discover">
-                <ButtonDiscover/>
+                <ButtonDiscover handleClick = {this.handleClick}/>
             </Link>
           </div>
         </div>
