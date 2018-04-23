@@ -1,4 +1,3 @@
-//import firebase from 'firebase'
 
 const ApiKey = function () {
   this.getApiKey = function() {
@@ -7,15 +6,13 @@ const ApiKey = function () {
   };
 }
 
-// const config = {
-//     apiKey: "AIzaSyCcVF6eVFAkFgsbm33J8y5owQbl5g8a4RY",
-//     authDomain: "sentify-01.firebaseapp.com",
-//     databaseURL: "https://sentify-01.firebaseio.com",
-// };
-
-// firebase.initializeApp(config);
+export const firebaseConfig = {
+    apiKey: "AIzaSyCcVF6eVFAkFgsbm33J8y5owQbl5g8a4RY",
+    authDomain: "sentify-01.firebaseapp.com",
+    databaseURL: "https://sentify-01.firebaseio.com",
+    projectId: "sentify-01",
+    storageBucket: "sentify-01.appspot.com",
+    messagingSenderId: "512869151520"
+  };
 
 export const Key = new ApiKey();
-// export const googleProvider = new firebase.auth.GoogleAuthProvider();
-// export const ref = firebase.database().ref();
-// export const firebaseAuth = firebase.auth;
