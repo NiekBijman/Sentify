@@ -16,7 +16,6 @@ const Model = function () {
   let dateRange = '';
 
   //Geocode
-  let locationString = '';
   let location = '';
 
   //Tweets
@@ -64,7 +63,7 @@ const Model = function () {
 
   this.setGeocode = function(geocode){
     location = geocode;
-    notifyObservers('locationSet');
+    notifyObservers('geoCodeSet');
   }
 
   this.setTweets = function(data){
@@ -102,7 +101,8 @@ const Model = function () {
   }
 
   this.searchTweets = function () {
-    const url = '/api/sentiment?' + 'q=' + searchInput; //+ 'geocode=' + locationCoordinate
+    const url = '/api/sentiment?' + 'q=' + searchInput + '&geocode=' + location; //+ 'geocode=' + location;
+    // const url = 'search/tweets?' + 'q=' + searchInput + 'geocode=' + location;
     notifyObservers();
     return fetch(url, httpOptions)
       .then(processResponse)
@@ -136,8 +136,8 @@ const Model = function () {
     observers = observers.filter(o => o !== observer);
   };
 
-  const notifyObservers = function () {
-    observers.forEach(o => o.update());
+  const notifyObservers = function (details) {
+    observers.forEach(o => o.update(details));
   };
 };
 

@@ -1,4 +1,5 @@
 const express = require('express');
+var Twit = require('twit');
 const fetch = require('node-fetch');
 const FetchTweets = require('fetch-tweets');
 const request = require('request');
@@ -6,11 +7,18 @@ const path = require("path");
 
 
 const TW_URL = "http://1.1/search/tweets.json"  // Twitter search URL
+// const TW-GEO_URL = "http://1.1/geo/search.json"
+// const TW-REVERSE-GEO_URL = "http://1.1/geo/reverse_geocode.json"
+// const TW-TRENDS_URL = "http://1.1/trends/place.json"
+// const TW-LIVE_URL = "http://1.1/statuses/filter.json"
+
 const SEN_URL =  "http://www.sentiment140.com/api/bulkClassifyJson" // URL of sentiment analysis
 
 var TW_KEYS = {
   consumer_key: process.env.TW_KEY,
   consumer_secret: process.env.TW_SECRET
+  // consumer_key: process.env.TW_CONSUMER_KEY,
+  // consumer_secret: process.env.TW_CONSUMER_SECRET
 }
 
 const app = express();
@@ -26,6 +34,7 @@ app.get('/api/twitter', async (req, res) => {
     console.log("Getting tweets")
     const options = {
       q : req.query.q,
+      // geocode: req.query.geocode,
       lang: "en",
       result_type: "popular",
       count: 100,
@@ -44,14 +53,14 @@ app.get('/api/twitter', async (req, res) => {
 app.get('/api/sentiment', async (req, res) => {
   const options = {
     q : req.query.q,
-    // geocode : req.lat, req.long, req.distance,
+    geocode: req.query.geocode,
     lang : "en",
     count : 100,
   }
   try{
     fetchTweets.byTopic(options, async function(results){
       const tweets = {"data": results.map(function(tweet){
-        return {"text": tweet.body, "query": options.q}
+        return {"text": tweet.body, "query": options.q, "geocode":options.geocode}
       })}
       var body = JSON.stringify(tweets)
 
@@ -85,7 +94,7 @@ app.get('/api/sentiment', async (req, res) => {
       response.positive = numPos/tot
       response.neutral = numNeu/tot
       response.negative = numNeg/tot
-      // response.tweets = tweets
+      response.tweets = tweets
 
       // send response
       res.send(response)

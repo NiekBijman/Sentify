@@ -205,7 +205,7 @@ const DrawCircle = function(svg) {
 
   function geoCode (lat, lng, distance) {
     if(circleSelected){
-      var location = lat + ',' + lng + ',' + distance.toFixed(0) + ' km';
+      var location = lat.toFixed(6) + ',' + lng.toFixed(6) + ',' + distance.toFixed(0) + 'km';
       modelInstance.setGeocode(location);
       console.log(location);
       return location

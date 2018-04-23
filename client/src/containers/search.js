@@ -22,6 +22,10 @@ class Search extends Component {
     this.searchTweets = debounce(500, this.searchTweets);
   }
 
+  componentDidMount() {
+    modelInstance.addObserver(this);
+  }
+
   searchInput(input){
     console.log(input.target.value);
     modelInstance.setSearch(input.target.value);
@@ -44,6 +48,12 @@ class Search extends Component {
     this.searchTweets();
   }
 
+  update(details){
+    if(details ==='geoCodeSet'){
+      this.searchTweets();
+    }
+  }
+
   searchTweets = () => {
     modelInstance.searchTweets().then(result => {
       console.log(result);
@@ -59,7 +69,7 @@ class Search extends Component {
     });
   }
 
-  render(){    
+  render(){
     return(
       <div className='container-discover'>
         <div className='search'>

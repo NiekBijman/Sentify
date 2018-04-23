@@ -36,7 +36,7 @@ class SentimentView extends Component {
       // if (details==="tweetSearch") {
     let result = modelInstance.getSentimentData();
     // if(result !== null){
-    //   console.log(result);
+      // console.log(result);
     // }
 
     this.setState({
