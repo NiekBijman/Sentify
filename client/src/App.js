@@ -4,7 +4,7 @@ import { Route } from 'react-router-dom';
 import Welcome from './welcome';
 import Discover from './discover';
 import MySearches from './my-searches';
-import Login from './login';
+//import Login from './login';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 class App extends Component {

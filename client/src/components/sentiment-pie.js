@@ -1,27 +1,37 @@
 import React from 'react';
-import PieChart from 'react-simple-pie-chart';
 import '../styles/sentiment-pie.css';
-import { Row, Col } from 'react-flexbox-grid';
+import SentimentSlice from '../components/sentiment-slice';
+import d3 from 'd3';
 
 //This is the Presentation component
 class SentimentPie extends React.Component {
+  constructor(props) {
+    super(props);
+    this.colorScale = d3.scale.category10();
+    this.renderSlice = this.renderSlice.bind(this);
+  }
+
   render () {
+    let {x, y, data} = this.props;
+    let pie = d3.layout.pie();
     return (
-      <PieChart slices={[
-          {
-            color: '#fce176',
-            value: this.props.neutral
-          },
-          {
-            color: '#94fc9d',
-            value: this.props.positive
-          },
-          {
-            color: '#ed3b41',
-            value: this.props.negative
-          },
-        ]}
-      />
+      <g transform={`translate(${x}, ${y})`}>
+        {pie(data).map(this.renderSlice)}
+      </g>
+    );
+  }
+
+  renderSlice(value, i) {
+    let {innerRadius, outerRadius, cornerRadius, padAngle} = this.props;
+    return (
+      <SentimentSlice key={i}
+                      innerRadius={innerRadius}
+                      outerRadius={outerRadius}
+                      cornerRadius={cornerRadius}
+                      padAngle={padAngle}
+                      value={value}
+                      label={value.data}
+                      fill={this.colorScale(i)} />
     );
   }
 }

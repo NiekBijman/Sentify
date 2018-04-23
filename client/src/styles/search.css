@@ -13,10 +13,12 @@ h1{
 }
 
 #date-location{
-  height:20px;
+  height: 5%;
+  padding-top: 5%;
+  text-align: center;
 }
 
-.container-searchdate{
+.container-search-date{
   /* margin-top: 5px; */
 }
 
@@ -25,8 +27,9 @@ h1{
   display: inline-block;
 }
 
-@media screen and (max-width: 767px) {
-  .container-discover-top .container-search {
-    width: 100%;
+@media screen and (max-width: 575px) {
+  .container-discover .container-search {
+    width: 80%;
+    padding: 10% 0 0 10%;
   }
 }

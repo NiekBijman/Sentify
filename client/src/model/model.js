@@ -76,11 +76,11 @@ const Model = function () {
   }
 
   this.searchTweets = function () {
+    notifyObservers();
     const url = '/api/sentiment?q=' + searchInput;
     return fetch(url, httpOptions)
       .then(processResponse)
       .catch(handleError)
-    notifyObservers();
   }
 
   // API Helper methods
