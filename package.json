@@ -16,7 +16,8 @@
     "fetch-tweets": "^0.1.7",
     "node-fetch": "^2.1.2",
     "request": "^2.85.0",
-    "serve-favicon": "^2.5.0"
+    "serve-favicon": "^2.5.0",
+    "twitter": "^1.7.1"
   },
   "devDependencies": {
     "concurrently": "^3.5.0"
