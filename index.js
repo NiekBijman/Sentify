@@ -23,7 +23,7 @@ var Twitter = new Twit({
   consumer_key: process.env.TW_CONSUMER_KEY,
   consumer_secret: process.env.TW_CONSUMER_SECRET,
   access_token: process.env.TW_TOKEN_KEY,
-  access_token_secret: process.env.TW_TOKEN_SECRET
+  access_token_secret: process.env.TW_TOKEN_SECRET,
   timeout_ms: 60*1000,  // optional HTTP request timeout to apply to all requests.
 })
 
