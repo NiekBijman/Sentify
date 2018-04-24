@@ -17,6 +17,9 @@ const Model = function () {
 
   //Geocode
   let location = '';
+  let latitude = '';
+  let longitude = '';
+  let placeName = '';
 
   //Tweets
   let tweets = [];
@@ -66,6 +69,24 @@ const Model = function () {
     notifyObservers('geoCodeSet');
   }
 
+  this.getGeocode = function(geocode){
+    return location;
+  }
+
+  this.setLatLng = function(lat, lng){
+    latitude = lat;
+    longitude = lng;
+  }
+
+  this.setPlaceName = function(string){
+    placeName = string.toUpperCase();
+    notifyObservers('placeNameSet');
+  }
+
+  this.getPlaceName = function(){
+    return placeName;
+  }
+
   this.setTweets = function(data){
     tweets = data;
     console.log(tweets);
@@ -105,6 +126,13 @@ const Model = function () {
     // const url = 'search/tweets?' + 'q=' + searchInput + 'geocode=' + location;
     notifyObservers();
     return fetch(url, httpOptions)
+      .then(processResponse)
+      .catch(handleError)
+  }
+
+  this.reverseGeocode = function () {
+    const url = '/api/twitter/reverse_geocode?' + 'lat=' + latitude + '&long=' + longitude;
+    return fetch(url)
       .then(processResponse)
       .catch(handleError)
   }

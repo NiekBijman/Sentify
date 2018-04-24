@@ -2,38 +2,43 @@ import * as d3 from "d3";
 import { modelInstance } from '../model/model';
 
 const DrawCircle = function(svg) {
-  var that = this;
-  var circleCenter, circleOuter; //control points
-  var circleSelected = false; //have we completed the circle?
-  var dragging = false; //track whether we are dragging
-  var active = false; // user can turn on/off this behavior
-  var container = svg; // the container we render our points in
+  let that = this;
+  let circleCenter, circleOuter; //control points
+  let circleSelected = false; //have we completed the circle?
+  let circleClicked =false; //did the user click on the circle or the map?
+  let dragging = false; //track whether we are dragging
+  let active = false; // user can turn on/off this behavior
+  let container = svg; // the container we render our points in
 
   // this will likely be overriden by leaflet projection
-  var project = d3.geo.mercator();
-  var unproject = d3.geo.mercator().invert;
+  let project = d3.geo.mercator();
+  let unproject = d3.geo.mercator().invert;
 
   //we expose events on our component
-  var dispatch = d3.dispatch("update","clear");
+  let dispatch = d3.dispatch("update","clear");
 
   // The user provides an svg element to listen on events
   svg.on("click", function() {
     if(!active) return;
     if(dragging && circleSelected) return;
 
-    var p = d3.mouse(this);
-    var ll = unproject([p[0],p[1]]);
-    console.log(ll);
+    let p = d3.mouse(this);
+    let ll = unproject([p[0],p[1]]);
 
     if(circleCenter) {
       // if we already have the circle's center and the circle
       // is finished selecting, another click means destroy the circle
-      if(!circleSelected) {
-        // Set the outer point
-        circleOuter = ll;
-        circleSelected = true;
+        if(!circleSelected) {
+          // Set the outer point
+          circleOuter = ll;
+          circleSelected = true;
+          circleClicked = true;
+        }
+        else{
+          circleClicked = false;
+        }
       }
-    } else {
+    else {
       // We set the center to the initial click
       circleCenter = ll;
       circleOuter = ll;
@@ -43,7 +48,11 @@ const DrawCircle = function(svg) {
     //   console.log('Distance = ' + calcDist(circleCenter, circleOuter).toFixed(0) + ' km');
     // }
 
+    //Search the place name for this coordinate
+    reverseGeocode(circleCenter.lat, circleCenter.lng);
+
     if(circleCenter) {
+      //Setting geocode as a parameter for Search Tweets
       geoCode(circleCenter.lat, circleCenter.lng, calcDist(circleCenter, circleOuter));
     }
     // we let the user know
@@ -53,24 +62,24 @@ const DrawCircle = function(svg) {
     if(!active) return;
     if(circleSelected) return;
     // we draw a guideline for where the next point would go.
-    var p = d3.mouse(this);
-    var ll = unproject([p[0],p[1]])
+    let p = d3.mouse(this);
+    let ll = unproject([p[0],p[1]])
     circleOuter = ll;
     update();
   })
 
-  var drag = d3.behavior.drag()
+  let drag = d3.behavior.drag()
     .on("drag", function(d,i) {
       if(!active) return;
       if(circleSelected) {
         dragging = true;
-        var p = d3.mouse(svg.node());
-        var ll = unproject([p[0],p[1]])
+        let p = d3.mouse(svg.node());
+        let ll = unproject([p[0],p[1]])
         if(i) {
           circleOuter = ll;
         } else {
-          var dlat = circleCenter.lat - ll.lat;
-          var dlng = circleCenter.lng - ll.lng;
+          let dlat = circleCenter.lat - ll.lat;
+          let dlng = circleCenter.lng - ll.lng;
           circleCenter = ll;
           circleOuter.lat -= dlat;
           circleOuter.lng -= dlng;
@@ -90,8 +99,8 @@ const DrawCircle = function(svg) {
   function update(g) {
     if(g) container = g;
     if(!circleCenter || !circleOuter) return;
-    var dist = distance(circleCenter, circleOuter)
-    var circleLasso = container.selectAll("circle.lasso").data([dist])
+    let dist = distance(circleCenter, circleOuter)
+    let circleLasso = container.selectAll("circle.lasso").data([dist])
     circleLasso.enter().append("circle").classed("lasso", true)
     .on("click", function() {
       if(!active) return;
@@ -117,7 +126,7 @@ const DrawCircle = function(svg) {
       "fill-opacity": 0.1
     })
 
-    var line = container.selectAll("line.lasso").data([circleOuter])
+    let line = container.selectAll("line.lasso").data([circleOuter])
     line.enter().append("line").classed("lasso", true)
 
     if(!circleSelected && circleCenter || dragging) {
@@ -135,7 +144,7 @@ const DrawCircle = function(svg) {
       line.remove();
     }
 
-    var controls = container.selectAll("circle.control")
+    let controls = container.selectAll("circle.control")
     .data([circleCenter, circleOuter])
     controls.enter().append("circle").classed("control", true)
     controls.attr({
@@ -171,44 +180,57 @@ const DrawCircle = function(svg) {
   }
   this.distance = function(ll) {
     if(!ll) ll = circleOuter;
-    console.log(distance(circleCenter, ll))
+    // console.log(distance(circleCenter, ll))
     return distance(circleCenter, ll)
   }
 
   function distance(ll0, ll1) {
-    var p0 = project(ll0)
-    var p1 = project(ll1)
-    var dist = Math.sqrt((p1.x - p0.x)*(p1.x - p0.x) + (p1.y - p0.y)*(p1.y-p0.y))
+    let p0 = project(ll0)
+    let p1 = project(ll1)
+    let dist = Math.sqrt((p1.x - p0.x)*(p1.x - p0.x) + (p1.y - p0.y)*(p1.y-p0.y))
     return dist;
   }
 
   // Calculating distance between 2 coordinates using the Haversine Formula
   function calcDist (mC, cC) {
-      var dLatRad = Math.abs(mC.lat - cC.lat) * Math.PI/180;
-      var dlngRad = Math.abs(mC.lng - cC.lng) * Math.PI/180;
+      let dLatRad = Math.abs(mC.lat - cC.lat) * Math.PI/180;
+      let dlngRad = Math.abs(mC.lng - cC.lng) * Math.PI/180;
       // Calculate origin in Radians
-      var lat1Rad = mC.lat * Math.PI/180;
-      var lng1Rad = mC.lng * Math.PI/180;
+      let lat1Rad = mC.lat * Math.PI/180;
+      let lng1Rad = mC.lng * Math.PI/180;
       // Calculate new point in Radians
-      var lat2Rad = cC.lat * Math.PI/180;
-      var lng2Rad = cC.lng * Math.PI/180;
+      let lat2Rad = cC.lat * Math.PI/180;
+      let lng2Rad = cC.lng * Math.PI/180;
 
       // Earth's Radius
-      var eR = 6371;
+      let eR = 6371;
 
-      var d1 = Math.sin(dLatRad/2) * Math.sin(dLatRad/2) +
+      let d1 = Math.sin(dLatRad/2) * Math.sin(dLatRad/2) +
          Math.sin(dlngRad/2) * Math.sin(dlngRad/2) * Math.cos(lat1Rad) * Math.cos(lat2Rad);
-      var d2 = 2 * Math.atan2(Math.sqrt(d1), Math.sqrt(1-d1));
+      let d2 = 2 * Math.atan2(Math.sqrt(d1), Math.sqrt(1-d1));
 
       return(eR * d2);
    }
 
   function geoCode (lat, lng, distance) {
-    if(circleSelected){
-      var location = lat.toFixed(6) + ',' + lng.toFixed(6) + ',' + distance.toFixed(0) + 'km';
+    if(circleSelected && circleClicked){
+      let location = lat.toFixed(6) + ',' + lng.toFixed(6) + ',' + distance.toFixed(0) + 'km';
       modelInstance.setGeocode(location);
       console.log(location);
       return location
+    }
+  }
+
+  function reverseGeocode (lat, lng){
+    if(circleCenter && !circleSelected ){
+      modelInstance.setLatLng(lat.toFixed(6), lng.toFixed(6));
+      modelInstance.reverseGeocode(lat, lng).then(result => {
+        console.log(result[0].full_name);
+        modelInstance.setPlaceName(result[0].full_name);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
   }
 

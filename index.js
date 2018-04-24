@@ -15,11 +15,18 @@ const TW_URL = "http://1.1/search/tweets.json"  // Twitter search URL
 const SEN_URL =  "http://www.sentiment140.com/api/bulkClassifyJson" // URL of sentiment analysis
 
 var TW_KEYS = {
-  consumer_key: process.env.TW_KEY,
-  consumer_secret: process.env.TW_SECRET
-  // consumer_key: process.env.TW_CONSUMER_KEY,
-  // consumer_secret: process.env.TW_CONSUMER_SECRET
+  consumer_key: process.env.TW_CONSUMER_KEY,
+  consumer_secret: process.env.TW_CONSUMER_SECRET
 }
+
+var Twitter = new Twit({
+  consumer_key: process.env.TW_CONSUMER_KEY,
+  consumer_secret: process.env.TW_CONSUMER_SECRET,
+  access_token: process.env.TW_TOKEN_KEY,
+  access_token_secret: process.env.TW_TOKEN_SECRET
+  // timeout_ms: 60*1000,  // optional HTTP request timeout to apply to all requests.
+})
+
 
 const app = express();
 const fetchTweets = new FetchTweets(TW_KEYS);
@@ -28,6 +35,21 @@ const port = process.env.PORT || 5000;
 
 // Priority serve any static files.
 app.use(express.static(path.join(__dirname, 'client/build')));
+
+app.get('/api/twitter/reverse_geocode', (req, res) => {
+  var parameters = {
+    lat: req.query.lat,
+    long: req.query.long,
+  }
+
+  Twitter.get('geo/reverse_geocode', parameters)
+    .then(response => {
+       res.send(response.data.result.places);
+    })
+    .catch(e => res.status(500).send('Something broke!')
+    )
+
+  });
 
 // For getting tweets like /api/twitter?q=hello&geocode=234523 etc.
 app.get('/api/twitter', async (req, res) => {
@@ -69,7 +91,6 @@ app.get('/api/sentiment', async (req, res) => {
       const json = await sentiments.json()
       const data = json.data
 
-      //console.log(data)
 
       // calculate percentages
       const response = {positive: undefined, neutral: undefined, negative: undefined}
