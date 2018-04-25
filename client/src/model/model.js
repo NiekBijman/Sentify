@@ -76,6 +76,8 @@ const Model = function () {
 
   this.setCoordinates = (lng, lat ) =>{
     coordinates = [lng, lat];
+    // location
+    console.log()
     notifyObservers('jumpToCoordinates');
   }
 

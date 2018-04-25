@@ -88,8 +88,6 @@ class Map extends React.Component {
     });
   }
 
-
-
   circleRender(circleControl, svg) {
     circleControl.update(svg)
   }
@@ -103,12 +101,6 @@ class Map extends React.Component {
     }
   }
 
-  goToCoordinates = () => {
-    modelInstance.setCoordinates(4.89, 52.37);
-  }
-
-
-
     render() {
       const { lng, lat, zoom } = this.state;
 
@@ -120,20 +112,10 @@ class Map extends React.Component {
         bottom: 0,
         width: '100%'
       };
-
-//
       return (
         <React.Fragment>
             <div style={style} ref={el => this.mapContainer = el}/>
             <LocationInfo Long={lng} Lat={lat} Zoom={zoom}/>
-            <Col xs={1} sm={1} md={1}>
-                <Button
-                  variant="raised"
-                  onClick = {this.goToCoordinates}
-                  >
-                  Coordinates
-                </Button>
-            </Col>
         </React.Fragment>
       );
     }
