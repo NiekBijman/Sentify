@@ -47,7 +47,7 @@ class Search extends Component {
     }
     if(details ==='placeNameSet'){
       this.setState({
-        placeName: modelInstance.getPlaceName()
+        placeName: modelInstance.getPlaceName().toUpperCase()
       })
     }
   }

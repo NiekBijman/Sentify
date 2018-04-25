@@ -19,10 +19,10 @@ const Model = function () {
   let location = '';
   let latitude = '';
   let longitude = '';
-  let placeName = '';
+  let placeName = 'Global';
 
   //Tweets
-  let tweets = [];
+  let tweets = 0;
 
   //Sentiment data
   let sentimentData = null;
@@ -79,7 +79,7 @@ const Model = function () {
   }
 
   this.setPlaceName = function(string){
-    placeName = string.toUpperCase();
+    placeName = string;
     notifyObservers('placeNameSet');
   }
 
@@ -87,14 +87,13 @@ const Model = function () {
     return placeName;
   }
 
-  this.setTweets = function(data){
-    tweets = data;
-    console.log(tweets);
-    notifyObservers('tweetsSet');
+  this.getTweetAmount = function(){
+    return tweets;
   }
 
   this.setSentimentData = function(result){
     sentimentData = result;
+    tweets = result.tweets.data.length;
     notifyObservers('tweetSearch');
   }
 
