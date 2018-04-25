@@ -8,6 +8,7 @@ import {debounce} from 'throttle-debounce';
 import '../styles/search.css';
 import { Row, Col } from 'react-flexbox-grid';
 
+
 class Search extends Component {
   constructor(props){
     super(props)
@@ -20,7 +21,8 @@ class Search extends Component {
       placeName: 'THE WORLD'
     }
     // Defining debounce is needed in constructor https://goo.gl/3D3vdf
-    this.searchTweets = debounce(300, this.searchTweets);
+    this.searchTweets = debounce(500, this.searchTweets);
+    this.searchGeocode = debounce(500, this.searchGeocode);
   }
 
   componentDidMount() {
@@ -41,13 +43,31 @@ class Search extends Component {
     this.searchTweets();
   }
 
+  handleLocation = event => {
+    modelInstance.setPlaceName(event.target.value);
+    this.searchGeocode();
+  }
+
+  searchGeocode = () => {
+    //Searching for the Coordinates of the Place the user searched for
+    modelInstance.geocode().then(result => {
+      console.log(result);
+      modelInstance.setCoordinates(result[0], result[1]);
+      this.searchTweets();
+      }).catch(() => {
+      this.setState({
+        status: 'ERROR'
+      });
+    });
+  }
+
   update(details){
     if(details ==='geoCodeSet' && modelInstance.getGeocode() !== ''){
       this.searchTweets();
     }
     if(details ==='placeNameSet'){
       this.setState({
-        placeName: modelInstance.getPlaceName().toUpperCase()
+        placeName: modelInstance.getPlaceName() //.toUpperCase()
       })
     }
   }
@@ -67,6 +87,8 @@ class Search extends Component {
     });
   }
 
+
+
   render(){
     return(
       <div className='container-discover'>
@@ -85,8 +107,9 @@ class Search extends Component {
               <SearchDate date= {this.state.date} anchorEl={this.state.anchorEl} click={this.handleClick} dayChange={this.onDayChange}/>
             </Col>
             <Col xs={4} sm={4} md={4}>
-              <SearchLocation placeName = {this.state.placeName}/>
+              <SearchLocation placeName = {this.state.placeName} handleLocation={this.handleLocation.bind(this)}/>
             </Col>
+
           </Row>
         </div>
       </div>

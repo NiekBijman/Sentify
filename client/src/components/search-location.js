@@ -22,8 +22,9 @@ const SearchLocation = props => {
   return (
     <div className={classes.container}>
       <TextField
-          placeholder= {props.placeName}
           className={classes.textField}
+          value={props.placeName}
+          onChange = {evt => props.handleLocation(evt)}
         />
     </div>
   );

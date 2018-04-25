@@ -3,6 +3,8 @@ import './styles/discover.css';
 import Map from './containers/map';
 import Search from './containers/search';
 import SentimentView from './containers/sentiment-view';
+import { modelInstance } from './model/model';
+
 
 class Discover extends React.Component {
   render () {

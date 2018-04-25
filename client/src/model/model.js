@@ -20,6 +20,7 @@ const Model = function () {
   let latitude = '';
   let longitude = '';
   let placeName = 'Global';
+  let coordinates = [5,34];
 
   //Tweets
   let tweets = 0;
@@ -69,8 +70,17 @@ const Model = function () {
     notifyObservers('geoCodeSet');
   }
 
-  this.getGeocode = function(geocode){
+  this.getGeocode = () => {
     return location;
+  }
+
+  this.setCoordinates = (lng, lat ) =>{
+    coordinates = [lng, lat];
+    notifyObservers('jumpToCoordinates');
+  }
+
+  this.getCoordinates = () => {
+    return coordinates;
   }
 
   this.setLatLng = function(lat, lng){
@@ -131,6 +141,13 @@ const Model = function () {
 
   this.reverseGeocode = function () {
     const url = '/api/twitter/reverse_geocode?' + 'lat=' + latitude + '&long=' + longitude;
+    return fetch(url)
+      .then(processResponse)
+      .catch(handleError)
+  }
+
+  this.geocode = () => {
+    const url = '/api/twitter/geocode?' + 'query=' + encodeURIComponent(placeName);
     return fetch(url)
       .then(processResponse)
       .catch(handleError)

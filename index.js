@@ -51,6 +51,20 @@ app.get('/api/twitter/reverse_geocode', (req, res) => {
 
   });
 
+app.get('/api/twitter/geocode', (req, res) => {
+  var parameters = {
+    query: req.query.query
+  }
+
+  Twitter.get('geo/search', parameters)
+    .then(response => {
+       res.send(response.data.result.places[0].bounding_box.coordinates[0][0]);
+    })
+    .catch(e => res.status(500).send('Something broke!')
+    )
+
+});
+
 // For getting tweets like /api/twitter?q=hello&geocode=234523 etc.
 app.get('/api/twitter', async (req, res) => {
     console.log("Getting tweets")
