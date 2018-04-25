@@ -6,14 +6,14 @@ import { modelInstance } from '../model/model';
 import Dimensions from 'react-dimensions';
 import PropTypes from 'prop-types';
 
-class SentimentView extends Component {
+class Sentiment extends Component {
   constructor(props){
     super(props)
     this.state = {
       status: 'INITIAL',
       positive: 50,
-      negative: 50,
-      neutral: 0,
+      negative: 40,
+      neutral: 10,
       sentiment: modelInstance.getSentimentData(),
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
@@ -130,4 +130,4 @@ class SentimentView extends Component {
     );
   }
 }
-export default Dimensions()(SentimentView);
+export default Dimensions()(Sentiment);

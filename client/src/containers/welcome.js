@@ -6,8 +6,7 @@ import { Row, Col } from 'react-flexbox-grid';
 import Hidden from 'material-ui/Hidden';
 import { modelInstance } from '../model/model';
 
-
-class WelcomeView extends React.Component {
+class Welcome extends React.Component {
   constructor(props){
     super(props)
     this.state = {
@@ -88,4 +87,4 @@ class WelcomeView extends React.Component {
   }
 }
 
-export default WelcomeView;
+export default Welcome;

@@ -69,26 +69,24 @@ class Search extends Component {
 
   render(){
     return(
-      <div className='container-discover'>
-        <div className='search'>
-          <Row id='searchInput'>
-            <SearchInput handleInput={this.handleInput.bind(this)} searchInput={this.state.searchInput} searchSuggestion={this.state.searchSuggestion} page={1}/>
-          </Row>
-          <Row>
-            <SearchNav page={this.state.page}/>
-          </Row>
-          <Row id='date-location'>
-            <Col xs={2} sm={2} md={2}>
-              <p>From</p>
-            </Col>
-            <Col xs={4} sm={4} md={4}>
-              <SearchDate date= {this.state.date} anchorEl={this.state.anchorEl} click={this.handleClick} dayChange={this.onDayChange}/>
-            </Col>
-            <Col xs={4} sm={4} md={4}>
-              <SearchLocation placeName = {this.state.placeName}/>
-            </Col>
-          </Row>
-        </div>
+      <div className='search'>
+        <Row id='searchInput'>
+          <SearchInput handleInput={this.handleInput.bind(this)} searchInput={this.state.searchInput} searchSuggestion={this.state.searchSuggestion} page={1}/>
+        </Row>
+        <Row>
+          <SearchNav page={this.state.page}/>
+        </Row>
+        <Row id='date-location'>
+          <Col xs={2} sm={2} md={2}>
+            <p>From</p>
+          </Col>
+          <Col xs={4} sm={4} md={4}>
+            <SearchDate date= {this.state.date} anchorEl={this.state.anchorEl} click={this.handleClick} dayChange={this.onDayChange}/>
+          </Col>
+          <Col xs={4} sm={4} md={4}>
+            <SearchLocation placeName = {this.state.placeName}/>
+          </Col>
+        </Row>
       </div>
     )
   }
