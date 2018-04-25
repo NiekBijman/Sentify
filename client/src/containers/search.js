@@ -18,7 +18,7 @@ class Search extends Component {
       anchorEl: null,
       date: 'Today',
       page: 0,
-      placeName: 'THE WORLD'
+      placeName: 'the World'
     }
     // Defining debounce is needed in constructor https://goo.gl/3D3vdf
     this.searchTweets = debounce(500, this.searchTweets);
@@ -56,7 +56,7 @@ class Search extends Component {
       modelInstance.setCoordinates(result[0], result[1]);
 
       //We also want to use the data as an input for the geocode in the Search Tweets API Call
-      //IMPORTANT: Lat & Long are switched in the 'GET search/tweets' call 
+      //IMPORTANT: Lat & Long are switched in the 'GET search/tweets' call
       let location = result[1].toFixed(6) + ',' + result[0].toFixed(6) + ',100km';
       modelInstance.setGeocode(location);
       this.searchTweets();
@@ -66,17 +66,6 @@ class Search extends Component {
         status: 'ERROR'
       });
     });
-  }
-
-  update(details){
-    if(details ==='geoCodeSet' && modelInstance.getGeocode() !== ''){
-      this.searchTweets();
-    }
-    if(details ==='placeNameSet'){
-      this.setState({
-        placeName: modelInstance.getPlaceName() //.toUpperCase()
-      })
-    }
   }
 
   searchTweets = () => {
@@ -95,10 +84,19 @@ class Search extends Component {
   }
 
 
+  update(details){
+    if(details ==='geoCodeSet' && modelInstance.getGeocode() !== ''){
+      this.searchTweets();
+    }
+    if(details ==='placeNameSet'){
+      this.setState({
+        placeName: modelInstance.getPlaceName() //.toUpperCase()
+      })
+    }
+  }
 
   render(){
     return(
-      <div className='container-discover'>
         <div className='search'>
           <Row id='searchInput'>
             <SearchInput handleInput={this.handleInput.bind(this)} searchInput={this.state.searchInput} searchSuggestion={this.state.searchSuggestion} page={1}/>
@@ -119,7 +117,6 @@ class Search extends Component {
 
           </Row>
         </div>
-      </div>
     )
   }
 }

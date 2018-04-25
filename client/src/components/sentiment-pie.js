@@ -7,7 +7,7 @@ import d3 from 'd3';
 class SentimentPie extends React.Component {
   constructor(props) {
     super(props);
-    this.colorScale = d3.scale.category10();
+    this.colorScale = ['#2ecc71', '#e74c3c', '#e3c800'];
     this.renderSlice = this.renderSlice.bind(this);
   }
 
@@ -31,7 +31,7 @@ class SentimentPie extends React.Component {
                       padAngle={padAngle}
                       value={value}
                       label={value.data}
-                      fill={this.colorScale(i)} />
+                      fill={this.colorScale[i]} />
     );
   }
 }
