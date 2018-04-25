@@ -84,11 +84,6 @@ class Map extends React.Component {
   }
 
 
-
-
-
-
-
     render() {
       const { lng, lat, zoom } = this.state;
 

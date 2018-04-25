@@ -22,7 +22,7 @@ const SearchLocation = props => {
   return (
     <div className={classes.container}>
       <TextField
-          placeholder="THE WORLD"
+          placeholder= {props.placeName}
           className={classes.textField}
         />
     </div>

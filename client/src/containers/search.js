@@ -17,21 +17,14 @@ class Search extends Component {
       anchorEl: null,
       date: 'Today',
       page: 0,
+      placeName: 'THE WORLD'
     }
     // Defining debounce is needed in constructor https://goo.gl/3D3vdf
-    this.searchTweets = debounce(500, this.searchTweets);
+    this.searchTweets = debounce(300, this.searchTweets);
   }
 
   componentDidMount() {
     modelInstance.addObserver(this);
-  }
-
-  searchInput(input){
-    console.log(input.target.value);
-    modelInstance.setSearch(input.target.value);
-    this.setState({
-      // searchInput:input.target.value
-    })
   }
 
   handleClick = event => {
@@ -49,8 +42,13 @@ class Search extends Component {
   }
 
   update(details){
-    if(details ==='geoCodeSet'){
+    if(details ==='geoCodeSet' && modelInstance.getGeocode() !== ''){
       this.searchTweets();
+    }
+    if(details ==='placeNameSet'){
+      this.setState({
+        placeName: modelInstance.getPlaceName().toUpperCase()
+      })
     }
   }
 
@@ -87,7 +85,7 @@ class Search extends Component {
               <SearchDate date= {this.state.date} anchorEl={this.state.anchorEl} click={this.handleClick} dayChange={this.onDayChange}/>
             </Col>
             <Col xs={4} sm={4} md={4}>
-              <SearchLocation searchInput = {this.state.searchInput}/>
+              <SearchLocation placeName = {this.state.placeName}/>
             </Col>
           </Row>
         </div>

@@ -16,6 +16,8 @@ class SentimentView extends Component {
       neutral: 0,
       sentiment: modelInstance.getSentimentData(),
       searchInput: modelInstance.getSearch(),
+      placeName: modelInstance.getPlaceName(),
+      tweets: modelInstance.getTweetAmount()
     }
   }
 
@@ -44,6 +46,8 @@ class SentimentView extends Component {
       negative:  (result !== null) ? Math.round(result.negative*100) : 40,
       neutral: (result !== null) ? Math.round(result.neutral*100) : 10,
       searchInput: modelInstance.getSearch(),
+      placeName: modelInstance.getPlaceName(),
+      tweets: modelInstance.getTweetAmount()
     })
       // }
   }
@@ -80,11 +84,11 @@ class SentimentView extends Component {
               </Row>
               <Row>
                 <Col xs={6} className="tweets-info-title">Amount of tweets:</Col>
-                <Col xs={6} className="tweets-info-value">100</Col>
+                <Col xs={6} className="tweets-info-value">{this.state.tweets}</Col>
               </Row>
               <Row>
                 <Col xs={6} className="tweets-info-title">Geography:</Col>
-                <Col xs={6} className="tweets-info-value">World</Col>
+                <Col xs={6} className="tweets-info-value">{this.state.placeName}</Col>
               </Row>
               <Row>
                 <Col xs={6} className="tweets-info-title">Date Range:</Col>
