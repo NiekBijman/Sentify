@@ -136,9 +136,17 @@ const Model = function () {
       .catch(handleError)
   }
 
+  this.embedTweet = function(tweetURL) {
+    const url = '/api/twitter/embedded-tweet?' + 'url=' + tweetURL;
+    return fetch(url)
+      .then(processResponse)
+      .catch(handleError)
+  }
+
   // API Helper methods
   const processResponse = function (response) {
     if (response.ok) {
+      console.log(response);
       return response.json()
     }
     throw response;
