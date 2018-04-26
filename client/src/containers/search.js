@@ -7,6 +7,7 @@ import { modelInstance } from '../model/model';
 import {debounce} from 'throttle-debounce';
 import '../styles/search.css';
 import { Row, Col } from 'react-flexbox-grid';
+import properCase from 'propercase'
 
 
 class Search extends Component {
@@ -38,14 +39,25 @@ class Search extends Component {
     this.setState({ anchorEl: null });
   };
 
+
+
+
   handleInput = event => {
     modelInstance.setSearch(event.target.value);
     this.searchTweets();
   }
 
+
+
   handleLocation = event => {
-    modelInstance.setPlaceName(event.target.value);
+    modelInstance.setPlaceName(this.capitalize(event.target.value));
     this.searchGeocode();
+  }
+  // Turn uppercase into capitalized strings
+  capitalize = str => {
+   return str.toLowerCase().split(' ').map(function(word) {
+     return word.replace(word[0], word[0].toUpperCase());
+   }).join(' ');
   }
 
   searchGeocode = () => {
@@ -105,13 +117,16 @@ class Search extends Component {
             <SearchNav page={this.state.page}/>
           </Row>
           <Row id='date-location'>
-            <Col xs={2} sm={2} md={2}>
-              <p>From</p>
+            <Col xs={2} sm={2} md={2} className='text'>
+              <p>FROM</p>
             </Col>
-            <Col xs={4} sm={4} md={4}>
+            <Col xs={4} sm={4} md={4} className='date'>
               <SearchDate date= {this.state.date} anchorEl={this.state.anchorEl} click={this.handleClick} dayChange={this.onDayChange}/>
             </Col>
-            <Col xs={4} sm={4} md={4}>
+            <Col xs={2} sm={2} md={2} className='text'>
+              <p>IN</p>
+            </Col>
+            <Col xs={4} sm={4} md={4} className='location'>
               <SearchLocation placeName = {this.state.placeName} handleLocation={this.handleLocation.bind(this)}/>
             </Col>
 

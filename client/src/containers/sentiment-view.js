@@ -42,9 +42,9 @@ class SentimentView extends Component {
     // }
 
     this.setState({
-      positive: (result !== null) ? Math.round(result.positive*100) : 50,
-      negative:  (result !== null) ? Math.round(result.negative*100) : 40,
-      neutral: (result !== null) ? Math.round(result.neutral*100) : 10,
+      positive: (result !== null || undefined) ? Math.round(result.positive*100) : 50,
+      negative:  (result !== null || undefined) ? Math.round(result.negative*100) : 40,
+      neutral: (result !== null || undefined) ? Math.round(result.neutral*100) : 10,
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
       tweets: modelInstance.getTweetAmount()

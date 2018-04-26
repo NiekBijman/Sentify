@@ -59,14 +59,21 @@
 }
 
 .container-search {
-  width: 50%;
+  width: 30%;
+  padding: 7% 0 0 7%;
   text-align: right;
+}
+
+.text{
+  text-align: right;
+  margin: 0;
 }
 
 .container-search > .search {
   background: rgba(255, 255, 255, 0.48);
+  border-radius: 10px;
   position: relative;
-  padding: 5% 2% 5% 2%;
+  padding: 0% 10% 0% 10%;
 }
 
 @media screen and (min-width: 576px) and (max-width: 807px) {
