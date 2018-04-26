@@ -22,7 +22,7 @@ import DeleteMySearchesModal from '../components/delete-my-searches-modal';
 
 const columnData = [
   { id: 'subject', numeric: false, disablePadding: true, label: 'Subject' },
-  { id: 'continent', numeric: false, disablePadding: false, label: 'Continent' },
+  { id: 'Location', numeric: false, disablePadding: false, label: 'Location' },
   { id: 'time-span', numeric: false, disablePadding: false, label: 'Time Span' },
   { id: 'date-created', numeric: false, disablePadding: false, label: 'Date Created' },
   { id: 'download', numeric: false, disablePadding: false, label: 'Download' },
@@ -120,9 +120,9 @@ class EnhancedTableToolbar extends React.Component {
                         <HistoryMySearches/>
                     )}
                 </div>
-                <DeleteMySearchesModal 
-                    open={open} 
-                    handleClose={handleCloseModal} 
+                <DeleteMySearchesModal
+                    open={open}
+                    handleClose={handleCloseModal}
                     handleConfirm={handleConfirm}
                     handleCancel={handleCancel}
                 />
@@ -135,9 +135,9 @@ EnhancedTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
   handleClickDeleteBtn: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired, 
-  handleCloseModal: PropTypes.func.isRequired, 
-  handleConfirm: PropTypes.func.isRequired, 
+  open: PropTypes.bool.isRequired,
+  handleCloseModal: PropTypes.func.isRequired,
+  handleConfirm: PropTypes.func.isRequired,
   handleCancel: PropTypes.func.isRequired,
 };
 
@@ -184,8 +184,8 @@ class MySearchesTable extends React.Component {
   }
 
   handleCloseModal = () => {
-      this.setState({ 
-          open: false 
+      this.setState({
+          open: false
       });
   };
 
@@ -193,7 +193,7 @@ class MySearchesTable extends React.Component {
       modelInstance.deleteSearchHistory(this.state.selected);
       console.log("Deletion completed");
       this.handleCloseModal();
-      this.setState({ 
+      this.setState({
         selected: []
       });
   }
@@ -263,12 +263,12 @@ class MySearchesTable extends React.Component {
 
     return (
       <Paper className={classes.root}>
-        <EnhancedTableToolbar 
+        <EnhancedTableToolbar
             numSelected={selected.length}
             handleClickDeleteBtn={this.handleClickDeleteBtn}
             open={this.state.open}
-            handleCloseModal={this.handleCloseModal} 
-            handleConfirm={this.handleConfirm} 
+            handleCloseModal={this.handleCloseModal}
+            handleConfirm={this.handleConfirm}
             handleCancel={this.handleCancel}
         />
         <div className={classes.tableWrapper}>
@@ -295,11 +295,11 @@ class MySearchesTable extends React.Component {
                       <Checkbox checked={isSelected} color="primary" onClick={event => this.handleClick(event, n.id)}/>
                     </TableCell>
                     <TableCell padding="none">{n.subject}</TableCell>
-                    <TableCell>{n.continent}</TableCell>
+                    <TableCell>{n.Location}</TableCell>
                     <TableCell>{n.dateStart} / {n.dateFinish}</TableCell>
                     <TableCell>{n.dateCreated}</TableCell>
                     <TableCell>{(n.downloadPDF
-                                    ? <SentimentPDF/>     
+                                    ? <SentimentPDF/>
                                     : <span></span>
                                 )}
                     </TableCell>

@@ -9,11 +9,11 @@
 }
 
 .container-discover-top {
-  height: 70%;
+  height: 75%;
 }
 
 .container-discover:nth-child(2) {
-  height: 30%;
+  height: 25%;
 }
 
 #title-steps {
@@ -26,7 +26,7 @@
 }
 
 .container-discover-bottom {
-  height: 30%;
+  height: 25%;
   position: absolute;
   width: 100%;
   background-color: #fff;
@@ -49,20 +49,21 @@
 
 .tweets-info-title {
   text-align: right;
+  font-family: Roboto thin;
   color: #3e4040;
 }
 
 .tweets-info-value {
   text-align: left;
-  font-weight: bold;
+  font-family: Roboto light;
 }
 
-.modal_loading {    
+.modal_loading {
   position: absolute;
   height: 85%;
   width: 75%;
-  background: url('../media/loading.gif') 
-              50% 50% 
+  background: url('../media/loading.gif')
+              50% 50%
               no-repeat;
 }
 

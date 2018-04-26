@@ -15,7 +15,8 @@ const styles = theme => ({
     width: "100%"
   },
   input:{
-    fontSize: '3rem',
+    fontFamily : 'Roboto Thin',
+    fontSize: '2rem',
     align: 'right'
   }
 });
@@ -27,8 +28,8 @@ const SearchInput = props => {
           className={classes.textField}
           fontSize='30px'
           margin="normal"
-          placeholder="Search for tweets"
-          helperText="Data about trending topics around the world"
+          placeholder="search for tweets"
+          // helperText="Tweets, Keywords, "
           InputProps={{className: classes.input}}
           onChange={((props.page === 1)
                       ? evt => props.handleInput(evt)

@@ -7,7 +7,6 @@ import SentimentContainer from './containers/sentiment';
 class Discover extends React.Component {
   render () {
     return (
-      <React.Fragment>
         <div className="container-discover">
           <div className="container-discover-top">
             <div className='map'>
@@ -21,7 +20,6 @@ class Discover extends React.Component {
             <SentimentContainer/>
           </div>
         </div>
-      </React.Fragment>
     );
   }
 }
