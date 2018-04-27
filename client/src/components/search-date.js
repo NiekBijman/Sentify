@@ -38,8 +38,7 @@ const SearchDate = ({date, anchorEl, click, dayChange}) => {
     //   >{date.date}</MenuItem>)
     // )}
     return(
-
-    <div className='container-search-date' >
+    <React.Fragment>
       <Button
         // variant="raised"
         aria-owns={anchorEl ? 'simple-menu' : null}
@@ -65,7 +64,7 @@ const SearchDate = ({date, anchorEl, click, dayChange}) => {
         <MenuItem onClick={dayChange}>6 Days past</MenuItem>
         <MenuItem onClick={dayChange}>7 Days past</MenuItem>
       </Menu>
-    </div>
+    </React.Fragment>
   );
 }
 

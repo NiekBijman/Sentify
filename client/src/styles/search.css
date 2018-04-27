@@ -16,12 +16,24 @@ h1{
   height: 5%;
   padding-top: 5%;
   text-align: center;
+
 }
 
-.container-search-date{
-  /* margin-top: 5px; */
+.date{
+  align-content: center;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
+.location{
+  align-content: center;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 .container-type{
   position: absolute;
   display: inline-block;
@@ -30,6 +42,13 @@ h1{
 @media screen and (max-width: 575px) {
   .container-discover .container-search {
     width: 80%;
-    padding: 10% 0 0 10%;
+    padding: 0 5%;
+  }
+}
+
+@media screen and (max-width: 466px) {
+  .container-discover .container-search {
+    width: 96%;
+    padding: 0 2%;
   }
 }

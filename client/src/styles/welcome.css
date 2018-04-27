@@ -59,9 +59,33 @@
 }
 
 .container-search {
-  width: 60%;
+  width: 30%;
   padding: 7% 0 0 7%;
   text-align: right;
+}
+
+.text{
+  text-align: right;
+  margin: 0;
+}
+
+.container-search > .search {
+  background: rgba(255, 255, 255, 0.48);
+  border-radius: 10px;
+  position: relative;
+  padding: 0% 10% 0% 10%;
+}
+
+@media screen and (min-width: 576px) and (max-width: 807px) {
+  .container-search {
+    width: 80%;
+    padding: 0 5%;
+  }
+
+  .container-search > .search {
+    width: 100%;
+    padding: 0 5%;
+  }
 }
 
 @media screen and (max-width: 670px) {
@@ -78,5 +102,10 @@
 
   #stepper {
     height: auto;
+  }
+
+  .container-search > .search {
+    width: 100%;
+    padding: 0 5%;
   }
 }

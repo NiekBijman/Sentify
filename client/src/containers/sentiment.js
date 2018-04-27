@@ -6,14 +6,14 @@ import { modelInstance } from '../model/model';
 import Dimensions from 'react-dimensions';
 import PropTypes from 'prop-types';
 
-class SentimentView extends Component {
+class Sentiment extends Component {
   constructor(props){
     super(props)
     this.state = {
       status: 'INITIAL',
       positive: 50,
-      negative: 50,
-      neutral: 0,
+      negative: 40,
+      neutral: 10,
       sentiment: modelInstance.getSentimentData(),
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
@@ -42,9 +42,9 @@ class SentimentView extends Component {
     // }
 
     this.setState({
-      positive: (result !== null || undefined) ? Math.round(result.positive*100) : 50,
-      negative:  (result !== null || undefined) ? Math.round(result.negative*100) : 40,
-      neutral: (result !== null || undefined) ? Math.round(result.neutral*100) : 10,
+      positive: (result !== null) ? Math.round(result.positive*100) : 50,
+      negative:  (result !== null) ? Math.round(result.negative*100) : 40,
+      neutral: (result !== null) ? Math.round(result.neutral*100) : 10,
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
       tweets: modelInstance.getTweetAmount()
@@ -130,4 +130,4 @@ class SentimentView extends Component {
     );
   }
 }
-export default Dimensions()(SentimentView);
+export default Dimensions()(Sentiment);

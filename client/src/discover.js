@@ -2,12 +2,11 @@ import React from 'react';
 import './styles/discover.css';
 import Map from './containers/map';
 import Search from './containers/search';
-import SentimentView from './containers/sentiment-view';
+import SentimentContainer from './containers/sentiment';
 
 class Discover extends React.Component {
   render () {
     return (
-      <React.Fragment>
         <div className="container-discover">
           <div className="container-discover-top">
             <div className='map'>
@@ -18,10 +17,9 @@ class Discover extends React.Component {
             </div>
           </div>
           <div className="container-discover-bottom">
-            <SentimentView/>
+            <SentimentContainer/>
           </div>
         </div>
-      </React.Fragment>
     );
   }
 }

@@ -9,7 +9,7 @@ const Model = function () {
   let observers = [];
 
   //Searchinput
-  let searchInput = '';
+  let searchInput = 'All tweets';
 
   //Date
   let date ='';
@@ -17,21 +17,25 @@ const Model = function () {
 
   //Geocode
   let location = '';
+  let latitude = '';
+  let longitude = '';
+  let placeName = 'the World';
+  let coordinates = [5,34];
 
   //Tweets
-  let tweets = [];
+  let tweets = 0;
 
   //Sentiment data
   let sentimentData = null;
 
   let searchHistory = {"data": [
-    {"id":1, "subject":"#LastWeekTonight", "continent": "America", "dateStart": "20-02-18", "dateFinish": "26-02-18", "dateCreated": "27-02-18", "downloadPDF": false},
-    {"id":2, "subject":"FrenchElection", "continent": "Europe", "dateStart": "10-03-18", "dateFinish": "16-03-18", "dateCreated": "17-03-18", "downloadPDF": true},
-    {"id":3, "subject":"CharlieHebdo", "continent": "Europe", "dateStart": "11-05-17", "dateFinish": "14-05-17", "dateCreated": "15-05-17", "downloadPDF": false},
-    {"id":4, "subject":"@JaneGoodman", "continent": "Europe", "dateStart": "01-11-17", "dateFinish": "05-11-17", "dateCreated": "06-11-17", "downloadPDF": false},
-    {"id":5, "subject":"NATO", "continent": "Europe", "dateStart": "20-02-18", "dateFinish": "26-02-18", "dateCreated": "27-02-18", "downloadPDF": true},
-    {"id":6, "subject":"#SomosJuntos", "continent": "South-America", "dateStart": "10-03-18", "dateFinish": "16-03-18", "dateCreated": "17-03-18", "downloadPDF": false},
-    {"id":7, "subject":"#FindKadyrovsCat", "continent": "Europe", "dateStart": "01-11-17", "dateFinish": "05-11-17", "dateCreated": "06-11-17", "downloadPDF": true}
+    {"id":1, "subject":"#LastWeekTonight", "Location": "America", "dateStart": "20-02-18", "dateFinish": "26-02-18", "dateCreated": "27-02-18", "downloadPDF": false},
+    {"id":2, "subject":"FrenchElection", "Location": "Europe", "dateStart": "10-03-18", "dateFinish": "16-03-18", "dateCreated": "17-03-18", "downloadPDF": true},
+    {"id":3, "subject":"CharlieHebdo", "Location": "Europe", "dateStart": "11-05-17", "dateFinish": "14-05-17", "dateCreated": "15-05-17", "downloadPDF": false},
+    {"id":4, "subject":"@JaneGoodman", "Location": "Europe", "dateStart": "01-11-17", "dateFinish": "05-11-17", "dateCreated": "06-11-17", "downloadPDF": false},
+    {"id":5, "subject":"NATO", "Location": "Europe", "dateStart": "20-02-18", "dateFinish": "26-02-18", "dateCreated": "27-02-18", "downloadPDF": true},
+    {"id":6, "subject":"#SomosJuntos", "Location": "South-America", "dateStart": "10-03-18", "dateFinish": "16-03-18", "dateCreated": "17-03-18", "downloadPDF": false},
+    {"id":7, "subject":"#FindKadyrovsCat", "Location": "Europe", "dateStart": "01-11-17", "dateFinish": "05-11-17", "dateCreated": "06-11-17", "downloadPDF": true}
   ]};
 
   // {"data": [{"text": "I love Titanic.", "id":1234, "polarity": 4},
@@ -66,14 +70,42 @@ const Model = function () {
     notifyObservers('geoCodeSet');
   }
 
-  this.setTweets = function(data){
-    tweets = data;
-    console.log(tweets);
-    notifyObservers('tweetsSet');
+  this.getGeocode = () => {
+    return location;
+  }
+
+  this.setCoordinates = (lng, lat ) =>{
+    coordinates = [lng, lat];
+    // location
+    console.log()
+    notifyObservers('jumpToCoordinates');
+  }
+
+  this.getCoordinates = () => {
+    return coordinates;
+  }
+
+  this.setLatLng = function(lat, lng){
+    latitude = lat;
+    longitude = lng;
+  }
+
+  this.setPlaceName = function(string){
+    placeName = string;
+    notifyObservers('placeNameSet');
+  }
+
+  this.getPlaceName = function(){
+    return placeName;
+  }
+
+  this.getTweetAmount = function(){
+    return tweets;
   }
 
   this.setSentimentData = function(result){
     sentimentData = result;
+    tweets = result.tweets.data.length;
     notifyObservers('tweetSearch');
   }
 
@@ -105,6 +137,20 @@ const Model = function () {
     // const url = 'search/tweets?' + 'q=' + searchInput + 'geocode=' + location;
     notifyObservers();
     return fetch(url, httpOptions)
+      .then(processResponse)
+      .catch(handleError)
+  }
+
+  this.reverseGeocode = function () {
+    const url = '/api/twitter/reverse_geocode?' + 'lat=' + latitude + '&long=' + longitude;
+    return fetch(url)
+      .then(processResponse)
+      .catch(handleError)
+  }
+
+  this.geocode = () => {
+    const url = '/api/twitter/geocode?' + 'query=' + encodeURIComponent(placeName);
+    return fetch(url)
       .then(processResponse)
       .catch(handleError)
   }

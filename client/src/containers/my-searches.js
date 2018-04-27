@@ -3,7 +3,7 @@ import '../styles/my-searches.css';
 import MySearchesTable from '../components/my-searches-table';
 import SearchNav from '../components/search-nav';
 
-class MySearchesView extends Component {
+class MySearches extends Component {
   constructor(props){
     super(props)
     this.state = {
@@ -20,4 +20,4 @@ class MySearchesView extends Component {
     )
   }
 }
-export default MySearchesView;
+export default MySearches;
