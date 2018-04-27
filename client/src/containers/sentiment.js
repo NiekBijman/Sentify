@@ -89,7 +89,7 @@ class Sentiment extends Component {
             </svg>
         break;
       default:
-        pieChart = <b>Failed to load data, please try again</b>
+        pieChart = <div class="error">Failed to load data, please try again</div>
         break;
     }
 

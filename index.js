@@ -36,19 +36,6 @@ const port = process.env.PORT || 5000;
 // Priority serve any static files.
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-app.get('/api/twitter/embedded-tweet', (req, res) => {
-  var parameters = {
-    url: req.query.url,
-  }
-
-  fetchTweets.get('/oembed', parameters)
-    .then(response => {
-       res.send(response);
-    })
-    .catch(e => res.status(500).send('Something broke!')
-    )
-});
-
 app.get('/api/twitter/reverse_geocode', (req, res) => {
   var parameters = {
     lat: req.query.lat,
@@ -108,7 +95,7 @@ app.get('/api/sentiment', async (req, res) => {
   try{
     fetchTweets.byTopic(options, async function(results){
       const tweets = {"data": results.map(function(tweet){
-        return {"text": tweet, "query": options.q, "geocode":options.geocode}
+        return {"text": tweet.body, "query": options.q, "geocode":options.geocode}
       })}
       var body = JSON.stringify(tweets)
 
