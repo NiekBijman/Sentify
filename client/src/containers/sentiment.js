@@ -15,7 +15,7 @@ class Sentiment extends Component {
       negative: 40,
       neutral: 10,
       sentiment: modelInstance.getSentimentData(),
-      searchInput: modelInstance.getSearch(),
+      searchInput: "All Tweets",
       placeName: modelInstance.getPlaceName(),
       tweets: modelInstance.getTweetAmount(),
     }
