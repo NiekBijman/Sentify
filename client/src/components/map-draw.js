@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import { modelInstance } from '../model/model';
 
-const DrawCircle = function(svg) {
+const DrawCircle = (svg) => {
   let that = this;
   let circleCenter, circleOuter; //control points
   let circleSelected = false; //have we completed the circle?
@@ -113,7 +113,20 @@ const DrawCircle = function(svg) {
       container.selectAll("circle.control").remove();
       container.selectAll("line.lasso").remove();
       dispatch.clear();
+    }).on('mouseenter', function() {
+      if(!active) return;
+      circleLasso.style({
+        fill: "#f44242",
+        "fill-opacity": 0.5
+      })
+    }).on('mouseleave', function() {
+      if(!active) return;
+      circleLasso.style({
+        fill: "#6b6b6b",
+        "fill-opacity": 0.1
+      })
     })
+
     circleLasso
     .attr({
       cx: project(circleCenter).x,
