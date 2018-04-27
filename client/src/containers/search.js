@@ -7,8 +7,6 @@ import { modelInstance } from '../model/model';
 import {debounce} from 'throttle-debounce';
 import '../styles/search.css';
 import { Row, Col } from 'react-flexbox-grid';
-import properCase from 'propercase'
-
 
 class Search extends Component {
   constructor(props){
@@ -39,20 +37,16 @@ class Search extends Component {
     this.setState({ anchorEl: null });
   };
 
-
-
-
   handleInput = event => {
     modelInstance.setSearch(event.target.value);
     this.searchTweets();
   }
 
-
-
   handleLocation = event => {
     modelInstance.setPlaceName(this.capitalize(event.target.value));
     this.searchGeocode();
   }
+
   // Turn uppercase into capitalized strings
   capitalize = str => {
    return str.toLowerCase().split(' ').map(function(word) {
@@ -72,26 +66,22 @@ class Search extends Component {
       let location = result[1].toFixed(6) + ',' + result[0].toFixed(6) + ',100km';
       modelInstance.setGeocode(location);
       this.searchTweets();
-
-      }).catch(() => {
-      this.setState({
-        status: 'ERROR'
-      });
+    }).catch(() => {
+      this.props.handleStatusChange('ERROR');
     });
   }
 
   searchTweets = () => {
+    this.props.handleStatusChange('INITIAL');
     modelInstance.searchTweets().then(result => {
       console.log(result);
       modelInstance.setSentimentData(result);
+      this.props.handleStatusChange('LOADED');
       this.setState({
-        status: 'LOADED',
         data: result
       });
     }).catch(() => {
-      this.setState({
-        status: 'ERROR'
-      });
+      this.props.handleStatusChange('ERROR');
     });
   }
 
@@ -121,7 +111,7 @@ class Search extends Component {
               <p>FROM</p>
             </Col>
             <Col xs={4} sm={4} md={4} className='date'>
-              <SearchDate date= {this.state.date} anchorEl={this.state.anchorEl} click={this.handleClick} dayChange={this.onDayChange}/>
+              <SearchDate date={this.state.date} anchorEl={this.state.anchorEl} click={this.handleClick} dayChange={this.onDayChange}/>
             </Col>
             <Col xs={2} sm={2} md={2} className='text'>
               <p>IN</p>

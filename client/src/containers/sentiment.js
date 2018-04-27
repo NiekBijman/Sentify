@@ -5,19 +5,19 @@ import SentimentPie from '../components/sentiment-pie';
 import { modelInstance } from '../model/model';
 import Dimensions from 'react-dimensions';
 import PropTypes from 'prop-types';
+import TweetEmbed from 'react-tweet-embed';
 
 class Sentiment extends Component {
   constructor(props){
-    super(props)
+    super(props);
     this.state = {
-      status: 'INITIAL',
       positive: 50,
       negative: 40,
       neutral: 10,
       sentiment: modelInstance.getSentimentData(),
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
-      tweets: modelInstance.getTweetAmount()
+      tweets: modelInstance.getTweetAmount(),
     }
   }
 
@@ -42,14 +42,22 @@ class Sentiment extends Component {
     // }
 
     this.setState({
-      positive: (result !== null) ? Math.round(result.positive*100) : 50,
-      negative:  (result !== null) ? Math.round(result.negative*100) : 40,
-      neutral: (result !== null) ? Math.round(result.neutral*100) : 10,
+      positive: (result !== null && result !== undefined) ? Math.round(result.positive*100) : 50,
+      negative:  (result !== null && result !== undefined) ? Math.round(result.negative*100) : 40,
+      neutral: (result !== null && result !== undefined) ? Math.round(result.neutral*100) : 10,
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
       tweets: modelInstance.getTweetAmount()
     })
       // }
+  }
+
+  handleTweetLoadError = event => {
+    console.log('Tweet loading failed');
+  }
+
+  handleTweetLoadSuccess = event => {
+    console.log('Tweet loaded successfully');
   }
 
   render(){
@@ -62,6 +70,28 @@ class Sentiment extends Component {
     // Centers the pie chart
     let x = width / 2;
     let y = height / 2;
+    let pieChart = null;
+
+    switch (this.props.status) {
+      case 'INITIAL':
+        pieChart = <div className="modal_loading"></div>
+        break;
+      case 'LOADED':
+        pieChart =            
+            <svg width="100%" height="100%">
+              <SentimentPie x={x}
+                            y={y}
+                            innerRadius={radius * .35}
+                            outerRadius={radius}
+                            cornerRadius={7}
+                            padAngle={.02}
+                            data={[this.state.positive, this.state.negative, this.state.neutral]}/>
+            </svg>
+        break;
+      default:
+        pieChart = <b>Failed to load data, please try again</b>
+        break;
+    }
 
     return(
       <div>
@@ -110,20 +140,13 @@ class Sentiment extends Component {
             <Hidden smUp>
               <p>Sentiment</p>
             </Hidden>
-            <svg width="100%" height="100%">
-              <SentimentPie x={x}
-                            y={y}
-                            innerRadius={radius * .35}
-                            outerRadius={radius}
-                            cornerRadius={7}
-                            padAngle={.02}
-                            data={[this.state.positive, this.state.negative, this.state.neutral]}/>
-            </svg>
+            {pieChart}
           </Col>
           <Col sm={4} md={4} xs={12}>
             <Hidden smUp>
               <p>Most Popular</p>
             </Hidden>
+            <TweetEmbed id='692527862369357824' options={{cards: 'hidden' }} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
           </Col>
         </Row>
       </div>
