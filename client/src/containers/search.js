@@ -14,7 +14,6 @@ class Search extends Component {
   constructor(props){
     super(props)
     this.state = {
-      data: null,
       searchSuggestion: 'Search for tweets here',
       anchorEl: null,
       date: 'Today',
@@ -82,16 +81,27 @@ class Search extends Component {
 
   searchTweets = () => {
     modelInstance.searchTweets().then(result => {
-      console.log(result);
-      modelInstance.setSentimentData(result);
+      modelInstance.setTweets(result);
       this.setState({
-        status: 'LOADED',
-        data: result
+        status: 'LOADED TWEETS'
       });
     }).catch(() => {
       this.setState({
         status: 'ERROR'
       });
+    });
+  }
+
+  sentimentAnalysis = () => {
+      modelInstance.analyzeSentiment().then(result => {
+        modelInstance.setSentimentData(result);
+        this.setState({
+          status: 'LOADED SENTIMENT'
+        });
+      }).catch(() => {
+        this.setState({
+          status: 'ERROR'
+        });
     });
   }
 
@@ -104,6 +114,9 @@ class Search extends Component {
       this.setState({
         placeName: modelInstance.getPlaceName() //.toUpperCase()
       })
+    }
+    if(details ==='tweetsSet'){
+      this.sentimentAnalysis();
     }
   }
 

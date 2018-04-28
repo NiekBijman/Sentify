@@ -1,15 +1,13 @@
 import {Key} from '../config';
 
-const httpOptions = {
-  headers: {'authorization': Key.getApiKey()},
-};
+
 
 const Model = function () {
   let container = 'Map';
   let observers = [];
 
   //Searchinput
-  let searchInput = 'All tweets';
+  let searchInput = '';
 
   //Date
   let date ='';
@@ -23,7 +21,9 @@ const Model = function () {
   let coordinates = [5,34];
 
   //Tweets
-  let tweets = 0;
+  let tweetAmount = 0;
+  let tweetsJSON = null;
+  let tweets = null;
 
   //Sentiment data
   let sentimentData = null;
@@ -99,14 +99,28 @@ const Model = function () {
     return placeName;
   }
 
-  this.getTweetAmount = function(){
-    return tweets;
+  this.setTweets = function(results){
+    console.log(results);
+    
+    //Set twitter responses
+    tweets = results.data.statuses
+    tweetAmount = results.data.statuses.length;
+
+    //Build the object to POST to Sentiment Analysis
+    const tweetObject = results.data.statuses.map(function(tweet){
+      return {"text": tweet.text}
+    })
+    tweetsJSON = JSON.stringify({data: tweetObject})
+    notifyObservers('tweetsSet');
   }
 
-  this.setSentimentData = function(result){
-    sentimentData = result;
-    tweets = result.tweets.data.length;
-    notifyObservers('tweetSearch');
+  this.getTweetAmount = function(){
+    return tweetAmount;
+  }
+
+  this.setSentimentData = function(results){
+    sentimentData = results;
+    notifyObservers('sentimentSet');
   }
 
   this.getSentimentData = function(){
@@ -124,21 +138,37 @@ const Model = function () {
     notifyObservers();
   }
 
-  // API Calls
-  this.sentimentAnalysis = function () {
-    // const url = 'http://www.sentiment140.com/api/bulkClassifyJson' + searchInput //TO DO: Fix correct URL
-    // return fetch(url, httpOptions)
-    //   .then(processResponse)
-    //   .catch(handleError)
-  }
-
+  //API Calls
   this.searchTweets = function () {
-    const url = '/api/sentiment?' + 'q=' + searchInput + '&geocode=' + location; //+ 'geocode=' + location;
+    const url = '/api/twitter/search?' + 'q=' + searchInput + '&geocode=' + location; //+ 'geocode=' + location;
     // const url = 'search/tweets?' + 'q=' + searchInput + 'geocode=' + location;
-    notifyObservers();
-    return fetch(url, httpOptions)
+    return fetch(url)
       .then(processResponse)
       .catch(handleError)
+  }
+
+  this.analyzeSentiment = function () {
+    const url = '/api/sentiment' + '?appid=bijman@kth.se';
+    notifyObservers();
+    return fetch(url, {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+        body: tweetsJSON
+      })
+      .then(processResponse)
+      .catch(handleError)
+  }
+
+  const httpOptions = {
+    method: "POST",
+    headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+    },
+    body: {data: tweets}
   }
 
   this.reverseGeocode = function () {
@@ -154,6 +184,7 @@ const Model = function () {
       .then(processResponse)
       .catch(handleError)
   }
+
 
   // API Helper methods
   const processResponse = function (response) {
