@@ -7,7 +7,6 @@ import { modelInstance } from '../model/model';
 import {debounce} from 'throttle-debounce';
 import '../styles/search.css';
 import { Row, Col } from 'react-flexbox-grid';
-import properCase from 'propercase';
 
 
 class Search extends Component {
@@ -15,7 +14,6 @@ class Search extends Component {
     super(props);
     var today = new Date();
     this.state = {
-      data: null,
       searchSuggestion: 'Search for tweets here',
       anchorEl: null,
       date: today.toJSON(),
@@ -77,14 +75,26 @@ class Search extends Component {
   searchTweets = () => {
     this.props.handleStatusChange('INITIAL');
     modelInstance.searchTweets().then(result => {
-      console.log(result);
-      modelInstance.setSentimentData(result);
+      modelInstance.setTweets(result);
       this.props.handleStatusChange('LOADED');
       this.setState({
         data: result
       });
     }).catch(() => {
       this.props.handleStatusChange('ERROR');
+    });
+  }
+
+  sentimentAnalysis = () => {
+      modelInstance.analyzeSentiment().then(result => {
+        modelInstance.setSentimentData(result);
+        this.setState({
+          status: 'LOADED SENTIMENT'
+        });
+      }).catch(() => {
+        this.setState({
+          status: 'ERROR'
+        });
     });
   }
 
@@ -97,6 +107,9 @@ class Search extends Component {
       this.setState({
         placeName: modelInstance.getPlaceName() //.toUpperCase()
       })
+    }
+    if(details ==='tweetsSet'){
+      this.sentimentAnalysis();
     }
   }
 
