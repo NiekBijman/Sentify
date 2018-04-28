@@ -110,7 +110,7 @@ class Sentiment extends Component {
                             y={y}
                             innerRadius={radius * .35}
                             outerRadius={radius}
-                            cornerRadius={7}
+                            cornerRadius={2}
                             padAngle={.02}
                             data={[this.state.positive, this.state.negative, this.state.neutral]}/>
             </svg>

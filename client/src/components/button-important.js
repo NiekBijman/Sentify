@@ -16,21 +16,21 @@ const styles = theme => ({
   },
 });
 
-const ButtonDiscover = props =>  {
+const ButtonImportant = props =>  {
   const { classes } = props;
   return (
     <Button
       variant="raised"
       className={classes.button}
-      onClick = {props.handleClick}
+      onClick = {props.toggleSteps}
       >
-      Discover
+      {props.text}
     </Button>
   );
 }
 
-ButtonDiscover.propTypes = {
+ButtonImportant.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ButtonDiscover);
+export default withStyles(styles)(ButtonImportant);
