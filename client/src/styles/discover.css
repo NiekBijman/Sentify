@@ -59,12 +59,15 @@
 }
 
 .modal_loading {
-  position: absolute;
-  height: 85%;
-  width: 75%;
+  height: 100%;
+  width: 100%;
   background: url('../media/loading.gif')
               50% 50%
               no-repeat;
+}
+
+.error {
+  padding-top: 20%;
 }
 
 [class*="SearchNav-"] > header {
