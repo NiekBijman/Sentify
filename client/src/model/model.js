@@ -158,6 +158,7 @@ const Model = function () {
   // API Helper methods
   const processResponse = function (response) {
     if (response.ok) {
+      console.log(response);
       return response.json()
     }
     throw response;

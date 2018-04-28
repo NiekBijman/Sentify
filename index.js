@@ -48,8 +48,7 @@ app.get('/api/twitter/reverse_geocode', (req, res) => {
     })
     .catch(e => res.status(500).send('Something broke!')
     )
-
-  });
+});
 
 app.get('/api/twitter/geocode', (req, res) => {
   var parameters = {
