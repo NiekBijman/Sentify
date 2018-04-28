@@ -17,7 +17,8 @@
 }
 
 .intro{
-  text-align: left;
+  text-align: right;
+  padding-top: 8px;
 }
 
 #title-steps {

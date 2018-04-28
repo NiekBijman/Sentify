@@ -85,18 +85,7 @@ class Search extends Component {
     });
   }
 
-  sentimentAnalysis = () => {
-      modelInstance.analyzeSentiment().then(result => {
-        modelInstance.setSentimentData(result);
-        this.setState({
-          status: 'LOADED SENTIMENT'
-        });
-      }).catch(() => {
-        this.setState({
-          status: 'ERROR'
-        });
-    });
-  }
+
 
 
   update(details){
@@ -107,9 +96,6 @@ class Search extends Component {
       this.setState({
         placeName: modelInstance.getPlaceName() //.toUpperCase()
       })
-    }
-    if(details ==='tweetsSet'){
-      this.sentimentAnalysis();
     }
   }
 

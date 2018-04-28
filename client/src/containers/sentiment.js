@@ -6,6 +6,7 @@ import { modelInstance } from '../model/model';
 import Dimensions from 'react-dimensions';
 import PropTypes from 'prop-types';
 import TweetEmbed from 'react-tweet-embed';
+import Notification from '../components/notification'
 
 class Sentiment extends Component {
   constructor(props){
@@ -34,7 +35,24 @@ class Sentiment extends Component {
     modelInstance.removeObserver(this);
   }
 
+  sentimentAnalysis = () => {
+      modelInstance.analyzeSentiment().then(result => {
+        modelInstance.setSentimentData(result);
+        this.setState({
+          status: 'LOADED SENTIMENT'
+        });
+      }).catch(() => {
+        this.setState({
+          status: 'ERROR'
+        });
+    });
+  }
+
   update(details){
+    if(details ==='tweetsSet'){
+      this.sentimentAnalysis();
+    }
+
     if (details==="sentimentSet") {
       this.calculateSentiment();
       this.setState({
@@ -87,6 +105,14 @@ class Sentiment extends Component {
     console.log('Tweet loaded successfully');
   }
 
+  showNotification = () => {
+    this.setState({ open: true});
+  };
+  //
+  // hideNotification = () => {
+  //   this.setState({ open: false });
+  // };
+
   render(){
     let width = this.props.containerWidth / 3;
     let height = this.props.containerHeight;
@@ -98,6 +124,7 @@ class Sentiment extends Component {
     let x = width / 2;
     let y = height / 2;
     let pieChart = null;
+    let errorMessage = null;
 
     switch (this.props.status) {
       case 'INITIAL':
@@ -115,8 +142,13 @@ class Sentiment extends Component {
                             data={[this.state.positive, this.state.negative, this.state.neutral]}/>
             </svg>
         break;
+
+      // case 'ERROR':
+      //   errorMessage =
+      // break;
+
       default:
-        pieChart = <div className="error">Failed to load data, please try again</div>
+        pieChart = <Notification open={this.showNotification} text='There seems to be an error in your request'/> //  <div className="error">Failed to load data, please try again</div>
         break;
     }
 
@@ -168,6 +200,7 @@ class Sentiment extends Component {
               <p>Sentiment</p>
             </Hidden>
             {pieChart}
+            {/* {errorMessage} */}
           </Col>
           <Col sm={4} md={4} xs={12} className="tweet">
             <Hidden smUp>
