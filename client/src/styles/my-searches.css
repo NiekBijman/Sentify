@@ -31,18 +31,16 @@ tr i:hover {
     margin-top: 0 !important;
 }
 
-@media screen and (max-width: 1219px) {
+@media screen and (max-width: 807px) {
     [class*="SearchNav-"] {
-        width: 60vw !important;
+        margin-left: 0 !important;
+        width: 100% !important;
+        transform: none !important;
     }
 }
 
 @media screen and (max-width: 767px) {
     .container-my-searches {
         margin: 5%;
-    }
-
-    [class*="SearchNav-"] {
-        width: 100% !important;
     }
 }

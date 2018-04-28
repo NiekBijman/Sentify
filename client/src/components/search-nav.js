@@ -6,13 +6,11 @@ import Tabs, { Tab } from 'material-ui/Tabs';
 
 const styles = theme => ({
   root: {
-    // flexGrow: 1,
     marginTop: theme.spacing.unit * 3,
-    // width: '20vw',
     padding: '0',
-    size: '80%',
     transform: 'scale(0.7)',
-    // width: '70%'
+    width: '50vw',
+    marginLeft: '-36%'
   },
 });
 
@@ -41,8 +39,8 @@ class SearchNav extends React.Component {
             onChange={this.handleChange}
             indicatorColor="primary"
             textColor="primary"
-            // scrollable
-            // scrollButtons="auto"
+            scrollable
+            scrollButtons="auto"
           >
             <Tab label="SENTIMENT" />
             <Tab label="LIVE TWEETS" />

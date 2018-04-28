@@ -74,6 +74,7 @@
   border-radius: 10px;
   position: relative;
   padding: 0% 10% 0% 10%;
+  width: 100%;
 }
 
 @media screen and (min-width: 576px) and (max-width: 807px) {

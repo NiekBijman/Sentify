@@ -169,11 +169,11 @@ class Sentiment extends Component {
             </Hidden>
             {pieChart}
           </Col>
-          <Col sm={4} md={4} xs={12}>
+          <Col sm={4} md={4} xs={12} className="tweet">
             <Hidden smUp>
               <p>Most Popular</p>
             </Hidden>
-            <TweetEmbed id='692527862369357824' options={{cards: 'hidden' }} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
+            <TweetEmbed id='692527862369357824' options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
           </Col>
         </Row>
       </div>

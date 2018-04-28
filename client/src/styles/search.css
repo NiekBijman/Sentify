@@ -48,7 +48,6 @@ h1{
 
 @media screen and (max-width: 466px) {
   .container-discover .container-search {
-    width: 96%;
-    padding: 0 2%;
+    padding: 0 5%;
   }
 }

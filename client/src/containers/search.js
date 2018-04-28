@@ -119,9 +119,7 @@ class Search extends Component {
           <Row id='searchInput'>
             <SearchInput handleInput={this.handleInput.bind(this)} searchInput={this.state.searchInput} searchSuggestion={this.state.searchSuggestion} page={1}/>
           </Row>
-          <Row>
-            <SearchNav page={this.state.page}/>
-          </Row>
+          <SearchNav page={this.state.page}/>
           <Row id='date-location'>
             <Col xs={2} sm={2} md={2} className='text'>
               <p>FROM</p>
