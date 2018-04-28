@@ -7,7 +7,7 @@ import { modelInstance } from '../model/model';
 import {debounce} from 'throttle-debounce';
 import '../styles/search.css';
 import { Row, Col } from 'react-flexbox-grid';
-import properCase from 'propercase'
+import properCase from 'propercase';
 
 
 class Search extends Component {
