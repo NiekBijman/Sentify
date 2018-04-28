@@ -12,12 +12,13 @@ import properCase from 'propercase';
 
 class Search extends Component {
   constructor(props){
-    super(props)
+    super(props);
+    var today = new Date();
     this.state = {
       data: null,
       searchSuggestion: 'Search for tweets here',
       anchorEl: null,
-      date: 'Today',
+      date: today.toJSON(),
       page: 0,
       placeName: 'the World'
     }
