@@ -7,7 +7,7 @@ import d3 from 'd3';
 class SentimentPie extends React.Component {
   constructor(props) {
     super(props);
-    this.colorScale = ['#2ecc71', '#e74c3c', '#e3c800'];
+    this.colorScale = ['#A5C05B', '#D24136', '#C0B2B5'];
     this.renderSlice = this.renderSlice.bind(this);
   }
 
@@ -46,7 +46,7 @@ export default SentimentPie;
 //         pieChart = <div className="modal_loading"></div>
 //         break;
 //     case 'LOADED':
-//         pieChart =            
+//         pieChart =
 //             /*{ <Col xs={4} className='labels'>
 //               <Row>
 //                 <div className='box negative'/>
