@@ -35,21 +35,48 @@ class Sentiment extends Component {
   }
 
   update(details){
-      // if (details==="tweetSearch") {
+    if (details==="sentimentSet") {
+      this.calculateSentiment();
+      this.setState({
+        searchInput: modelInstance.getSearch(),
+        placeName: modelInstance.getPlaceName(),
+        tweets: modelInstance.getTweetAmount()
+      })
+    }
+  }
+
+  calculateSentiment = () => {
     let result = modelInstance.getSentimentData();
-    // if(result !== null){
-      // console.log(result);
-    // }
+    let sentiment = {positive: undefined, negative: undefined, neutral: undefined};
+    let pos = 0;
+    let neg = 0;
+    let neu = 0;
+
+
+    result.data.map(data =>{
+      switch(data.polarity){
+        case 4:
+          pos += 1
+          break
+        case 0:
+          neg += 1
+          break
+        case 2:
+          neu += 1
+          break
+      }
+    })
+
+    let total = pos + neg + neu;
+    sentiment.positive = (pos/total)*100;
+    sentiment.negative = (neg/total)*100;
+    sentiment.neutral = (neu/total)*100;
 
     this.setState({
-      positive: (result !== null && result !== undefined) ? Math.round(result.positive*100) : 50,
-      negative:  (result !== null && result !== undefined) ? Math.round(result.negative*100) : 40,
-      neutral: (result !== null && result !== undefined) ? Math.round(result.neutral*100) : 10,
-      searchInput: modelInstance.getSearch(),
-      placeName: modelInstance.getPlaceName(),
-      tweets: modelInstance.getTweetAmount()
+      positive: (result !== null) ? Math.round(sentiment.positive) : 50,
+      negative:  (result !== null) ? Math.round(sentiment.negative) : 40,
+      neutral: (result !== null) ? Math.round(sentiment.neutral) : 10,
     })
-      // }
   }
 
   handleTweetLoadError = event => {
@@ -77,7 +104,7 @@ class Sentiment extends Component {
         pieChart = <div className="modal_loading"></div>
         break;
       case 'LOADED':
-        pieChart =            
+        pieChart =
             <svg width="100%" height="100%">
               <SentimentPie x={x}
                             y={y}

@@ -3,7 +3,7 @@ import Map from './map';
 import Search from './search';
 import SentimentContainer from './sentiment';
 
-class Discover extends React.Component {
+class DiscoverContainer extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -36,4 +36,4 @@ class Discover extends React.Component {
     }
 }
 
-export default Discover;
+export default DiscoverContainer;
