@@ -64,22 +64,12 @@ class Map extends React.Component {
             circleControl: circleControl
           })
 
-          // var dotsControl = new UserLocations(svg)
-          //   .projection(project)
-          //   .inverseProjection(function(a) {
-          //     return map.unproject({x: a[0], y: a[1]});
-          //   })
-          //   .activate(active)
-
-
           function project(d) {
             return map.project(getLL(d));
           }
           function getLL(d) {
             return new mapboxgl.LngLat(+d.lng, +d.lat)
           }
-          // render our initial visualization
-
 
           // re-render our visualization whenever the view changes
           // map.on("viewreset", () => {
@@ -87,16 +77,10 @@ class Map extends React.Component {
           // })
           map.on("move", () => {
             this.circleRender(circleControl, svg, this.state.userLocations)
-            // this.dotsRender(dotsControl, svg)
-            // this.dotsRender(dotsControl, svg)
           })
 
           // render our initial visualization
           this.circleRender(circleControl, svg, this.state.userLocations)
-          // this.dotsRender(dotsControl, svg)
-          // this.renderCoordinates()
-          // this.dotsRender(dotsControl, svg)
-
 
          map.on('move', () => {
             const { lng, lat } = map.getCenter();
