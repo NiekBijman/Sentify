@@ -1,6 +1,14 @@
 import React from 'react';
 import Button from 'material-ui/Button';
 import Snackbar from 'material-ui/Snackbar';
+import { withStyles } from 'material-ui/styles';
+
+
+const action = (
+<Button color="secondary" size="small">
+  Find out more
+</Button>
+);
 
 class Notification extends React.Component {
   constructor(props){
@@ -21,9 +29,10 @@ class Notification extends React.Component {
     const { open, text } = this.state;
     return (
         <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           open={open}
           onClose={this.handleClose}
+          action={action}
           SnackbarContentProps={{
             'aria-describedby': 'message-id',
           }}

@@ -61,7 +61,7 @@ class DiscoverContainer extends React.Component {
                     <Map/>
                   </div>
                   <div className="intro">
-                      <ButtonImportant text='Explain App' toggleSteps={this.toggleSteps.bind(this)}/>
+                      <ButtonImportant size="small" text='Explain App' toggleSteps={this.toggleSteps.bind(this)}/>
                   </div>
                   <div className='container-search'>
                     <Search handleStatusChange={this.handleStatusChange}/>
