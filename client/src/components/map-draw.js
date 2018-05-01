@@ -7,6 +7,7 @@ const DrawCircle = (svg, locations) => {
   let circleClicked =false; //did the user click on the circle or the map?
   let dragging = false; //track whether we are dragging
   let active = false; // user can turn on/off this behavior
+  let doubleClicked = false;
   let container = svg; // the container we render our points in
   let userLocations = locations
 
@@ -47,17 +48,35 @@ const DrawCircle = (svg, locations) => {
     // if(circleSelected){
     //   console.log('Distance = ' + calcDist(circleCenter, circleOuter).toFixed(0) + ' km');
     // }
+    if(!doubleClicked){
+      //Search the place name for this coordinate
+      reverseGeocode(circleCenter.lat, circleCenter.lng);
+    }
 
-    //Search the place name for this coordinate
-    reverseGeocode(circleCenter.lat, circleCenter.lng);
 
     if(circleCenter) {
       //Setting geocode as a parameter for Search Tweets
       geoCode(circleCenter.lat, circleCenter.lng, calcDist(circleCenter, circleOuter));
     }
-    // we let the user know
+
+    doubleClicked = false;
     update()
   })
+
+  svg.on("dblclick",function(){
+    // start over
+    circleCenter = null;
+    circleOuter = null;
+    circleSelected = false;
+    doubleClicked = true;
+    container.selectAll("circle.lasso").remove();
+    container.selectAll("circle.control").remove();
+    container.selectAll("line.lasso").remove();
+    container.selectAll("circle.dot").remove();
+
+    dispatch.clear();
+   });
+
   svg.on("mousemove.circle", function() {
     if(!active) return;
     if(circleSelected) return;
@@ -206,7 +225,6 @@ const DrawCircle = (svg, locations) => {
       })
 
       dots.on('click', element => {
-        console.log('hey');
         modelInstance.setUserId(element.id);
       })
     }
