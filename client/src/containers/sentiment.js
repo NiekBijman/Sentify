@@ -8,7 +8,7 @@ import { modelInstance } from '../model/model';
 import Dimensions from 'react-dimensions';
 import PropTypes from 'prop-types';
 import TweetEmbed from 'react-tweet-embed';
-import Notification from '../components/notification'
+import Notification from '../components/notification';
 
 class Sentiment extends Component {
   constructor(props){

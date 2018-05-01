@@ -14,6 +14,10 @@ const styles = theme => ({
     border: '1px solid #4caf50',
     backgroundColor: 'transparent',
     color: '#4caf50',
+    '&:hover': {
+      backgroundColor: '#4caf50',
+      color: '#fff',
+    },
   },
   cssRoot: {
     color: theme.palette.getContrastText(red[500]),

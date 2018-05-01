@@ -44,14 +44,12 @@
   margin: 0;
 }
 
-
-
 .sentiment-pie svg {
   position: inherit;
 }
 
 .tweets-info {
-  padding-top: 10%;
+  padding-top: 5%;
 }
 
 .tweets-info-title {
