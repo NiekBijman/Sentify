@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import Button from 'material-ui/Button';
-import {firebaseConfig} from "./config";
 var firebase = require("firebase");
-firebase.initializeApp(firebaseConfig);
 
 
 

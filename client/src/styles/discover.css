@@ -16,6 +16,11 @@
   height: 25%;
 }
 
+.intro{
+  text-align: right;
+  padding-top: 8px;
+}
+
 #title-steps {
   font-family: Roboto medium;
   height: auto;
@@ -38,6 +43,8 @@
   height: 100%;
   margin: 0;
 }
+
+
 
 .sentiment-pie svg {
   position: inherit;

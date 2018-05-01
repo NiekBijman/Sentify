@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import ButtonDiscover from '../components/button-discover';
+import ButtonImportant from '../components/button-important';
 import SearchInput from '../components/search-input';
 import { Row, Col } from 'react-flexbox-grid';
 import Hidden from 'material-ui/Hidden';
@@ -44,7 +44,7 @@ class Welcome extends React.Component {
           <div className="container-search">
             <SearchInput handleInput={this.handleInput.bind(this)} page={1}/>
             <Link to="/discover">
-                <ButtonDiscover handleClick = {this.handleClick}/>
+                <ButtonImportant text='Discover'  handleClick = {this.handleClick}/>
             </Link>
           </div>
         </div>

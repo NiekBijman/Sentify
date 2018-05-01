@@ -8,6 +8,7 @@ import { modelInstance } from '../model/model';
 import Dimensions from 'react-dimensions';
 import PropTypes from 'prop-types';
 import TweetEmbed from 'react-tweet-embed';
+import Notification from '../components/notification'
 
 class Sentiment extends Component {
   constructor(props){
@@ -20,7 +21,8 @@ class Sentiment extends Component {
       searchInput: "All Tweets",
       placeName: modelInstance.getPlaceName(),
       tweetAmount: modelInstance.getTweetAmount(),
-      mostPopularTweetId: modelInstance.getMostPopularTweet() || '692527862369357824',
+      geoLocated: null,
+      userId: '692527862369357824'
     }
   }
 
@@ -38,6 +40,10 @@ class Sentiment extends Component {
   }
 
   update(details){
+    if(details ==='tweetsSet'){
+      this.sentimentAnalysis();
+    }
+
     if (details==="sentimentSet") {
       this.calculateSentiment();
       this.setState({
@@ -47,6 +53,37 @@ class Sentiment extends Component {
         mostPopularTweetId: modelInstance.getMostPopularTweet(),
       })
     }
+
+    if(details==="emptySearch"){
+      this.setState({
+        status: 'EMPTY'
+      });
+    }
+
+    if(details==='userLocationsSet'){
+      this.setState({
+        geoLocated: modelInstance.getUserLocations().locations.length
+      })
+    }
+
+    if(details==='userIdSet'){
+      this.setState({
+        userId: modelInstance.getUserId()
+      })
+    }
+  }
+
+  sentimentAnalysis = () => {
+      modelInstance.analyzeSentiment().then(result => {
+        modelInstance.setSentimentData(result);
+        this.setState({
+          status: 'LOADED SENTIMENT'
+        });
+      }).catch(() => {
+        this.setState({
+          status: 'ERROR'
+        });
+    });
   }
 
   calculateSentiment = () => {
@@ -93,6 +130,9 @@ class Sentiment extends Component {
   handlePDFCreation = event => {
     alert("Creating PDF");
   }
+  showNotification = () => {
+    this.setState({ open: true});
+  };
 
   render(){
     let width = this.props.containerWidth / 3;
@@ -117,13 +157,18 @@ class Sentiment extends Component {
                             y={y}
                             innerRadius={radius * .35}
                             outerRadius={radius}
-                            cornerRadius={7}
+                            cornerRadius={2}
                             padAngle={.02}
                             data={[this.state.positive, this.state.negative, this.state.neutral]}/>
             </svg>
         break;
+
+      case 'EMPTY':
+        pieChart = <Notification open={this.showNotification} text="We couldn't find any tweets for that search"/>
+      break;
+
       default:
-        pieChart = <div className="error">Failed to load data, please try again</div>
+        pieChart = <Notification open={this.showNotification} text='There seems to be an error in your request'/> //  <div className="error">Failed to load data, please try again</div>
         break;
     }
 
@@ -131,10 +176,10 @@ class Sentiment extends Component {
       <div>
         <Hidden only="xs">
           <Row id="title-steps">
-            <Col sm={4} md={4}>Tweets</Col>
+            <Col sm={4} md={4}>Info</Col>
             <Col sm={4} md={4}>Sentiment</Col>
             <Col sm={4} md={4}>
-              Most Popular
+              Tweets
               <div className="createPDF">
                 <SentimentPDF handlePDFCreation={this.handlePDFCreation} page={0}/>
               </div>
@@ -144,7 +189,7 @@ class Sentiment extends Component {
         <Row id="content-steps">
           <Col sm={4} md={4} xs={12}>
             <Hidden smUp>
-              <p>Tweets</p>
+              <p>Info</p>
             </Hidden>
             <div className="tweets-info">
               <Row>
@@ -154,6 +199,10 @@ class Sentiment extends Component {
               <Row>
                 <Col xs={6} className="tweets-info-title">Amount of tweets:</Col>
                 <Col xs={6} className="tweets-info-value">{this.state.tweetAmount}</Col>
+              </Row>
+              <Row>
+                <Col xs={6} className="tweets-info-title">Geolocated Tweets:</Col>
+                <Col xs={6} className="tweets-info-value">{this.state.geoLocated}</Col>
               </Row>
               <Row>
                 <Col xs={6} className="tweets-info-title">Geography:</Col>
@@ -183,12 +232,12 @@ class Sentiment extends Component {
           </Col>
           <Col sm={4} md={4} xs={12} className="tweet">
             <Hidden smUp>
-              <p>Most Popular</p>
+              <p>Tweets</p>
               <div className="createPDF">
                 <SentimentPDF handlePDFCreation={this.handlePDFCreation} page={0}/>
               </div>
             </Hidden>
-            <TweetEmbed id={this.state.mostPopularTweetId} options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
+            <TweetEmbed id={this.state.userId} options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
           </Col>
         </Row>
       </div>

@@ -19,9 +19,11 @@ const Model = function () {
   let longitude = '';
   let placeName = 'the World';
   let coordinates = [5,34];
+  let userLocations = {locations:[]};
+  let userId = '';
 
   //Tweets
-  let tweetAmount = 0;
+  let tweetAmount = null;
   let tweetsJSON = null;
   let tweets = null;
 
@@ -92,10 +94,15 @@ const Model = function () {
 
   this.setTweets = function(results){
     console.log(results);
-    
+
     //Set twitter responses
     tweets = results.data.statuses
     tweetAmount = results.data.statuses.length;
+    this.setUserLocations(results);
+
+    if(results.data.statuses.length === 0){
+      notifyObservers('emptySearch');
+    }
 
     //Build the object to POST to Sentiment Analysis
     const tweetObject = results.data.statuses.map(function(tweet){
@@ -103,6 +110,33 @@ const Model = function () {
     })
     tweetsJSON = JSON.stringify({data: tweetObject})
     notifyObservers('tweetsSet');
+  }
+
+
+
+  this.setUserLocations = tweets => {
+    var coordinates = tweets.data.statuses.reduce((coordinates, tweet) => {
+      if(tweet.coordinates !== null){
+        coordinates.push({lng: tweet.coordinates.coordinates[0], lat: tweet.coordinates.coordinates[1], id: tweet.id_str});
+      }
+      return coordinates;
+    }, []);
+    userLocations = {locations: coordinates}
+    notifyObservers('userLocationsSet');
+  }
+
+  this.getUserLocations = function(){
+    return userLocations;
+  }
+
+  this.setUserId = function(id){
+    userId = id;
+    console.log(userId);
+    notifyObservers('userIdSet');
+  }
+
+  this.getUserId = function(){
+    return userId;
   }
 
   this.getTweetAmount = function(){

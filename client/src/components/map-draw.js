@@ -1,14 +1,15 @@
 import * as d3 from "d3";
 import { modelInstance } from '../model/model';
 
-const DrawCircle = (svg) => {
-  let that = this;
+const DrawCircle = (svg, locations) => {
   let circleCenter, circleOuter; //control points
   let circleSelected = false; //have we completed the circle?
   let circleClicked =false; //did the user click on the circle or the map?
   let dragging = false; //track whether we are dragging
   let active = false; // user can turn on/off this behavior
+  let doubleClicked = false;
   let container = svg; // the container we render our points in
+  let userLocations = locations
 
   // this will likely be overriden by leaflet projection
   let project = d3.geo.mercator();
@@ -47,17 +48,35 @@ const DrawCircle = (svg) => {
     // if(circleSelected){
     //   console.log('Distance = ' + calcDist(circleCenter, circleOuter).toFixed(0) + ' km');
     // }
+    if(!doubleClicked){
+      //Search the place name for this coordinate
+      reverseGeocode(circleCenter.lat, circleCenter.lng);
+    }
 
-    //Search the place name for this coordinate
-    reverseGeocode(circleCenter.lat, circleCenter.lng);
 
     if(circleCenter) {
       //Setting geocode as a parameter for Search Tweets
       geoCode(circleCenter.lat, circleCenter.lng, calcDist(circleCenter, circleOuter));
     }
-    // we let the user know
+
+    doubleClicked = false;
     update()
   })
+
+  svg.on("dblclick",function(){
+    // start over
+    circleCenter = null;
+    circleOuter = null;
+    circleSelected = false;
+    doubleClicked = true;
+    container.selectAll("circle.lasso").remove();
+    container.selectAll("circle.control").remove();
+    container.selectAll("line.lasso").remove();
+    container.selectAll("circle.dot").remove();
+
+    dispatch.clear();
+   });
+
   svg.on("mousemove.circle", function() {
     if(!active) return;
     if(circleSelected) return;
@@ -96,8 +115,11 @@ const DrawCircle = (svg) => {
     //   },100)
     // })
 
-  function update(g) {
+
+  function update(g, users) {
     if(g) container = g;
+    if(users) userLocations = users;
+    // console.log(userLocations);
     if(!circleCenter || !circleOuter) return;
     let dist = distance(circleCenter, circleOuter)
     let circleLasso = container.selectAll("circle.lasso").data([dist])
@@ -112,6 +134,8 @@ const DrawCircle = (svg) => {
       container.selectAll("circle.lasso").remove();
       container.selectAll("circle.control").remove();
       container.selectAll("line.lasso").remove();
+      container.selectAll("circle.dot").remove();
+
       dispatch.clear();
     }).on('mouseenter', function() {
       if(!active) return;
@@ -172,6 +196,39 @@ const DrawCircle = (svg) => {
       "cursor": active ? "move" : null
     })
     .call(drag)
+
+    if(circleSelected && userLocations.length !== 0){
+
+      let dots = container.selectAll("circle.dot")
+        .data(userLocations.locations)
+
+      console.log(userLocations)
+      dots.enter().append("circle").classed("dot", true)
+      .attr("r", 1)
+      .style({
+          fill: "#0082a3",
+          "fill-opacity": 0.6,
+          // stroke: "#004d60"
+      })
+      .transition().duration(1000)
+      .attr("r", 6)
+
+      dots.attr({
+        cx: function(d) {
+          var x = project(d).x;
+          return x
+        },
+        cy: function(d) {
+          var y = project(d).y;
+          return y
+        },
+      })
+
+      dots.on('click', element => {
+        modelInstance.setUserId(element.id);
+      })
+    }
+
 
     dispatch.update();
   }
