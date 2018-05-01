@@ -98,7 +98,6 @@ class Search extends Component {
     });
   }
 
-
   update(details){
     if(details ==='geoCodeSet' && modelInstance.getGeocode() !== ''){
       this.searchTweets();

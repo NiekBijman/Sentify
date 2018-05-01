@@ -58,25 +58,58 @@
   font-family: Roboto light;
 }
 
-iframe {
+iframe, twitterwidget {
   min-width: 100% !important;
+  margin-top: 0 !important;
 }
 
-.modal_loading {
-  height: 100%;
-  width: 100%;
-  background: url('../media/loading.gif')
-              50% 50%
-              no-repeat;
+.progress {
+  margin-top: 10%;
 }
 
 .error {
   padding-top: 20%;
 }
 
-[class*="SearchNav-"] > header {
+.container-discover [class*="SearchNav-"] {
+  transform: scale(0.7);
+  width: 50vw;
+  padding: 0;
+  margin: 0 0 0 -36%;
+}
+
+.container-discover [class*="SearchNav-"] > header {
   background-color: transparent;
   box-shadow: none;
+}
+
+.createPDF {
+  float: right;
+}
+
+.createPDF i {
+  font-size: -webkit-xxx-large;
+  color: #7f8c8d;
+}
+
+.createPDF i:hover {
+  cursor: pointer;
+  color: #2c3e50;
+}
+
+
+@media screen and (max-width: 807px) {
+  .container-discover [class*="SearchNav-"] {
+      margin-left: 0 !important;
+      width: 100% !important;
+      transform: none !important;
+  }
+}
+
+@media screen and (min-width: 576px) and (max-width: 599px) {
+  .createPDF {
+    float: none;
+  }
 }
 
 @media screen and (max-width: 575px) {

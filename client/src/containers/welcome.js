@@ -42,9 +42,7 @@ class Welcome extends React.Component {
       <div className="container-welcome">
         <div className="container-top">
           <div className="container-search">
-            <SearchInput handleInput= {this.handleInput.bind(this)} page={1}/>
-            {/* <p>Data about trending topics around the world</p> */}
-            {/* <Link to={"/dish/" + dish.id} > */}
+            <SearchInput handleInput={this.handleInput.bind(this)} page={1}/>
             <Link to="/discover">
                 <ButtonDiscover handleClick = {this.handleClick}/>
             </Link>

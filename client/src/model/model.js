@@ -38,15 +38,6 @@ const Model = function () {
     {"id":7, "subject":"#FindKadyrovsCat", "Location": "Europe", "dateStart": "01-11-17", "dateFinish": "05-11-17", "dateCreated": "06-11-17", "downloadPDF": true}
   ]};
 
-  // {"data": [{"text": "I love Titanic.", "id":1234, "polarity": 4},
-  // {"text": "I love Titanic.", "id":1234, "polarity": 4},
-  // {"text": "I don't mind Titanic.", "id":1234, "polarity": 2},
-  // {"text": "I like Titanic.", "id":1234, "polarity": 4},
-  // {"text": "I hate Titanic.", "id":4567, "polarity": 0}]};
-
-
-  // API Calls
-
   this.setContainer = function(input){
     container = input;
     notifyObservers();
@@ -118,6 +109,10 @@ const Model = function () {
     return tweetAmount;
   }
 
+  this.getTweets = function() {
+    return tweets;
+  }
+
   this.setSentimentData = function(results){
     sentimentData = results;
     notifyObservers('sentimentSet');
@@ -136,6 +131,21 @@ const Model = function () {
       return !selectedSearches.includes(el.id);
     });
     notifyObservers();
+  }
+
+  this.getMostPopularTweet = () => {
+    let maxRetweets = 0;
+    let mostPopularTweetId = null;
+
+    if (tweets !== null) {
+      tweets.forEach(function (tweet, index) {
+        if (tweet.retweet_count > maxRetweets) {
+          maxRetweets = tweet.retweet_count;
+          mostPopularTweetId = tweet.id;
+        }
+      });
+      return mostPopularTweetId.toString();
+    }
   }
 
   //API Calls
