@@ -7,10 +7,8 @@ import Tabs, { Tab } from 'material-ui/Tabs';
 const styles = theme => ({
   root: {
     marginTop: theme.spacing.unit * 3,
-    padding: '0',
-    transform: 'scale(0.7)',
-    width: '50vw',
-    marginLeft: '-36%'
+    flexGrow: 1,
+    width: '44vw',
   },
 });
 

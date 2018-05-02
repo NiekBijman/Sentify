@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import Hidden from 'material-ui/Hidden';
 import { Row, Col } from 'react-flexbox-grid';
 import SentimentPie from '../components/sentiment-pie';
+import CircularIndeterminate from '../components/circular-indeterminate';
+import SentimentPDF from '../components/sentiment-pdf';
 import { modelInstance } from '../model/model';
 import Dimensions from 'react-dimensions';
 import PropTypes from 'prop-types';
 import TweetEmbed from 'react-tweet-embed';
-import Notification from '../components/notification'
+import Notification from '../components/notification';
 
 class Sentiment extends Component {
   constructor(props){
@@ -18,7 +20,7 @@ class Sentiment extends Component {
       sentiment: modelInstance.getSentimentData(),
       searchInput: "All Tweets",
       placeName: modelInstance.getPlaceName(),
-      tweets: modelInstance.getTweetAmount(),
+      tweetAmount: modelInstance.getTweetAmount(),
       date: modelInstance.getDateString(),
       geoLocated: null,
       userId: '692527862369357824'
@@ -60,7 +62,8 @@ class Sentiment extends Component {
       this.setState({
         searchInput: modelInstance.getSearch(),
         placeName: modelInstance.getPlaceName(),
-        tweets: modelInstance.getTweetAmount()
+        tweetAmount: modelInstance.getTweetAmount(),
+        mostPopularTweetId: modelInstance.getMostPopularTweet(),
       })
     }
 
@@ -126,7 +129,6 @@ class Sentiment extends Component {
     let neg = 0;
     let neu = 0;
 
-
     result.data.map(data =>{
       switch(data.polarity){
         case 4:
@@ -161,6 +163,9 @@ class Sentiment extends Component {
     console.log('Tweet loaded successfully');
   }
 
+  handlePDFCreation = event => {
+    alert("Creating PDF");
+  }
   showNotification = () => {
     this.setState({ open: true});
   };
@@ -179,7 +184,7 @@ class Sentiment extends Component {
 
     switch (this.props.status) {
       case 'INITIAL':
-        pieChart = <div className="modal_loading"></div>
+        pieChart = <CircularIndeterminate/>
         break;
       case 'LOADED':
         pieChart =
@@ -209,7 +214,12 @@ class Sentiment extends Component {
           <Row id="title-steps">
             <Col sm={4} md={4}>Info</Col>
             <Col sm={4} md={4}>Sentiment</Col>
-            <Col sm={4} md={4}>Tweets</Col>
+            <Col sm={4} md={4}>
+              Tweets
+              <div className="createPDF">
+                <SentimentPDF handlePDFCreation={this.handlePDFCreation} page={0}/>
+              </div>
+            </Col>
           </Row>
         </Hidden>
         <Row id="content-steps">
@@ -224,7 +234,7 @@ class Sentiment extends Component {
               </Row>
               <Row>
                 <Col xs={6} className="tweets-info-title">Amount of tweets:</Col>
-                <Col xs={6} className="tweets-info-value">{this.state.tweets}</Col>
+                <Col xs={6} className="tweets-info-value">{this.state.tweetAmount}</Col>
               </Row>
               <Row>
                 <Col xs={6} className="tweets-info-title">Geolocated Tweets:</Col>
@@ -255,6 +265,9 @@ class Sentiment extends Component {
           <Col sm={4} md={4} xs={12} className="tweet">
             <Hidden smUp>
               <p>Tweets</p>
+              <div className="createPDF">
+                <SentimentPDF handlePDFCreation={this.handlePDFCreation} page={0}/>
+              </div>
             </Hidden>
             <TweetEmbed id={this.state.userId} options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
           </Col>

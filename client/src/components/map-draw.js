@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import { modelInstance } from '../model/model';
+import {debounce} from 'throttle-debounce';
 
 const DrawCircle = (svg, locations) => {
   let circleCenter, circleOuter; //control points
@@ -7,6 +8,7 @@ const DrawCircle = (svg, locations) => {
   let circleClicked =false; //did the user click on the circle or the map?
   let dragging = false; //track whether we are dragging
   let active = false; // user can turn on/off this behavior
+  let doubleClicked = false;
   let container = svg; // the container we render our points in
   let userLocations = locations
 
@@ -16,6 +18,8 @@ const DrawCircle = (svg, locations) => {
 
   //we expose events on our component
   let dispatch = d3.dispatch("update","clear");
+
+  this.geoCode = debounce(1000, this.geoCode);
 
   // The user provides an svg element to listen on events
   svg.on("click", function() {
@@ -47,17 +51,35 @@ const DrawCircle = (svg, locations) => {
     // if(circleSelected){
     //   console.log('Distance = ' + calcDist(circleCenter, circleOuter).toFixed(0) + ' km');
     // }
+    if(!doubleClicked){
+      //Search the place name for this coordinate
+      reverseGeocode(circleCenter.lat, circleCenter.lng);
+    }
 
-    //Search the place name for this coordinate
-    reverseGeocode(circleCenter.lat, circleCenter.lng);
 
     if(circleCenter) {
       //Setting geocode as a parameter for Search Tweets
       geoCode(circleCenter.lat, circleCenter.lng, calcDist(circleCenter, circleOuter));
     }
-    // we let the user know
+
+    doubleClicked = false;
     update()
   })
+
+  svg.on("dblclick",function(){
+    // start over
+    circleCenter = null;
+    circleOuter = null;
+    circleSelected = false;
+    doubleClicked = true;
+    container.selectAll("circle.lasso").remove();
+    container.selectAll("circle.control").remove();
+    container.selectAll("line.lasso").remove();
+    container.selectAll("circle.dot").remove();
+
+    dispatch.clear();
+   });
+
   svg.on("mousemove.circle", function() {
     if(!active) return;
     if(circleSelected) return;
@@ -69,9 +91,13 @@ const DrawCircle = (svg, locations) => {
   })
 
   let drag = d3.behavior.drag()
+    .on('dragstart', function(){
+      d3.event.sourceEvent.stopPropagation();
+    })
     .on("drag", function(d,i) {
       if(!active) return;
       if(circleSelected) {
+        container.selectAll("circle.dot").remove();
         dragging = true;
         let p = d3.mouse(svg.node());
         let ll = unproject([p[0],p[1]])
@@ -84,6 +110,8 @@ const DrawCircle = (svg, locations) => {
           circleOuter.lat -= dlat;
           circleOuter.lng -= dlng;
         }
+        geoCode(circleCenter.lat, circleCenter.lng, calcDist(circleCenter, circleOuter));
+
         update();
       } else {
         return false;
@@ -124,6 +152,8 @@ const DrawCircle = (svg, locations) => {
         fill: "#f44242",
         "fill-opacity": 0.5
       })
+    }).on("mouseover", function() {
+        d3.select(this).style("cursor", "pointer");
     }).on('mouseleave', function() {
       if(!active) return;
       circleLasso.style({
@@ -144,6 +174,8 @@ const DrawCircle = (svg, locations) => {
       "fill-opacity": 0.1
     })
 
+    // LINE (radius)
+
     let line = container.selectAll("line.lasso").data([circleOuter])
     line.enter().append("line").classed("lasso", true)
 
@@ -162,6 +194,8 @@ const DrawCircle = (svg, locations) => {
       line.remove();
     }
 
+    // CIRCLE CONTROLS
+
     let controls = container.selectAll("circle.control")
     .data([circleCenter, circleOuter])
     controls.enter().append("circle").classed("control", true)
@@ -178,12 +212,15 @@ const DrawCircle = (svg, locations) => {
     })
     .call(drag)
 
-    if(circleSelected && userLocations.length !== 0){
+
+    // USER LOCATIONS
+
+    if(userLocations.length !== 0){
 
       let dots = container.selectAll("circle.dot")
         .data(userLocations.locations)
 
-      console.log(userLocations)
+      // console.log(userLocations)
       dots.enter().append("circle").classed("dot", true)
       .attr("r", 1)
       .style({
@@ -193,6 +230,7 @@ const DrawCircle = (svg, locations) => {
       })
       .transition().duration(1000)
       .attr("r", 6)
+
 
       dots.attr({
         cx: function(d) {
@@ -204,9 +242,28 @@ const DrawCircle = (svg, locations) => {
           return y
         },
       })
+      .on('mouseenter', function() {
+        if(!active) return;
+        dots.transition().duration(200)
+        .attr("r", 8)
+        .style({
+          fill: "#ff5454",
+          "fill-opacity":0.9
+        })
+
+        d3.select(this).style("cursor", "pointer");
+      })
+      .on('mouseleave', function() {
+        dots.transition().duration(200)
+        .attr("r", 6)
+        .style({
+            fill: "#0082a3",
+            "fill-opacity": 0.6,
+            // stroke: "#004d60"
+        })
+      })
 
       dots.on('click', element => {
-        console.log('hey');
         modelInstance.setUserId(element.id);
       })
     }
@@ -267,8 +324,8 @@ const DrawCircle = (svg, locations) => {
   function geoCode (lat, lng, distance) {
     if(circleSelected && circleClicked){
       let location = lat.toFixed(6) + ',' + lng.toFixed(6) + ',' + distance.toFixed(0) + 'km';
-      modelInstance.setGeocode(location);
       console.log(location);
+      modelInstance.setGeocode(location);
       return location
     }
   }

@@ -20,11 +20,6 @@
   height: 70%;
 }
 
-.container-top button:hover {
-  background-color: #4caf50;
-  color: #fff;
-}
-
 .container-top a {
   text-decoration: none;
 }

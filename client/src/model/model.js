@@ -180,6 +180,10 @@ const Model = function () {
     return tweetAmount;
   }
 
+  this.getTweets = function() {
+    return tweets;
+  }
+
   this.setSentimentData = function(results){
     sentimentData = results;
     notifyObservers('sentimentSet');
@@ -198,6 +202,21 @@ const Model = function () {
       return !selectedSearches.includes(el.id);
     });
     notifyObservers();
+  }
+
+  this.getMostPopularTweet = () => {
+    let maxRetweets = 0;
+    let mostPopularTweetId = null;
+
+    if (tweets !== null) {
+      tweets.forEach(function (tweet, index) {
+        if (tweet.retweet_count > maxRetweets) {
+          maxRetweets = tweet.retweet_count;
+          mostPopularTweetId = tweet.id;
+        }
+      });
+      return mostPopularTweetId.toString();
+    }
   }
 
   //API Calls

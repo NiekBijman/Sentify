@@ -26,13 +26,13 @@ tr i:hover {
     float: right;
 }
 
-[class*="SearchNav-"] {
+.container-my-searches [class*="SearchNav-"] {
     padding-top: 5%;
     margin-top: 0 !important;
 }
 
 @media screen and (max-width: 807px) {
-    [class*="SearchNav-"] {
+    .container-my-searches [class*="SearchNav-"] {
         margin-left: 0 !important;
         width: 100% !important;
         transform: none !important;
