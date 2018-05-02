@@ -17,7 +17,8 @@ class Search extends Component {
       searchSuggestion: 'Search for tweets here',
       anchorEl: null,
       page: 0,
-      placeName: 'the World'
+      placeName: modelInstance.getPlaceName() === '' ? "LOCATION" : modelInstance.getPlaceName(),
+      searchInput: modelInstance.getSearch()
     }
     // Defining debounce is needed in constructor https://goo.gl/3D3vdf
     this.searchTweets = debounce(500, this.searchTweets);
@@ -26,6 +27,7 @@ class Search extends Component {
 
   componentDidMount() {
     modelInstance.addObserver(this);
+    this.searchTweets();
   }
 
   handleClick = event => {
@@ -39,6 +41,7 @@ class Search extends Component {
   };
 
   handleInput = event => {
+    this.setState({searchInput: event.target.value});
     modelInstance.setSearch(event.target.value);
     this.searchTweets();
   }
@@ -77,7 +80,7 @@ class Search extends Component {
     if( modelInstance.getSearch() === "" ) {
       this.setState({data: null});
       modelInstance.setTweets(null);
-      this.props.handleStatusChange("LOADED");
+      this.props.handleStatusChange("INITIAL");
       return;
     }
     this.props.handleStatusChange('INITIAL');
