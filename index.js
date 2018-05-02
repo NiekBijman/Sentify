@@ -94,8 +94,9 @@ app.get('/api/twitter/search', (req, res) => {
     // result_type: "popular",
     count: 100,
     include_entities: true,
+    until: req.query.until,
   }
-
+  console.log("Searching, q="+parameters.q+", geocode="+parameters.geocode+"until="+parameters.until)
   Twitter.get('search/tweets', parameters)
     .then(response => {
        res.send(response);

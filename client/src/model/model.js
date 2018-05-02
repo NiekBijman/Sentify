@@ -10,14 +10,14 @@ const Model = function () {
   let searchInput = '';
 
   //Date
-  let date ='';
+  let date = new Date();
   let dateRange = '';
 
   //Geocode
   let location = '';
   let latitude = '';
   let longitude = '';
-  let placeName = 'the World';
+  let placeName = '';
   let coordinates = [5,34];
   let userLocations = {locations:[]};
   let userId = '';
@@ -40,6 +40,23 @@ const Model = function () {
     {"id":7, "subject":"#FindKadyrovsCat", "Location": "Europe", "dateStart": "01-11-17", "dateFinish": "05-11-17", "dateCreated": "06-11-17", "downloadPDF": true}
   ]};
 
+  // {"data": [{"text": "I love Titanic.", "id":1234, "polarity": 4},
+  // {"text": "I love Titanic.", "id":1234, "polarity": 4},
+  // {"text": "I don't mind Titanic.", "id":1234, "polarity": 2},
+  // {"text": "I like Titanic.", "id":1234, "polarity": 4},
+  // {"text": "I hate Titanic.", "id":4567, "polarity": 0}]};
+
+
+  // API Calls
+
+  this.setDate = function(dateIn){
+    date = dateIn;
+    notifyObservers("dateSet");
+  }
+  this.getDate = function(){
+    return date;
+  }
+
   this.setContainer = function(input){
     container = input;
     notifyObservers();
@@ -51,7 +68,7 @@ const Model = function () {
 
   this.setSearch = function(search){
     searchInput = search;
-    notifyObservers();
+    notifyObservers("searchInputSet");
   }
 
   this.getSearch = function(){
@@ -65,6 +82,13 @@ const Model = function () {
 
   this.getGeocode = () => {
     return location;
+  }
+
+  this.getDateString = () => {
+    let year = date.getFullYear();
+    let month = date.getMonth()+1;
+    let day = date.getDate();
+    return year+"-"+month+"-"+day;
   }
 
   this.setCoordinates = (lng, lat ) =>{
@@ -99,6 +123,14 @@ const Model = function () {
   this.setTweets = function(results){
 
 
+    if (results === null){
+      tweets = null;
+      tweetAmount = 0;
+      this.setUserLocations(null);
+      notifyObservers("emptySearchString");
+      return;
+    }
+
     //Set twitter responses
     tweets = results.data.statuses
     tweetAmount = results.data.statuses.length;
@@ -118,6 +150,11 @@ const Model = function () {
   }
 
   this.setUserLocations = tweets => {
+    if (tweets === null){
+      userLocations = null;
+      notifyObservers("userLocationsSet");
+      return;
+    }
     var coordinates = tweets.data.statuses.reduce((coordinates, tweet) => {
       if(tweet.coordinates !== null){
         coordinates.push({lng: tweet.coordinates.coordinates[0], lat: tweet.coordinates.coordinates[1], id: tweet.id_str});
@@ -193,7 +230,11 @@ const Model = function () {
 
   //API Calls
   this.searchTweets = function () {
-    const url = '/api/twitter/search?' + 'q=' + searchInput + '&geocode=' + location; //+ 'geocode=' + location;
+    let year = date.getFullYear();
+    let month = date.getMonth()+1; // January is 0 in js
+    let day = date.getDate();
+    let dateParam = year+"-"+month+"-"+day;
+    const url = '/api/twitter/search?' + 'q=' + searchInput + '&geocode=' + location + "&until=" + dateParam; //+ 'geocode=' + location;
     // const url = 'search/tweets?' + 'q=' + searchInput + 'geocode=' + location;
 
     console.log(url);
@@ -249,15 +290,15 @@ const Model = function () {
     throw response;
   }
 
-  const handleError = function (error) {
-    if (error.json) {
-      error.json().then(error => {
-        console.error('API Error:', error.message || error)
-      })
-    } else {
-      console.error('API Error:', error.message || error)
+  const handleError = async function (error) {
+    if (error instanceof Response) {
+      if(error.headers.get("content-type").includes("application/json"))
+        error = await error.json();
+      else error = await error.text();
+    console.error('API Error:', error.message || error)
     }
   }
+
 
   // Observer pattern
   this.addObserver = function (observer) {

@@ -16,9 +16,9 @@ class Search extends Component {
     this.state = {
       searchSuggestion: 'Search for tweets here',
       anchorEl: null,
-      date: today.toJSON(),
       page: 0,
-      placeName: 'the World'
+      placeName: modelInstance.getPlaceName() === '' ? "LOCATION" : modelInstance.getPlaceName(),
+      searchInput: modelInstance.getSearch()
     }
     // Defining debounce is needed in constructor https://goo.gl/3D3vdf
     this.searchTweets = debounce(500, this.searchTweets);
@@ -27,6 +27,7 @@ class Search extends Component {
 
   componentDidMount() {
     modelInstance.addObserver(this);
+    this.searchTweets();
   }
 
   handleClick = event => {
@@ -34,11 +35,13 @@ class Search extends Component {
   };
 
   onDayChange = date => {
-    this.setState({date: date})
     this.setState({ anchorEl: null });
+    modelInstance.setDate(date);
+    this.searchTweets();
   };
 
   handleInput = event => {
+    this.setState({searchInput: event.target.value});
     modelInstance.setSearch(event.target.value);
     this.searchTweets();
   }
@@ -51,6 +54,7 @@ class Search extends Component {
   // Turn uppercase into capitalized strings
   capitalize = str => {
    return str.toLowerCase().split(' ').map(function(word) {
+     if (word[0] === undefined) return "";
      return word.replace(word[0], word[0].toUpperCase());
    }).join(' ');
   }
@@ -74,6 +78,12 @@ class Search extends Component {
   }
 
   searchTweets = () => {
+    if( modelInstance.getSearch() === "" ) {
+      this.setState({data: null});
+      modelInstance.setTweets(null);
+      this.props.handleStatusChange("INITIAL");
+      return;
+    }
     this.props.handleStatusChange('INITIAL');
     modelInstance.searchTweets().then(result => {
       console.log(result);
@@ -87,7 +97,11 @@ class Search extends Component {
     });
   }
 
-
+  handleClose = () => {
+    this.setState({
+      anchorEl:null,
+    });
+  }
 
   update(details){
     if(details ==='geoCodeSet' && modelInstance.getGeocode() !== ''){
@@ -115,7 +129,7 @@ class Search extends Component {
               <p>FROM</p>
             </Col>
             <Col xs={4} sm={4} md={4} className='date'>
-              <SearchDate date={this.state.date} anchorEl={this.state.anchorEl} click={this.handleClick} dayChange={this.onDayChange}/>
+              <SearchDate handleClose={this.handleClose} anchorEl={this.state.anchorEl} click={this.handleClick} dayChange={this.onDayChange}/>
             </Col>
             <Col xs={2} sm={2} md={2} className='text'>
               <p>IN</p>

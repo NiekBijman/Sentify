@@ -18,8 +18,14 @@ class Sentiment extends Component {
       negative: 40,
       neutral: 10,
       sentiment: modelInstance.getSentimentData(),
+<<<<<<< HEAD
       searchInput: "All Tweets",
+=======
+      searchInput: modelInstance.getSearch(),
+      placeName: modelInstance.getPlaceName(),
+>>>>>>> 9f8e14936f5e5e2adc624a479b6b90c655be5c9b
       tweetAmount: modelInstance.getTweetAmount(),
+      date: modelInstance.getDateString(),
       geoLocated: null,
       userId: '692527862369357824',
       placeName: modelInstance.getPlaceName()
@@ -40,7 +46,19 @@ class Sentiment extends Component {
   }
 
   update(details){
+    if(details === "searchInputSet"){
+      this.setState({
+        searchInput: modelInstance.getSearch()
+      });
+    }
+
+    if(details==="emptySearchString"){
+      // Show no sentiment pie chart
+      this.setState({status: "EMPTY"});
+    }
+
     if(details ==='tweetsSet'){
+
       this.sentimentAnalysis();
     }
 
@@ -54,8 +72,15 @@ class Sentiment extends Component {
     }
 
     if(details==='userLocationsSet'){
+      let userLocations = modelInstance.getUserLocations();
+      let length;
+      if(userLocations !== null){
+        length = userLocations.locations.length;
+      }else{
+        length = ""
+      }
       this.setState({
-        geoLocated: modelInstance.getUserLocations().locations.length
+        geoLocated: length
       })
     }
 
@@ -64,23 +89,34 @@ class Sentiment extends Component {
         userId: modelInstance.getUserId()
       })
     }
-    if(details ==='placeNameSet'){
+
+    if(details === "dateSet"){
       this.setState({
-        placeName: modelInstance.getPlaceName() //.toUpperCase()
-      })
+        date: modelInstance.getDateString()
+      });
     }
+
+    if(details==="placeNameSet"){
+      this.setState({
+        placeName: modelInstance.getPlaceName()
+      });
+    }
+
   }
 
+
   sentimentAnalysis = () => {
-      modelInstance.analyzeSentiment().then(result => {
-        modelInstance.setSentimentData(result);
-        this.setState({
-          status:'LOADED SENTIMENT'
-        });
-      }).catch(() => {
-        this.setState({
-          status:'ERROR'
-        });
+    if(this.state.searchInput === "") return;
+
+    modelInstance.analyzeSentiment().then(result => {
+      modelInstance.setSentimentData(result);
+      this.setState({
+        status: 'LOADED SENTIMENT'
+      });
+    }).catch(() => {
+      this.setState({
+        status: 'ERROR'
+      });
     });
   }
 
@@ -228,12 +264,8 @@ class Sentiment extends Component {
                 <Col xs={6} className="tweets-info-value">{this.state.placeName}</Col>
               </Row>
               <Row>
-                <Col xs={6} className="tweets-info-title">Date Range:</Col>
-                <Col xs={6} className="tweets-info-value">14-04-2018 / 20-04-2018</Col>
-              </Row>
-              <Row>
-                <Col xs={6} className="tweets-info-title">Timestamp:</Col>
-                <Col xs={6}className="tweets-info-value">28-02-2018</Col>
+                <Col xs={6} className="tweets-info-title">Until:</Col>
+                <Col xs={6} className="tweets-info-value">{this.state.date}</Col>
               </Row>
             </div>
           </Col>
