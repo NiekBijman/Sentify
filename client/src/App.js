@@ -34,17 +34,3 @@ class App extends Component {
 }
 
 export default App;
-
-// import getMuiTheme from 'material-ui/styles/getMuiTheme';
-// import {red500} from 'material-ui/styles/colors';
-//
-// <MuiThemeProvider muiTheme={muiTheme}>
-//
-// const muiTheme = getMuiTheme({
-//   palette: {
-//     textColor: red500,
-//   },
-//   appBar: {
-//     height: 50,
-//   },
-// });

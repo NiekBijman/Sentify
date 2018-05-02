@@ -63,6 +63,23 @@
   font-family: Roboto light;
 }
 
+#divToPrint {
+  position: absolute;
+  width: 80%;
+  text-align: center;
+  display: none;
+}
+
+#divToPrint .tweets-info {
+  font-size: xx-large;
+}
+
+#divToPrint svg{
+  position: inherit;
+  width: 30%;
+  font-size: initial;
+}
+
 iframe, twitterwidget {
   min-width: 100% !important;
   margin-top: 0 !important;

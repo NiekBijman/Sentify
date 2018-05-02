@@ -1,5 +1,4 @@
 import React from 'react';
-import '../styles/sentiment-pie.css';
 import SentimentSlice from '../components/sentiment-slice';
 import d3 from 'd3';
 
