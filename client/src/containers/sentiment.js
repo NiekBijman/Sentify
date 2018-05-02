@@ -18,12 +18,8 @@ class Sentiment extends Component {
       negative: 40,
       neutral: 10,
       sentiment: modelInstance.getSentimentData(),
-<<<<<<< HEAD
-      searchInput: "All Tweets",
-=======
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
->>>>>>> 9f8e14936f5e5e2adc624a479b6b90c655be5c9b
       tweetAmount: modelInstance.getTweetAmount(),
       date: modelInstance.getDateString(),
       geoLocated: null,
@@ -106,7 +102,7 @@ class Sentiment extends Component {
 
 
   sentimentAnalysis = () => {
-    if(this.state.searchInput === "") return;
+    // if(this.state.searchInput === "") return;
 
     modelInstance.analyzeSentiment().then(result => {
       modelInstance.setSentimentData(result);
