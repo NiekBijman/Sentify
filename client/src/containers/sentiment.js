@@ -9,6 +9,8 @@ import Dimensions from 'react-dimensions';
 import PropTypes from 'prop-types';
 import TweetEmbed from 'react-tweet-embed';
 import Notification from '../components/notification';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 class Sentiment extends Component {
   constructor(props){
@@ -128,8 +130,18 @@ class Sentiment extends Component {
   }
 
   handlePDFCreation = event => {
-    alert("Creating PDF");
+    let input = document.getElementById('divToPrint');
+    input.style.display = 'block';
+    html2canvas(input)
+      .then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        input.style.display = 'none';
+        const pdf = new jsPDF();
+        pdf.addImage(imgData, 'JPEG', 0, 0);
+        pdf.save(this.state.searchInput + ".pdf");
+      });
   }
+
   showNotification = () => {
     this.setState({ open: true});
   };
@@ -240,6 +252,28 @@ class Sentiment extends Component {
             <TweetEmbed id={this.state.userId} options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
           </Col>
         </Row>
+        <div id="divToPrint">
+          <div className="tweets-info">
+            <h2>{this.state.searchInput}</h2>
+            <Row>
+              <Col xs={6} className="tweets-info-title">Amount of tweets:</Col>
+              <Col xs={6} className="tweets-info-value">{this.state.tweetAmount}</Col>
+            </Row>
+            <Row>
+              <Col xs={6} className="tweets-info-title">Location:</Col>
+              <Col xs={6} className="tweets-info-value">{this.state.placeName}</Col>
+            </Row>
+            <Row>
+              <Col xs={6} className="tweets-info-title">Date Range:</Col>
+              <Col xs={6} className="tweets-info-value">14-04-2018 / 20-04-2018</Col>
+            </Row>
+            <Row>
+              <Col xs={6} className="tweets-info-title">Timestamp:</Col>
+              <Col xs={6}className="tweets-info-value">28-02-2018</Col>
+            </Row>
+            {pieChart}
+          </div>
+        </div>
       </div>
     );
   }
