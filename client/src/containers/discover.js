@@ -4,6 +4,8 @@ import Search from './search';
 import SentimentContainer from './sentiment';
 import { Steps } from 'intro.js-react';
 import ButtonImportant from '../components/button-important';
+import { modelInstance } from '../model/model';
+
 
 import 'intro.js/introjs.css';
 import '../styles/discover.css';
@@ -15,6 +17,7 @@ class DiscoverContainer extends React.Component {
         super(props);
         this.state = {
             status: 'INITIAL',
+            notifications: 'INITIAL',
 
             //Intro.js
             initialStep: 0,
@@ -31,6 +34,10 @@ class DiscoverContainer extends React.Component {
         }
     }
 
+    componentDidMount() {
+      modelInstance.addObserver(this);
+    }
+
     handleStatusChange = newStatus => {
         this.setState({
             status: newStatus
@@ -44,6 +51,21 @@ class DiscoverContainer extends React.Component {
     toggleSteps = () => {
       this.setState(prevState => ({ stepsEnabled: !prevState.stepsEnabled }));
     };
+
+
+    update(details){
+        if(details==="emptySearch"){
+          this.setState({
+            notification:'EMPTY'
+          });
+        }
+
+        if(details==="rateLimited"){
+          this.setState({
+            notification:'RATE_LIMITED'
+          });
+        }
+      }
 
     render () {
       const { stepsEnabled, steps, initialStep} = this.state;
@@ -68,7 +90,7 @@ class DiscoverContainer extends React.Component {
                   </div>
               </div>
               <div className="container-discover-bottom">
-                  <SentimentContainer status={this.state.status}/>
+                  <SentimentContainer status={this.state.status} notifications={this.state.notification}/>
               </div>
             </div>
 

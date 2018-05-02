@@ -2,6 +2,7 @@ import React from 'react';
 import Button from 'material-ui/Button';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import { withStyles } from 'material-ui/styles';
+import {modelInstance} from "../model/model";
 
 
 const styles = theme => ({
@@ -26,7 +27,7 @@ const fromToday = num => {
   return date;
 };
 
-const SearchDate = ({date, anchorEl, click, dayChange}) => {
+const SearchDate = ({handleClose, anchorEl, click, dayChange}) => {
 
   /* 
   *  Sets dateString variable to a string that tells us how far back we are searching.
@@ -34,7 +35,7 @@ const SearchDate = ({date, anchorEl, click, dayChange}) => {
   *  Dates more than 7 days ago will be set to 7 days ago.
   */
   const today = new Date();
-  const dateIn = new Date(date);
+  const dateIn = new Date(modelInstance.getDate());
   const diffMillis = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) - Date.UTC(dateIn.getFullYear(), dateIn.getMonth(), dateIn.getDate());
   let diffDays;
   let dateString;
@@ -92,7 +93,7 @@ const SearchDate = ({date, anchorEl, click, dayChange}) => {
         id="simple-menu"
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
-        onClose={ () => dayChange( date ) }
+        onClose={ () => handleClose() }
       >
         {/* {daysList} */}
         <MenuItem onClick={ () => dayChange( fromToday(0) ) }>TODAY</MenuItem>

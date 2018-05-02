@@ -26,7 +26,7 @@ const SearchLocation = props => {
       <TextField
           className={classes.textField}
           value={props.placeName.toUpperCase()}
-          onChange = {evt => props.handleLocation(evt)}
+          onChange={evt => props.handleLocation(evt)}
         />
     </div>
   );

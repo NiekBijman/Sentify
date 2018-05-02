@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import { modelInstance } from '../model/model';
+import {debounce} from 'throttle-debounce';
 
 const DrawCircle = (svg, locations) => {
   let circleCenter, circleOuter; //control points
@@ -10,6 +11,7 @@ const DrawCircle = (svg, locations) => {
   let doubleClicked = false;
   let container = svg; // the container we render our points in
   let userLocations = locations
+  let previousLocation;
 
   // this will likely be overriden by leaflet projection
   let project = d3.geo.mercator();
@@ -18,10 +20,13 @@ const DrawCircle = (svg, locations) => {
   //we expose events on our component
   let dispatch = d3.dispatch("update","clear");
 
+  reverseGeocode = debounce(500, reverseGeocode);
+
   // The user provides an svg element to listen on events
   svg.on("click", function() {
     if(!active) return;
     if(dragging && circleSelected) return;
+    container.selectAll("circle.dot").remove();
 
     let p = d3.mouse(this);
     let ll = unproject([p[0],p[1]]);
@@ -45,13 +50,8 @@ const DrawCircle = (svg, locations) => {
       circleOuter = ll;
     }
 
-    // if(circleSelected){
-    //   console.log('Distance = ' + calcDist(circleCenter, circleOuter).toFixed(0) + ' km');
-    // }
-    if(!doubleClicked){
-      //Search the place name for this coordinate
-      reverseGeocode(circleCenter.lat, circleCenter.lng);
-    }
+    //Search the place name for this coordinate
+      reverseGeocode(circleCenter.lat, circleCenter.lng)
 
 
     if(circleCenter) {
@@ -88,9 +88,13 @@ const DrawCircle = (svg, locations) => {
   })
 
   let drag = d3.behavior.drag()
+    .on('dragstart', function(){
+      d3.event.sourceEvent.stopPropagation();
+    })
     .on("drag", function(d,i) {
       if(!active) return;
       if(circleSelected) {
+        container.selectAll("circle.dot").remove();
         dragging = true;
         let p = d3.mouse(svg.node());
         let ll = unproject([p[0],p[1]])
@@ -103,6 +107,12 @@ const DrawCircle = (svg, locations) => {
           circleOuter.lat -= dlat;
           circleOuter.lng -= dlng;
         }
+
+        //Search the place name for this coordinate
+        reverseGeocode(circleCenter.lat, circleCenter.lng);
+
+        geoCode(circleCenter.lat, circleCenter.lng, calcDist(circleCenter, circleOuter));
+
         update();
       } else {
         return false;
@@ -119,7 +129,64 @@ const DrawCircle = (svg, locations) => {
   function update(g, users) {
     if(g) container = g;
     if(users) userLocations = users;
-    // console.log(userLocations);
+
+    // USER LOCATIONS
+    let dots = container.selectAll("circle.dot")
+      .data(userLocations.locations)
+
+    if(userLocations.locations.length !== 0 && previousLocation !== userLocations){
+      previousLocation = userLocations;
+
+      dots.enter().append("circle").classed("dot", true)
+      .attr("r", 1)
+      .style({
+          fill: "#0082a3",
+          "fill-opacity": 0.6,
+          // stroke: "#004d60"
+      })
+      .transition().duration(1000)
+      .attr("r", 6)
+      .filter(function (d, i) { return i})
+
+      }
+
+
+      dots.attr({
+        cx: function(d) {
+          var x = project(d).x;
+          return x
+        },
+        cy: function(d) {
+          var y = project(d).y;
+          return y
+        },
+      })
+      .on('mouseenter', function(d , i) {
+        d3.select(dots[0][i]).transition().duration(200)
+        .attr("r", 8)
+        .style({
+          fill: "#ff5454",
+          "fill-opacity":0.9
+        })
+
+        d3.select(this).style("cursor", "pointer");
+      })
+      .on('mouseleave', function(d , i) {
+        d3.select(dots[0][i]).transition().duration(200)
+        .attr("r", 6)
+        .style({
+            fill: "#0082a3",
+            "fill-opacity": 0.6,
+            // stroke: "#004d60"
+        })
+      })
+
+      dots.on('click', element => {
+        d3.event.stopPropagation();
+        modelInstance.setUserId(element.id);
+      })
+
+
     if(!circleCenter || !circleOuter) return;
     let dist = distance(circleCenter, circleOuter)
     let circleLasso = container.selectAll("circle.lasso").data([dist])
@@ -136,6 +203,8 @@ const DrawCircle = (svg, locations) => {
       container.selectAll("line.lasso").remove();
       container.selectAll("circle.dot").remove();
 
+      modelInstance.resetPlaceName();
+
       dispatch.clear();
     }).on('mouseenter', function() {
       if(!active) return;
@@ -143,6 +212,8 @@ const DrawCircle = (svg, locations) => {
         fill: "#f44242",
         "fill-opacity": 0.5
       })
+    }).on("mouseover", function() {
+        d3.select(this).style("cursor", "pointer");
     }).on('mouseleave', function() {
       if(!active) return;
       circleLasso.style({
@@ -163,6 +234,8 @@ const DrawCircle = (svg, locations) => {
       "fill-opacity": 0.1
     })
 
+    // LINE (radius)
+
     let line = container.selectAll("line.lasso").data([circleOuter])
     line.enter().append("line").classed("lasso", true)
 
@@ -181,6 +254,8 @@ const DrawCircle = (svg, locations) => {
       line.remove();
     }
 
+    // CIRCLE CONTROLS
+
     let controls = container.selectAll("circle.control")
     .data([circleCenter, circleOuter])
     controls.enter().append("circle").classed("control", true)
@@ -197,37 +272,6 @@ const DrawCircle = (svg, locations) => {
     })
     .call(drag)
 
-    if(circleSelected && userLocations.length !== 0){
-
-      let dots = container.selectAll("circle.dot")
-        .data(userLocations.locations)
-
-      console.log(userLocations)
-      dots.enter().append("circle").classed("dot", true)
-      .attr("r", 1)
-      .style({
-          fill: "#0082a3",
-          "fill-opacity": 0.6,
-          // stroke: "#004d60"
-      })
-      .transition().duration(1000)
-      .attr("r", 6)
-
-      dots.attr({
-        cx: function(d) {
-          var x = project(d).x;
-          return x
-        },
-        cy: function(d) {
-          var y = project(d).y;
-          return y
-        },
-      })
-
-      dots.on('click', element => {
-        modelInstance.setUserId(element.id);
-      })
-    }
 
 
     dispatch.update();
@@ -250,7 +294,6 @@ const DrawCircle = (svg, locations) => {
   }
   this.distance = function(ll) {
     if(!ll) ll = circleOuter;
-    // console.log(distance(circleCenter, ll))
     return distance(circleCenter, ll)
   }
 
@@ -286,20 +329,20 @@ const DrawCircle = (svg, locations) => {
     if(circleSelected && circleClicked){
       let location = lat.toFixed(6) + ',' + lng.toFixed(6) + ',' + distance.toFixed(0) + 'km';
       modelInstance.setGeocode(location);
-      console.log(location);
       return location
     }
   }
 
   function reverseGeocode (lat, lng){
-    if(circleCenter && !circleSelected ){
+    if(circleCenter && (!circleSelected || dragging) ){
       modelInstance.setLatLng(lat.toFixed(6), lng.toFixed(6));
       modelInstance.reverseGeocode(lat, lng).then(result => {
         console.log(result[0].full_name);
         modelInstance.setPlaceName(result[0].full_name);
       })
       .catch((error) => {
-        console.log(error);
+        // console.log('reverseGeocode failed:' + error);
+        modelInstance.setPlaceName('error');
       });
     }
   }

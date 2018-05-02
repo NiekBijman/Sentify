@@ -2,44 +2,37 @@ import React from 'react';
 import Button from 'material-ui/Button';
 import Snackbar from 'material-ui/Snackbar';
 import { withStyles } from 'material-ui/styles';
+import IconButton from 'material-ui/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
+const Notification = props => {
 
-const action = (
-<Button color="secondary" size="small">
-  Find out more
-</Button>
-);
-
-class Notification extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      open: true,
-      vertical: null,
-      horizontal: null,
-      text: props.text
-    };
-  }
-
-  handleClose = () => {
-    this.setState({ open: false });
-  };
-
-  render() {
-    const { open, text } = this.state;
+    const { open, close, text } = props;
     return (
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           open={open}
-          onClose={this.handleClose}
-          action={action}
+          autoHideDuration={6000}
+          onClose={close}
           SnackbarContentProps={{
             'aria-describedby': 'message-id',
           }}
-          message={<span id="message-id">{this.state.text}</span>}
+          message={<span id="message-id">{text}</span>}
+          action={[
+            // <Button key="undo" color="secondary" size="small" onClick={this.handleClose}>
+            //   UNDO
+            // </Button>,
+            <IconButton
+              key="close"
+              aria-label="Close"
+              color="inherit"
+              onClick={close}
+            >
+              <CloseIcon />
+            </IconButton>,
+          ]}
         />
     );
-  }
 }
 
 export default Notification;
