@@ -92,15 +92,12 @@ class Search extends Component {
     });
   }
 
-<<<<<<< HEAD
+
   handleClose = () => {
     this.setState({
       anchorEl:null,
     });
   }
-=======
-
->>>>>>> 5cf8457724c107e47937d71dee1a6d814183a47f
 
   update(details){
     if(details ==='geoCodeSet' && modelInstance.getGeocode() !== ''){
