@@ -78,12 +78,12 @@ class Search extends Component {
   }
 
   searchTweets = () => {
-    if( modelInstance.getSearch() === "" ) {
-      this.setState({data: null});
-      modelInstance.setTweets(null);
-      this.props.handleStatusChange("INITIAL");
-      return;
-    }
+    // if( modelInstance.getSearch() === "" ) {
+    //   this.setState({data: null});
+    //   modelInstance.setTweets(null);
+    //   this.props.handleStatusChange("INITIAL");
+    //   return;
+    // }
     this.props.handleStatusChange('INITIAL');
     modelInstance.searchTweets().then(result => {
       console.log(result);

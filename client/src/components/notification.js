@@ -13,7 +13,7 @@ const Notification = props => {
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           open={open}
           autoHideDuration={6000}
-          onClose={props.handleClose()}
+          onClose={close}
           SnackbarContentProps={{
             'aria-describedby': 'message-id',
           }}
