@@ -19,10 +19,10 @@ class Sentiment extends Component {
       neutral: 10,
       sentiment: modelInstance.getSentimentData(),
       searchInput: "All Tweets",
-      placeName: modelInstance.getPlaceName(),
       tweetAmount: modelInstance.getTweetAmount(),
       geoLocated: null,
-      userId: '692527862369357824'
+      userId: '692527862369357824',
+      placeName: modelInstance.getPlaceName()
     }
   }
 
@@ -48,16 +48,9 @@ class Sentiment extends Component {
       this.calculateSentiment();
       this.setState({
         searchInput: modelInstance.getSearch(),
-        placeName: modelInstance.getPlaceName(),
         tweetAmount: modelInstance.getTweetAmount(),
         mostPopularTweetId: modelInstance.getMostPopularTweet(),
       })
-    }
-
-    if(details==="emptySearch"){
-      this.setState({
-        status: 'EMPTY'
-      });
     }
 
     if(details==='userLocationsSet'){
@@ -71,17 +64,22 @@ class Sentiment extends Component {
         userId: modelInstance.getUserId()
       })
     }
+    if(details ==='placeNameSet'){
+      this.setState({
+        placeName: modelInstance.getPlaceName() //.toUpperCase()
+      })
+    }
   }
 
   sentimentAnalysis = () => {
       modelInstance.analyzeSentiment().then(result => {
         modelInstance.setSentimentData(result);
         this.setState({
-          status: 'LOADED SENTIMENT'
+          status:'LOADED SENTIMENT'
         });
       }).catch(() => {
         this.setState({
-          status: 'ERROR'
+          status:'ERROR'
         });
     });
   }
@@ -130,8 +128,13 @@ class Sentiment extends Component {
   handlePDFCreation = event => {
     alert("Creating PDF");
   }
-  showNotification = () => {
+
+  handleOpen = () => {
     this.setState({ open: true});
+  };
+
+  handleClose = () => {
+    this.setState({ open: false });
   };
 
   render(){
@@ -145,6 +148,7 @@ class Sentiment extends Component {
     let x = width / 2;
     let y = height / 2;
     let pieChart = null;
+    let notification = null;
 
     switch (this.props.status) {
       case 'INITIAL':
@@ -163,13 +167,28 @@ class Sentiment extends Component {
             </svg>
         break;
 
-      case 'EMPTY':
-        pieChart = <Notification open={this.showNotification} text="We couldn't find any tweets for that search"/>
-      break;
+
 
       default:
-        pieChart = <Notification open={this.showNotification} text='There seems to be an error in your request'/> //  <div className="error">Failed to load data, please try again</div>
+        pieChart = <Notification text='There seems to be an error in your request'/> //  <div className="error">Failed to load data, please try again</div>
         break;
+    }
+
+    // Error Messages for App 'misuses'
+    switch (this.props.notifications) {
+      case 'INITIAL':
+        notification = null;
+      break;
+
+      case 'EMPTY':
+        console.log('EMPTY')
+        notification = <Notification open={this.handleOpen.bind(this)} handleClose={this.handleClose.bind(this)} text="We couldn't find any tweets for that search"/>
+      break;
+
+      case 'RATE_LIMITED':
+        console.log('LIMITED');
+        notification = <Notification open={this.handleOpen.bind(this)} close={this.handleClose.bind(this)} text="The app is rate limited for making too many API calls"/>
+      break;
     }
 
     return(
@@ -229,6 +248,7 @@ class Sentiment extends Component {
               <p>Sentiment</p>
             </Hidden>
             {pieChart}
+            {notification}
           </Col>
           <Col sm={4} md={4} xs={12} className="tweet">
             <Hidden smUp>

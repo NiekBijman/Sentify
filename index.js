@@ -64,7 +64,11 @@ app.get('/api/twitter/reverse_geocode', (req, res) => {
     .then(response => {
        res.send(response.data.result.places);
     })
-    .catch(e => res.status(500).send('Something broke!')
+    .catch(e => {
+      // res.status(500).send('Something broke!');
+      res.sendStatus(res.statusCode)
+      console.log("statusCode: ", res.statusCode);
+      }
     )
 });
 
@@ -75,9 +79,9 @@ app.get('/api/twitter/geocode', (req, res) => {
 
   Twitter.get('geo/search', parameters)
     .then(response => {
-       res.send(response.data.result.places[0].bounding_box.coordinates[0][0]);
+       res.send(response.data.result.places[0].centroid);
     })
-    .catch(e => res.status(500).send('Something broke!')
+    .catch(e => res.status(500).send(e)
     )
 
 });

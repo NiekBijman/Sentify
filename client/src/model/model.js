@@ -84,6 +84,10 @@ const Model = function () {
   }
 
   this.setPlaceName = function(string){
+    if(string === 'error'){
+      notifyObservers('rateLimited');
+      return
+    }
     placeName = string;
     notifyObservers('placeNameSet');
   }
@@ -93,7 +97,7 @@ const Model = function () {
   }
 
   this.setTweets = function(results){
-    console.log(results);
+
 
     //Set twitter responses
     tweets = results.data.statuses
@@ -102,6 +106,7 @@ const Model = function () {
 
     if(results.data.statuses.length === 0){
       notifyObservers('emptySearch');
+      return
     }
 
     //Build the object to POST to Sentiment Analysis
@@ -111,8 +116,6 @@ const Model = function () {
     tweetsJSON = JSON.stringify({data: tweetObject})
     notifyObservers('tweetsSet');
   }
-
-
 
   this.setUserLocations = tweets => {
     var coordinates = tweets.data.statuses.reduce((coordinates, tweet) => {
@@ -137,6 +140,12 @@ const Model = function () {
 
   this.getUserId = function(){
     return userId;
+  }
+
+  this.resetPlaceName = function(){
+    placeName = '';
+    location = '';
+    notifyObservers('placeNameReset');
   }
 
   this.getTweetAmount = function(){
@@ -186,6 +195,8 @@ const Model = function () {
   this.searchTweets = function () {
     const url = '/api/twitter/search?' + 'q=' + searchInput + '&geocode=' + location; //+ 'geocode=' + location;
     // const url = 'search/tweets?' + 'q=' + searchInput + 'geocode=' + location;
+
+    console.log(url);
     return fetch(url)
       .then(processResponse)
       .catch(handleError)
