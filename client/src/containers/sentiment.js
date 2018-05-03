@@ -4,6 +4,7 @@ import { Row, Col } from 'react-flexbox-grid';
 import SentimentPie from '../components/sentiment-pie';
 import CircularIndeterminate from '../components/circular-indeterminate';
 import SentimentPDF from '../components/sentiment-pdf';
+import CreatePDFModal from '../components/create-pdf-modal';
 import { modelInstance } from '../model/model';
 import Dimensions from 'react-dimensions';
 import PropTypes from 'prop-types';
@@ -26,7 +27,8 @@ class Sentiment extends Component {
       date: modelInstance.getDateString(),
       geoLocated: null,
       userId: '692527862369357824',
-      placeName: modelInstance.getPlaceName()
+      placeName: modelInstance.getPlaceName(),
+      openPDFModal: false,
     }
   }
 
@@ -161,11 +163,9 @@ class Sentiment extends Component {
 
   handlePDFCreation = event => {
     let input = document.getElementById('divToPrint');
-    input.style.display = 'block';
     html2canvas(input)
       .then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
-        input.style.display = 'none';
         const pdf = new jsPDF();
         pdf.addImage(imgData, 'JPEG', 0, 0);
         pdf.save(this.state.searchInput + ".pdf");
@@ -178,6 +178,18 @@ class Sentiment extends Component {
 
   handleClose = () => {
     this.setState({ open: false });
+  };
+
+  handleOpenPDFModal = () => {
+    this.setState({
+        openPDFModal: true
+    });
+  }
+
+  handleClosePDFModal = () => {
+    this.setState({
+        openPDFModal: false
+    });
   };
 
   render(){
@@ -243,7 +255,7 @@ class Sentiment extends Component {
             <Col sm={4} md={4}>
               Tweets
               <div className="createPDF">
-                <SentimentPDF handlePDFCreation={this.handlePDFCreation} page={0}/>
+                <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
               </div>
             </Col>
           </Row>
@@ -293,34 +305,22 @@ class Sentiment extends Component {
             <Hidden smUp>
               <p>Tweets</p>
               <div className="createPDF">
-                <SentimentPDF handlePDFCreation={this.handlePDFCreation} page={0}/>
+                <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
               </div>
             </Hidden>
             <TweetEmbed id={this.state.userId} options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
           </Col>
         </Row>
-        <div id="divToPrint">
-          <div className="tweets-info">
-            <h2>{this.state.searchInput}</h2>
-            <Row>
-              <Col xs={6} className="tweets-info-title">Amount of tweets:</Col>
-              <Col xs={6} className="tweets-info-value">{this.state.tweetAmount}</Col>
-            </Row>
-            <Row>
-              <Col xs={6} className="tweets-info-title">Location:</Col>
-              <Col xs={6} className="tweets-info-value">{this.state.placeName}</Col>
-            </Row>
-            <Row>
-              <Col xs={6} className="tweets-info-title">Date Range:</Col>
-              <Col xs={6} className="tweets-info-value">14-04-2018 / 20-04-2018</Col>
-            </Row>
-            <Row>
-              <Col xs={6} className="tweets-info-title">Timestamp:</Col>
-              <Col xs={6}className="tweets-info-value">28-02-2018</Col>
-            </Row>
-            {pieChart}
-          </div>
-        </div>
+        <CreatePDFModal
+          open={this.state.openPDFModal}
+          handleClose={this.handleClosePDFModal}
+          handleSavePDF={this.handlePDFCreation}
+          searchInput={this.state.searchInput}
+          tweetAmount={this.state.tweetAmount}
+          placeName={this.state.placeName}
+          date={this.state.date}
+          pieChart={pieChart}
+        />
       </div>
     );
   }
