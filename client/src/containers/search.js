@@ -65,26 +65,28 @@ class Search extends Component {
       console.log(result);
       //When the data arrives we wwant to set the Coordinates to update the Map
       modelInstance.setCoordinates(result[0], result[1]);
+      console.log(result);
 
       //We also want to use the data as an input for the geocode in the Search Tweets API Call
       //IMPORTANT: Lat & Long are switched in the 'GET search/tweets' call
       let location = result[1].toFixed(6) + ',' + result[0].toFixed(6) + ',100km';
       modelInstance.setGeocode(location);
-      this.searchTweets();
-    }).catch(() => {
+    }).catch( error => {
+      console.log(error.response)
       this.props.handleStatusChange('ERROR');
     });
   }
 
   searchTweets = () => {
-    if( modelInstance.getSearch() === "" ) {
-      this.setState({data: null});
-      modelInstance.setTweets(null);
-      this.props.handleStatusChange("INITIAL");
-      return;
-    }
+    // if( modelInstance.getSearch() === "" ) {
+    //   this.setState({data: null});
+    //   modelInstance.setTweets(null);
+    //   this.props.handleStatusChange("INITIAL");
+    //   return;
+    // }
     this.props.handleStatusChange('INITIAL');
     modelInstance.searchTweets().then(result => {
+      console.log(result);
       modelInstance.setTweets(result);
       this.props.handleStatusChange('LOADED');
       this.setState({
@@ -109,6 +111,9 @@ class Search extends Component {
       this.setState({
         placeName: modelInstance.getPlaceName() //.toUpperCase()
       })
+    }
+    if(details ==='placeNameReset' && modelInstance.getSearch() !== ''){
+        this.searchTweets();
     }
   }
 

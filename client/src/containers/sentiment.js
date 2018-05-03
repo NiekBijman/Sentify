@@ -5,11 +5,14 @@ import { Row, Col } from 'react-flexbox-grid';
 import SentimentPie from '../components/sentiment-pie';
 import CircularIndeterminate from '../components/circular-indeterminate';
 import SentimentPDF from '../components/sentiment-pdf';
+import CreatePDFModal from '../components/create-pdf-modal';
 import { modelInstance } from '../model/model';
 import Dimensions from 'react-dimensions';
 import PropTypes from 'prop-types';
 import TweetEmbed from 'react-tweet-embed';
 import Notification from '../components/notification';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 
 class Sentiment extends Component {
@@ -25,7 +28,8 @@ class Sentiment extends Component {
       tweetAmount: modelInstance.getTweetAmount(),
       date: modelInstance.getDateString(),
       geoLocated: null,
-      tweetId: '692527862369357824'
+      tweetId: '692527862369357824',
+      openPDFModal: false,
     }
   }
 
@@ -64,16 +68,9 @@ class Sentiment extends Component {
       this.calculateSentiment();
       this.setState({
         searchInput: modelInstance.getSearch(),
-        placeName: modelInstance.getPlaceName(),
         tweetAmount: modelInstance.getTweetAmount(),
         mostPopularTweetId: modelInstance.getMostPopularTweet(),
       })
-    }
-
-    if(details==="emptySearch"){
-      this.setState({
-        status: 'EMPTY'
-      });
     }
 
     if(details==='userLocationsSet'){
@@ -111,8 +108,8 @@ class Sentiment extends Component {
 
 
   sentimentAnalysis = () => {
-    if(this.state.searchInput === "") return;
-  
+    // if(this.state.searchInput === "") return;
+
     modelInstance.analyzeSentiment().then(result => {
       modelInstance.setSentimentData(result);
       this.setState({
@@ -167,10 +164,34 @@ class Sentiment extends Component {
   }
 
   handlePDFCreation = event => {
-    alert("Creating PDF");
+    let input = document.getElementById('divToPrint');
+    html2canvas(input)
+      .then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        pdf.addImage(imgData, 'JPEG', 0, 0);
+        pdf.save(this.state.searchInput + ".pdf");
+      });
   }
-  showNotification = () => {
+
+  handleOpen = () => {
     this.setState({ open: true});
+  };
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
+  handleOpenPDFModal = () => {
+    this.setState({
+        openPDFModal: true
+    });
+  }
+
+  handleClosePDFModal = () => {
+    this.setState({
+        openPDFModal: false
+    });
   };
 
   render(){
@@ -184,6 +205,7 @@ class Sentiment extends Component {
     let x = width / 2;
     let y = height / 2;
     let pieChart = null;
+    let notification = null;
 
     switch (this.props.status) {
       case 'INITIAL':
@@ -202,13 +224,28 @@ class Sentiment extends Component {
             </svg>
         break;
 
-      case 'EMPTY':
-        pieChart = <Notification open={this.showNotification} text="We couldn't find any tweets for that search"/>
-      break;
+
 
       default:
-        pieChart = <Notification open={this.showNotification} text='There seems to be an error in your request'/> //  <div className="error">Failed to load data, please try again</div>
+        pieChart = <Notification text='There seems to be an error in your request'/> //  <div className="error">Failed to load data, please try again</div>
         break;
+    }
+
+    // Error Messages for App 'misuses'
+    switch (this.props.notifications) {
+      case 'INITIAL':
+        notification = null;
+      break;
+
+      case 'EMPTY':
+        console.log('EMPTY')
+        notification = <Notification open={this.handleOpen.bind(this)} handleClose={this.handleClose.bind(this)} text="We couldn't find any tweets for that search"/>
+      break;
+
+      case 'RATE_LIMITED':
+        console.log('LIMITED');
+        notification = <Notification open={this.handleOpen.bind(this)} close={this.handleClose.bind(this)} text="The app is rate limited for making too many API calls"/>
+      break;
     }
 
     return(
@@ -220,7 +257,7 @@ class Sentiment extends Component {
             <Col sm={4} md={4}>
               Tweets
               <div className="createPDF">
-                <SentimentPDF handlePDFCreation={this.handlePDFCreation} page={0}/>
+                <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
               </div>
             </Col>
           </Row>
@@ -264,18 +301,29 @@ class Sentiment extends Component {
               <p>Sentiment</p>
             </Hidden>
             {pieChart}
+            {notification}
           </Col>
           <Col sm={4} md={4} xs={12} className="tweet">
             <Hidden smUp>
               <p>Tweets</p>
               <div className="createPDF">
-                <SentimentPDF handlePDFCreation={this.handlePDFCreation} page={0}/>
+                <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
               </div>
             </Hidden>
             <Button variant="raised" onClick={this.drawTweet}>New Tweet</Button>
             <TweetEmbed id={this.state.tweetId} options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
           </Col>
         </Row>
+        <CreatePDFModal
+          open={this.state.openPDFModal}
+          handleClose={this.handleClosePDFModal}
+          handleSavePDF={this.handlePDFCreation}
+          searchInput={this.state.searchInput}
+          tweetAmount={this.state.tweetAmount}
+          placeName={this.state.placeName}
+          date={this.state.date}
+          pieChart={pieChart}
+        />
       </div>
     );
   }

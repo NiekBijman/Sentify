@@ -108,6 +108,10 @@ const Model = function () {
   }
 
   this.setPlaceName = function(string){
+    if(string === 'error'){
+      notifyObservers('rateLimited');
+      return
+    }
     placeName = string;
     notifyObservers('placeNameSet');
   }
@@ -117,14 +121,15 @@ const Model = function () {
   }
 
   this.setTweets = function(results){
-    console.log(results);
+    // if (results === null){
+    //   tweets = null;
+    //   tweetAmount = 0;
+    //   return;
+    // }
 
-    if (results === null){
-      tweets = null;
-      tweetAmount = 0;
-      this.setUserLocations(null);
-      notifyObservers("emptySearchString");
-      return;
+    if(results.data.statuses.length === 0){
+      notifyObservers('emptySearch');
+      return
     }
 
     //Set twitter responses
@@ -132,9 +137,6 @@ const Model = function () {
     tweetAmount = results.data.statuses.length;
     this.setUserLocations(results);
 
-    if(results.data.statuses.length === 0){
-      notifyObservers('emptySearch');
-    }
 
     //Build the object to POST to Sentiment Analysis
     const tweetObject = results.data.statuses.map(function(tweet){
@@ -144,14 +146,11 @@ const Model = function () {
     notifyObservers('tweetsSet');
   }
 
-
-
   this.setUserLocations = tweets => {
-    if (tweets === null){
-      userLocations = null;
-      notifyObservers("userLocationsSet");
-      return;
-    }
+    // if (tweets === null){
+    //   userLocations = null;
+    //   return;
+    // }
     var coordinates = tweets.data.statuses.reduce((coordinates, tweet) => {
       if(tweet.coordinates !== null){
         coordinates.push({lng: tweet.coordinates.coordinates[0], lat: tweet.coordinates.coordinates[1], id: tweet.id_str});
@@ -173,6 +172,12 @@ const Model = function () {
 
   this.getUserId = function(){
     return userId;
+  }
+
+  this.resetPlaceName = function(){
+    placeName = '';
+    location = '';
+    notifyObservers('placeNameReset');
   }
 
   this.getTweetAmount = function(){
@@ -226,6 +231,8 @@ const Model = function () {
     let dateParam = year+"-"+month+"-"+day;
     const url = '/api/twitter/search?' + 'q=' + searchInput + '&geocode=' + location + "&until=" + dateParam; //+ 'geocode=' + location;
     // const url = 'search/tweets?' + 'q=' + searchInput + 'geocode=' + location;
+
+    console.log(url);
     return fetch(url)
       .then(processResponse)
       .catch(handleError)
