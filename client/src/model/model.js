@@ -1,6 +1,5 @@
 import {Key} from '../config';
-
-
+import { firebaseConfig } from '../config';
 
 const Model = function () {
   let container = 'Map';
@@ -33,14 +32,35 @@ const Model = function () {
   let sentimentData = null;
 
   let searchHistory = {"data": [
-    {"id":1, "subject":"#LastWeekTonight", "Location": "America", "dateStart": "20-02-18", "dateFinish": "26-02-18", "dateCreated": "27-02-18", "downloadPDF": false},
-    {"id":2, "subject":"FrenchElection", "Location": "Europe", "dateStart": "10-03-18", "dateFinish": "16-03-18", "dateCreated": "17-03-18", "downloadPDF": true},
-    {"id":3, "subject":"CharlieHebdo", "Location": "Europe", "dateStart": "11-05-17", "dateFinish": "14-05-17", "dateCreated": "15-05-17", "downloadPDF": false},
-    {"id":4, "subject":"@JaneGoodman", "Location": "Europe", "dateStart": "01-11-17", "dateFinish": "05-11-17", "dateCreated": "06-11-17", "downloadPDF": false},
-    {"id":5, "subject":"NATO", "Location": "Europe", "dateStart": "20-02-18", "dateFinish": "26-02-18", "dateCreated": "27-02-18", "downloadPDF": true},
-    {"id":6, "subject":"#SomosJuntos", "Location": "South-America", "dateStart": "10-03-18", "dateFinish": "16-03-18", "dateCreated": "17-03-18", "downloadPDF": false},
-    {"id":7, "subject":"#FindKadyrovsCat", "Location": "Europe", "dateStart": "01-11-17", "dateFinish": "05-11-17", "dateCreated": "06-11-17", "downloadPDF": true}
+    {"subject":"#LastWeekTonight", "Location": "America", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"subject":"FrenchElection", "Location": "Europe", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"subject":"CharlieHebdo", "Location": "Europe", "until": "14-05-17", "dateCreated": "15-05-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"subject":"@JaneGoodman", "Location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"subject":"NATO", "Location": "Europe", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"subject":"#SomosJuntos", "Location": "South-America", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"subject":"#FindKadyrovsCat", "Location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25}
   ]};
+
+  // firebase
+  var firebase = require("firebase");
+  //firebase initialization
+  firebase.initializeApp(firebaseConfig);
+  //database instiation
+  var database = firebase.database();
+
+  /*
+  * Inserts a search into the database
+  */
+  this.setFirebaseData = function(){
+    var search = searchHistory.data[0];
+    //setup of path to reference the data
+    var searchesRef = database.ref("searches");
+    var newSearchRef = searchesRef.push(search, function(){
+      database.ref("searches/"+newSearchRef).once("value").then( (value) => {
+        alert(value);
+      });
+    });
+  }
 
   // {"data": [{"text": "I love Titanic.", "id":1234, "polarity": 4},
   // {"text": "I love Titanic.", "id":1234, "polarity": 4},
