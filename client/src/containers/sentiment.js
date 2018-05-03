@@ -28,7 +28,7 @@ class Sentiment extends Component {
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
       tweetAmount: modelInstance.getTweetAmount(),
-      date: modelInstance.getDateString(),
+      until: modelInstance.getDateString(),
       geoLocated: null,
       tweetID: tweetID+"",
       openPDFModal: false,
@@ -66,6 +66,7 @@ class Sentiment extends Component {
       let randomTweetID = modelInstance.randomDrawTweet().id_str;
       this.setState({tweetID: randomTweetID});
       this.sentimentAnalysis();
+      // Set state to LOADING, which should disable save-search button
     }
 
     if (details==="sentimentSet") {
@@ -98,7 +99,7 @@ class Sentiment extends Component {
 
     if(details === "dateSet"){
       this.setState({
-        date: modelInstance.getDateString()
+        until: modelInstance.getDateString()
       });
     }
 
@@ -197,11 +198,16 @@ class Sentiment extends Component {
     });
   };
 
+
   newRandomTweet = () => {
     let randomTweet = modelInstance.randomDrawTweet();
     if (randomTweet === null) return;
     let randomTweetID = randomTweet.id_str;
     this.setState({tweetID: randomTweetID});
+  }
+
+  saveSearch = () => {
+    modelInstance.addSearchToDB(this.state.positive, this.state.negative, this.state.neutral);
   }
 
   render(){
@@ -296,10 +302,11 @@ class Sentiment extends Component {
               </Row>
               <Row>
                 <Col xs={6} className="tweets-info-title">Until:</Col>
-                <Col xs={6} className="tweets-info-value">{this.state.date}</Col>
+                <Col xs={6} className="tweets-info-value">{this.state.until}</Col>
               </Row>
             </div>
           </Col>
+
           <Col sm={4} md={4} xs={12}
             style={{
               width: this.props.containerWidth,
@@ -320,6 +327,7 @@ class Sentiment extends Component {
                 <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
               </div>
             </Hidden>
+            <Button onClick={this.saveSearch}>Save Search</Button>
             <Button variant="raised" onClick={this.newRandomTweet}>New Tweet</Button>
             <TweetEmbed id={this.state.tweetID} options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
           </Col>
@@ -331,7 +339,7 @@ class Sentiment extends Component {
           searchInput={this.state.searchInput}
           tweetAmount={this.state.tweetAmount}
           placeName={this.state.placeName}
-          date={this.state.date}
+          date={this.state.until}
           pieChart={pieChart}
         />
       </div>

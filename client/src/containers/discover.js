@@ -39,9 +39,9 @@ class DiscoverContainer extends React.Component {
     }
 
     handleStatusChange = newStatus => {
-        this.setState({
-            status: newStatus
-        });
+      this.setState({
+          status: newStatus
+      });
     }
 
     onExit = () => {

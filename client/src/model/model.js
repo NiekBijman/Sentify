@@ -32,13 +32,13 @@ const Model = function () {
   let sentimentData = null;
 
   let searchHistory = {"data": [
-    {"subject":"#LastWeekTonight", "Location": "America", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"subject":"FrenchElection", "Location": "Europe", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"subject":"CharlieHebdo", "Location": "Europe", "until": "14-05-17", "dateCreated": "15-05-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"subject":"@JaneGoodman", "Location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"subject":"NATO", "Location": "Europe", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"subject":"#SomosJuntos", "Location": "South-America", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"subject":"#FindKadyrovsCat", "Location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25}
+    {"query":"#LastWeekTonight", "location": "America", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"query":"FrenchElection", "location": "Europe", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"query":"CharlieHebdo", "location": "Europe", "until": "14-05-17", "dateCreated": "15-05-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"query":"@JaneGoodman", "location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"query":"NATO", "location": "Europe", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"query":"#SomosJuntos", "location": "South-America", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"query":"#FindKadyrovsCat", "location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25}
   ]};
 
   // firebase
@@ -51,15 +51,37 @@ const Model = function () {
   /*
   * Inserts a search into the database
   */
-  this.setFirebaseData = function(){
-    var search = searchHistory.data[0];
+  this.addSearchToDB = function(positive, negative, neutral){
+    let today = new Date();
+    let dateCreated = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate();
+    var search = {
+                "query": searchInput,
+                "location": location,
+                "until": date,
+                "dateCreated": dateCreated,
+                "amount": tweetAmount,
+                "positive": positive,
+                "negative": negative,
+                "neutral": neutral
+                };
     //setup of path to reference the data
     var searchesRef = database.ref("searches");
-    var newSearchRef = searchesRef.push(search, function(){
-      database.ref("searches/"+newSearchRef).once("value").then( (value) => {
-        alert(value);
-      });
+    var newSearchRef = searchesRef.push(search);
+
+    let user = firebase.auth().currentUser;
+    let uid = user.uid;
+
+    let userRef = database.ref("users/"+uid);
+    let currUserSearches;
+    userRef.once("value").then( (value) => {
+      currUserSearches = value;
     });
+    console.log("Current user searches");
+    console.log(currUserSearches);
+    if (currUserSearches === undefined)
+      currUserSearches = [];
+    currUserSearches.push(search);
+    // TODO: store new search in users/uid/
   }
 
   // {"data": [{"text": "I love Titanic.", "id":1234, "polarity": 4},
