@@ -20,12 +20,14 @@ const Model = function () {
   let placeName = '';
   let coordinates = [5,34];
   let userLocations = {locations:[]};
-  let userId = '';
+  let tweetID = '';
 
   //Tweets
   let tweetAmount = null;
   let tweetsJSON = null;
   let tweets = null;
+  // tweet bucket for random draw
+  let tweetBucket = null;
 
   //Sentiment data
   let sentimentData = null;
@@ -46,6 +48,14 @@ const Model = function () {
   // {"text": "I like Titanic.", "id":1234, "polarity": 4},
   // {"text": "I hate Titanic.", "id":4567, "polarity": 0}]};
 
+  // Draw random tweet from bucket and eliminate drawn tweet from bucket
+  this.randomDrawTweet = function(){
+    if (tweetBucket === null) return null;
+    if (tweetBucket.length === 0) tweetBucket = tweets;
+    let index = Math.floor(Math.random()*tweetBucket.length);
+    let randomTweet = tweetBucket.splice(index, 1)[0];
+    return randomTweet;
+  }
 
   // API Calls
 
@@ -94,7 +104,6 @@ const Model = function () {
   this.setCoordinates = (lng, lat ) =>{
     coordinates = [lng, lat];
     // location
-    console.log()
     notifyObservers('jumpToCoordinates');
   }
 
@@ -121,19 +130,15 @@ const Model = function () {
   }
 
   this.setTweets = function(results){
-    // if (results === null){
-    //   tweets = null;
-    //   tweetAmount = 0;
-    //   return;
-    // }
-
     if(results.data.statuses.length === 0){
       notifyObservers('emptySearch');
       return
     }
 
     //Set twitter responses
-    tweets = results.data.statuses
+    tweets = results.data.statuses;
+    // Set tweet bucket to draw randoms from
+    tweetBucket = tweets.slice(0); // copying tweets array
     tweetAmount = results.data.statuses.length;
     this.setUserLocations(results);
 
@@ -165,13 +170,13 @@ const Model = function () {
     return userLocations;
   }
 
-  this.setUserId = function(id){
-    userId = id;
-    notifyObservers('userIdSet');
+  this.setTweetID = function(id){
+    tweetID = id;
+    notifyObservers('tweetIDSet');
   }
 
-  this.getUserId = function(){
-    return userId;
+  this.getTweetID = function(){
+    return tweetID;
   }
 
   this.resetPlaceName = function(){
@@ -225,14 +230,17 @@ const Model = function () {
 
   //API Calls
   this.searchTweets = function () {
+    let url = '/api/twitter/search?' + 'q=' + encodeURIComponent(searchInput) 
+    if (location !== "")
+      url += '&geocode=' + location;
+  
     let year = date.getFullYear();
     let month = date.getMonth()+1; // January is 0 in js
     let day = date.getDate();
     let dateParam = year+"-"+month+"-"+day;
-    const url = '/api/twitter/search?' + 'q=' + searchInput + '&geocode=' + location + "&until=" + dateParam; //+ 'geocode=' + location;
-    // const url = 'search/tweets?' + 'q=' + searchInput + 'geocode=' + location;
 
-    console.log(url);
+    url += "&until=" + dateParam; 
+
     return fetch(url)
       .then(processResponse)
       .catch(handleError)

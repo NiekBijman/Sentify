@@ -18,6 +18,8 @@ import jsPDF from 'jspdf';
 class Sentiment extends Component {
   constructor(props){
     super(props);
+    let tweetID = modelInstance.randomDrawTweet();
+    if (tweetID === null) tweetID = "692527862369357824";
     this.state = {
       positive: 50,
       negative: 40,
@@ -28,7 +30,7 @@ class Sentiment extends Component {
       tweetAmount: modelInstance.getTweetAmount(),
       date: modelInstance.getDateString(),
       geoLocated: null,
-      tweetId: '692527862369357824',
+      tweetID: tweetID+"",
       openPDFModal: false,
     }
   }
@@ -61,6 +63,8 @@ class Sentiment extends Component {
     if(details ==='tweetsSet'){
       console.log("The tweets");
       console.log(modelInstance.getTweets());
+      let randomTweetID = modelInstance.randomDrawTweet().id_str;
+      this.setState({tweetID: randomTweetID});
       this.sentimentAnalysis();
     }
 
@@ -86,9 +90,9 @@ class Sentiment extends Component {
       })
     }
 
-    if(details==='userIdSet'){
+    if(details==='tweetIDSet'){
       this.setState({
-        userId: modelInstance.getUserId()
+        tweetID: modelInstance.getTweetID()
       })
     }
 
@@ -105,7 +109,6 @@ class Sentiment extends Component {
     }
 
   }
-
 
   sentimentAnalysis = () => {
     // if(this.state.searchInput === "") return;
@@ -194,6 +197,11 @@ class Sentiment extends Component {
     });
   };
 
+  newRandomTweet = () => {
+    let randomTweetID = modelInstance.randomDrawTweet().id_str;
+    this.setState({tweetID: randomTweetID});
+  }
+
   render(){
     let width = this.props.containerWidth / 3;
     let height = this.props.containerHeight;
@@ -239,12 +247,12 @@ class Sentiment extends Component {
 
       case 'EMPTY':
         console.log('EMPTY')
-        notification = <Notification open={this.handleOpen.bind(this)} handleClose={this.handleClose.bind(this)} text="We couldn't find any tweets for that search"/>
+        notification = <Notification open={this.state.open} handleClose={this.handleClose.bind(this)} text="We couldn't find any tweets for that search"/>
       break;
 
       case 'RATE_LIMITED':
         console.log('LIMITED');
-        notification = <Notification open={this.handleOpen.bind(this)} close={this.handleClose.bind(this)} text="The app is rate limited for making too many API calls"/>
+        notification = <Notification open={this.state.open} close={this.handleClose.bind(this)} text="The app is rate limited for making too many API calls"/>
       break;
     }
 
@@ -310,8 +318,8 @@ class Sentiment extends Component {
                 <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
               </div>
             </Hidden>
-            <Button variant="raised" onClick={this.drawTweet}>New Tweet</Button>
-            <TweetEmbed id={this.state.tweetId} options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
+            <Button variant="raised" onClick={this.newRandomTweet}>New Tweet</Button>
+            <TweetEmbed id={this.state.tweetID} options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
           </Col>
         </Row>
         <CreatePDFModal
