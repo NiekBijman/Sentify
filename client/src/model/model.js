@@ -168,7 +168,6 @@ const Model = function () {
 
   this.setUserId = function(id){
     userId = id;
-    console.log(userId);
     notifyObservers('userIdSet');
   }
 

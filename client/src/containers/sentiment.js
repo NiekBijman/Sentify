@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Hidden from 'material-ui/Hidden';
+import Button from 'material-ui/Button';
 import { Row, Col } from 'react-flexbox-grid';
 import SentimentPie from '../components/sentiment-pie';
 import CircularIndeterminate from '../components/circular-indeterminate';
@@ -9,6 +10,7 @@ import Dimensions from 'react-dimensions';
 import PropTypes from 'prop-types';
 import TweetEmbed from 'react-tweet-embed';
 import Notification from '../components/notification';
+
 
 class Sentiment extends Component {
   constructor(props){
@@ -23,7 +25,7 @@ class Sentiment extends Component {
       tweetAmount: modelInstance.getTweetAmount(),
       date: modelInstance.getDateString(),
       geoLocated: null,
-      userId: '692527862369357824'
+      tweetId: '692527862369357824'
     }
   }
 
@@ -53,7 +55,8 @@ class Sentiment extends Component {
     }
 
     if(details ==='tweetsSet'){
-
+      console.log("The tweets");
+      console.log(modelInstance.getTweets());
       this.sentimentAnalysis();
     }
 
@@ -269,7 +272,8 @@ class Sentiment extends Component {
                 <SentimentPDF handlePDFCreation={this.handlePDFCreation} page={0}/>
               </div>
             </Hidden>
-            <TweetEmbed id={this.state.userId} options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
+            <Button variant="raised" onClick={this.drawTweet}>New Tweet</Button>
+            <TweetEmbed id={this.state.tweetId} options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
           </Col>
         </Row>
       </div>
