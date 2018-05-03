@@ -51,7 +51,7 @@ const Model = function () {
   // Draw random tweet from bucket and eliminate drawn tweet from bucket
   this.randomDrawTweet = function(){
     if (tweetBucket === null) return null;
-    if (tweetBucket.length === 0) tweetBucket = tweets;
+    if (tweetBucket.length === 0) tweetBucket = tweets; // reset bucket if empty
     let index = Math.floor(Math.random()*tweetBucket.length);
     let randomTweet = tweetBucket.splice(index, 1)[0];
     return randomTweet;

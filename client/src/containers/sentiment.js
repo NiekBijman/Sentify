@@ -198,7 +198,9 @@ class Sentiment extends Component {
   };
 
   newRandomTweet = () => {
-    let randomTweetID = modelInstance.randomDrawTweet().id_str;
+    let randomTweet = modelInstance.randomDrawTweet();
+    if (randomTweet === null) return;
+    let randomTweetID = randomTweet.id_str;
     this.setState({tweetID: randomTweetID});
   }
 
