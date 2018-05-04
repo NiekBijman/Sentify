@@ -66,22 +66,37 @@ const Model = function () {
                 };
     //setup of path to reference the data
     var searchesRef = database.ref("searches");
-    var newSearchRef = searchesRef.push(search);
+    var newSearchKey = searchesRef.push(search).key;
+
+    console.log("newSearchRef key:");
+    console.log(newSearchKey);
 
     let user = firebase.auth().currentUser;
     let uid = user.uid;
+    console.log("Curr user id: "+uid);
 
     let userRef = database.ref("users/"+uid);
     let currUserSearches;
-    userRef.once("value").then( (value) => {
-      currUserSearches = value;
-    });
-    console.log("Current user searches");
-    console.log(currUserSearches);
-    if (currUserSearches === undefined)
-      currUserSearches = [];
-    currUserSearches.push(search);
-    // TODO: store new search in users/uid/
+    userRef.once("value")
+      .then( (value) => {
+        currUserSearches = value.val();
+
+        console.log("Current user searches");
+        console.log(currUserSearches);
+        
+        if (currUserSearches === undefined)
+          currUserSearches = [];
+          
+        currUserSearches.push(newSearchKey);
+        
+        return userRef.set(currUserSearches);
+      })
+      .then( () => {
+        return database.ref("users/"+uid).once("value");
+      })
+      .then( (value) => {
+        console.log(value.val());
+      });
   }
 
   // {"data": [{"text": "I love Titanic.", "id":1234, "polarity": 4},
