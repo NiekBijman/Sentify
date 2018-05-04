@@ -10,13 +10,19 @@ export default class Login extends Component {
   }
   handleSignIn(){
     var provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithRedirect(provider);
+    firebase.auth().signInWithRedirect(provider)
   }
 
   greetingUser(){
-    var user = firebase.auth().currentUser;
-    alert("Hello " + user.displayName);
-  }
+      firebase.auth().getRedirectResult().then(function(result) {
+          console.log(result)
+      }).catch(function(error) {
+        console.log(error);
+      });
+
+        var user = firebase.auth().currentUser;
+        alert("Hello " + user.displayName);
+      }
 
   render() {
     return(
