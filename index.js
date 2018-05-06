@@ -121,7 +121,10 @@ app.post('/api/sentiment', (req, res) => {
         .then(response => {
           res.send(response)
         })
-        .catch(e => res.status(500).send('Something broke!'));
+        .catch(e => {
+          console.log(e)
+          res.status(500).send('Something broke!')
+        });
 });
 
 

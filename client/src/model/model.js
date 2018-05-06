@@ -1,4 +1,5 @@
 import {Key} from '../config';
+import { firebaseConfig } from '../config';
 
 const Model = function () {
   let container = 'Map';
@@ -18,25 +19,85 @@ const Model = function () {
   let placeName = '';
   let coordinates = [5,34];
   let userLocations = {locations:[]};
-  let userId = '';
+  let tweetID = '';
 
   //Tweets
   let tweetAmount = null;
   let tweetsJSON = null;
   let tweets = null;
+  // tweet bucket for random draw
+  let tweetBucket = null;
 
   //Sentiment data
   let sentimentData = null;
 
   let searchHistory = {"data": [
-    {"id":1, "subject":"#LastWeekTonight", "Location": "America", "dateStart": "20-02-18", "dateFinish": "26-02-18", "dateCreated": "27-02-18", "downloadPDF": false},
-    {"id":2, "subject":"FrenchElection", "Location": "Europe", "dateStart": "10-03-18", "dateFinish": "16-03-18", "dateCreated": "17-03-18", "downloadPDF": true},
-    {"id":3, "subject":"CharlieHebdo", "Location": "Europe", "dateStart": "11-05-17", "dateFinish": "14-05-17", "dateCreated": "15-05-17", "downloadPDF": false},
-    {"id":4, "subject":"@JaneGoodman", "Location": "Europe", "dateStart": "01-11-17", "dateFinish": "05-11-17", "dateCreated": "06-11-17", "downloadPDF": false},
-    {"id":5, "subject":"NATO", "Location": "Europe", "dateStart": "20-02-18", "dateFinish": "26-02-18", "dateCreated": "27-02-18", "downloadPDF": true},
-    {"id":6, "subject":"#SomosJuntos", "Location": "South-America", "dateStart": "10-03-18", "dateFinish": "16-03-18", "dateCreated": "17-03-18", "downloadPDF": false},
-    {"id":7, "subject":"#FindKadyrovsCat", "Location": "Europe", "dateStart": "01-11-17", "dateFinish": "05-11-17", "dateCreated": "06-11-17", "downloadPDF": true}
+    {"query":"#LastWeekTonight", "location": "America", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"query":"FrenchElection", "location": "Europe", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"query":"CharlieHebdo", "location": "Europe", "until": "14-05-17", "dateCreated": "15-05-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"query":"@JaneGoodman", "location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"query":"NATO", "location": "Europe", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"query":"#SomosJuntos", "location": "South-America", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"query":"#FindKadyrovsCat", "location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25}
   ]};
+
+  // firebase
+  var firebase = require("firebase");
+  //firebase initialization
+  firebase.initializeApp(firebaseConfig);
+  //database instiation
+  var database = firebase.database();
+
+  /*
+  * Inserts a search into the database
+  */
+  this.addSearchToDB = function(positive, negative, neutral){
+    let today = new Date();
+    let dateCreated = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate();
+    var search = {
+                "query": searchInput,
+                "location": location,
+                "until": date,
+                "dateCreated": dateCreated,
+                "amount": tweetAmount,
+                "positive": positive,
+                "negative": negative,
+                "neutral": neutral
+                };
+    //setup of path to reference the data
+    var searchesRef = database.ref("searches");
+    var newSearchKey = searchesRef.push(search).key;
+
+    console.log("newSearchRef key:");
+    console.log(newSearchKey);
+
+    let user = firebase.auth().currentUser;
+    let uid = user.uid;
+    console.log("Curr user id: "+uid);
+
+    let userRef = database.ref("users/"+uid);
+    let currUserSearches;
+    userRef.once("value")
+      .then( (value) => {
+        currUserSearches = value.val();
+
+        console.log("Current user searches");
+        console.log(currUserSearches);
+        
+        if (currUserSearches === undefined)
+          currUserSearches = [];
+          
+        currUserSearches.push(newSearchKey);
+        
+        return userRef.set(currUserSearches);
+      })
+      .then( () => {
+        return database.ref("users/"+uid).once("value");
+      })
+      .then( (value) => {
+        console.log(value.val());
+      });
+  }
 
   // {"data": [{"text": "I love Titanic.", "id":1234, "polarity": 4},
   // {"text": "I love Titanic.", "id":1234, "polarity": 4},
@@ -44,6 +105,14 @@ const Model = function () {
   // {"text": "I like Titanic.", "id":1234, "polarity": 4},
   // {"text": "I hate Titanic.", "id":4567, "polarity": 0}]};
 
+  // Draw random tweet from bucket and eliminate drawn tweet from bucket
+  this.randomDrawTweet = function(){
+    if (tweetBucket === null) return null;
+    if (tweetBucket.length === 0) tweetBucket = tweets; // reset bucket if empty
+    let index = Math.floor(Math.random()*tweetBucket.length);
+    let randomTweet = tweetBucket.splice(index, 1)[0];
+    return randomTweet;
+  }
 
   // API Calls
 
@@ -92,7 +161,6 @@ const Model = function () {
   this.setCoordinates = (lng, lat ) =>{
     coordinates = [lng, lat];
     // location
-    console.log()
     notifyObservers('jumpToCoordinates');
   }
 
@@ -119,19 +187,15 @@ const Model = function () {
   }
 
   this.setTweets = function(results){
-    // if (results === null){
-    //   tweets = null;
-    //   tweetAmount = 0;
-    //   return;
-    // }
-
     if(results.data.statuses.length === 0){
       notifyObservers('emptySearch');
       return
     }
 
     //Set twitter responses
-    tweets = results.data.statuses
+    tweets = results.data.statuses;
+    // Set tweet bucket to draw randoms from
+    tweetBucket = tweets.slice(0); // copying tweets array
     tweetAmount = results.data.statuses.length;
     this.setUserLocations(results);
 
@@ -163,14 +227,13 @@ const Model = function () {
     return userLocations;
   }
 
-  this.setUserId = function(id){
-    userId = id;
-    console.log(userId);
-    notifyObservers('userIdSet');
+  this.setTweetID = function(id){
+    tweetID = id;
+    notifyObservers('tweetIDSet');
   }
 
-  this.getUserId = function(){
-    return userId;
+  this.getTweetID = function(){
+    return tweetID;
   }
 
   this.resetPlaceName = function(){
@@ -224,14 +287,17 @@ const Model = function () {
 
   //API Calls
   this.searchTweets = function () {
+    let url = '/api/twitter/search?' + 'q=' + encodeURIComponent(searchInput) 
+    if (location !== "")
+      url += '&geocode=' + location;
+  
     let year = date.getFullYear();
     let month = date.getMonth()+1; // January is 0 in js
     let day = date.getDate();
     let dateParam = year+"-"+month+"-"+day;
-    const url = '/api/twitter/search?' + 'q=' + searchInput + '&geocode=' + location + "&until=" + dateParam; //+ 'geocode=' + location;
-    // const url = 'search/tweets?' + 'q=' + searchInput + 'geocode=' + location;
 
-    console.log(url);
+    url += "&until=" + dateParam; 
+
     return fetch(url)
       .then(processResponse)
       .catch(handleError)

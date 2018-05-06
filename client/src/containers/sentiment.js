@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Hidden from 'material-ui/Hidden';
+import Button from 'material-ui/Button';
 import { Row, Col } from 'react-flexbox-grid';
 import SentimentPie from '../components/sentiment-pie';
 import CircularIndeterminate from '../components/circular-indeterminate';
@@ -13,9 +14,12 @@ import Notification from '../components/notification';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
+
 class Sentiment extends Component {
   constructor(props){
     super(props);
+    let tweetID = modelInstance.randomDrawTweet();
+    if (tweetID === null) tweetID = "692527862369357824";
     this.state = {
       positive: 50,
       negative: 40,
@@ -24,10 +28,9 @@ class Sentiment extends Component {
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
       tweetAmount: modelInstance.getTweetAmount(),
-      date: modelInstance.getDateString(),
+      until: modelInstance.getDateString(),
       geoLocated: null,
-      userId: '692527862369357824',
-      placeName: modelInstance.getPlaceName(),
+      tweetID: tweetID+"",
       openPDFModal: false,
     }
   }
@@ -58,8 +61,12 @@ class Sentiment extends Component {
     }
 
     if(details ==='tweetsSet'){
-
+      console.log("The tweets");
+      console.log(modelInstance.getTweets());
+      let randomTweetID = modelInstance.randomDrawTweet().id_str;
+      this.setState({tweetID: randomTweetID});
       this.sentimentAnalysis();
+      // Set state to LOADING, which should disable save-search button
     }
 
     if (details==="sentimentSet") {
@@ -84,15 +91,15 @@ class Sentiment extends Component {
       })
     }
 
-    if(details==='userIdSet'){
+    if(details==='tweetIDSet'){
       this.setState({
-        userId: modelInstance.getUserId()
+        tweetID: modelInstance.getTweetID()
       })
     }
 
     if(details === "dateSet"){
       this.setState({
-        date: modelInstance.getDateString()
+        until: modelInstance.getDateString()
       });
     }
 
@@ -103,7 +110,6 @@ class Sentiment extends Component {
     }
 
   }
-
 
   sentimentAnalysis = () => {
     // if(this.state.searchInput === "") return;
@@ -192,6 +198,18 @@ class Sentiment extends Component {
     });
   };
 
+
+  newRandomTweet = () => {
+    let randomTweet = modelInstance.randomDrawTweet();
+    if (randomTweet === null) return;
+    let randomTweetID = randomTweet.id_str;
+    this.setState({tweetID: randomTweetID});
+  }
+
+  saveSearch = () => {
+    modelInstance.addSearchToDB(this.state.positive, this.state.negative, this.state.neutral);
+  }
+
   render(){
     let width = this.props.containerWidth / 3;
     let height = this.props.containerHeight;
@@ -237,12 +255,12 @@ class Sentiment extends Component {
 
       case 'EMPTY':
         console.log('EMPTY')
-        notification = <Notification open={this.handleOpen.bind(this)} handleClose={this.handleClose.bind(this)} text="We couldn't find any tweets for that search"/>
+        notification = <Notification open={this.state.open} handleClose={this.handleClose.bind(this)} text="We couldn't find any tweets for that search"/>
       break;
 
       case 'RATE_LIMITED':
         console.log('LIMITED');
-        notification = <Notification open={this.handleOpen.bind(this)} close={this.handleClose.bind(this)} text="The app is rate limited for making too many API calls"/>
+        notification = <Notification open={this.state.open} close={this.handleClose.bind(this)} text="The app is rate limited for making too many API calls"/>
       break;
     }
 
@@ -284,10 +302,11 @@ class Sentiment extends Component {
               </Row>
               <Row>
                 <Col xs={6} className="tweets-info-title">Until:</Col>
-                <Col xs={6} className="tweets-info-value">{this.state.date}</Col>
+                <Col xs={6} className="tweets-info-value">{this.state.until}</Col>
               </Row>
             </div>
           </Col>
+
           <Col sm={4} md={4} xs={12}
             style={{
               width: this.props.containerWidth,
@@ -308,7 +327,9 @@ class Sentiment extends Component {
                 <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
               </div>
             </Hidden>
-            <TweetEmbed id={this.state.userId} options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
+            <Button onClick={this.saveSearch}>Save Search</Button>
+            <Button variant="raised" onClick={this.newRandomTweet}>New Tweet</Button>
+            <TweetEmbed id={this.state.tweetID} options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
           </Col>
         </Row>
         <CreatePDFModal
@@ -318,7 +339,7 @@ class Sentiment extends Component {
           searchInput={this.state.searchInput}
           tweetAmount={this.state.tweetAmount}
           placeName={this.state.placeName}
-          date={this.state.date}
+          date={this.state.until}
           pieChart={pieChart}
         />
       </div>
