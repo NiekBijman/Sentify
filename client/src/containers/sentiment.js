@@ -32,6 +32,7 @@ class Sentiment extends Component {
       geoLocated: null,
       tweetID: tweetID+"",
       openPDFModal: false,
+      notifications: 'INITIAL',
       openNotification: false
     }
   }
@@ -53,23 +54,6 @@ class Sentiment extends Component {
     if(details === "searchInputSet"){
       this.setState({
         searchInput: modelInstance.getSearch()
-      });
-    }
-
-    if(details==="emptySearch"){
-      // Show no sentiment pie chart
-      console.log('Arrived')
-      this.setState({
-        status: "EMPTY",
-        openNotification: true
-      });
-    }
-
-    if(details==="rateLimited"){
-      // Show no sentiment pie chart
-      this.setState({
-        status: "RATE_LIMITED",
-        openNotification: true
       });
     }
 
@@ -122,6 +106,42 @@ class Sentiment extends Component {
       });
     }
 
+    if(details ==='placeNameReset'){
+        this.setState({
+          placeName: '' 
+        })
+    }
+
+    //Notifications
+    if(details==="noTweetsFound"){
+
+      this.setState({
+        notifications:'NO_TWEETS',
+        openNotification: true
+      });
+    }
+
+    if(details==="noSearchInputGiven"){
+      // Notify user that he/she needs to input a search
+      this.setState({
+        notifications: "NO_SEARCH",
+        openNotification: true
+      });
+    }
+
+    if(details==="rateLimited"){
+      this.setState({
+        notifications:'RATE_LIMITED',
+        openNotification: true
+      });
+    }
+
+    if(details==="locationNotFound"){
+      this.setState({
+        notifications:'NO_LOCATION',
+        openNotification: true
+      });
+    }
   }
 
   sentimentAnalysis = () => {
@@ -129,9 +149,6 @@ class Sentiment extends Component {
 
     modelInstance.analyzeSentiment().then(result => {
       modelInstance.setSentimentData(result);
-      this.setState({
-        status: 'LOADED SENTIMENT'
-      });
     }).catch(() => {
       this.setState({
         status: 'ERROR'
@@ -253,24 +270,34 @@ class Sentiment extends Component {
             </svg>
         break;
 
-
-
-      default:
-        pieChart = <Notification text='There seems to be an error in your request'/> //  <div className="error">Failed to load data, please try again</div>
+        case 'ERROR':
+        pieChart = <Notification
+                    open={this.state.openNotification}
+                    handleClose={this.handleClose}
+                    text='Failed to load data, please try again'/>
         break;
     }
 
     // Error Messages for App 'misuses'
-    switch (this.props.notifications) {
+    switch (this.state.notifications) {
       case 'INITIAL':
         notification = null;
       break;
 
-      case 'EMPTY':
+      case 'NO_TWEETS':
         notification = <Notification
                         open={this.state.openNotification}
                         handleClose={this.handleClose}
                         text="We couldn't find any tweets for that search"
+                      />
+
+      break;
+
+      case 'NO_SEARCH':
+        notification = <Notification
+                        open={this.state.openNotification}
+                        handleClose={this.handleClose}
+                        text="Please input a search query"
                       />
 
       break;
@@ -281,6 +308,15 @@ class Sentiment extends Component {
                           handleClose={this.handleClose}
                           text="Can't update location because the App has been Rate Limited by Twitter"
                         />
+      break;
+
+
+      case 'NO_LOCATION':
+      notification = <Notification
+                  open={this.state.openNotification}
+                  handleClose={this.handleClose}
+                  text="We couldn't find that location"
+                />
       break;
     }
 
@@ -311,10 +347,6 @@ class Sentiment extends Component {
               <Row>
                 <Col xs={6} className="tweets-info-title">Amount of tweets:</Col>
                 <Col xs={6} className="tweets-info-value">{this.state.tweetAmount}</Col>
-              </Row>
-              <Row>
-                <Col xs={6} className="tweets-info-title">Geolocated Tweets:</Col>
-                <Col xs={6} className="tweets-info-value">{this.state.geoLocated}</Col>
               </Row>
               <Row>
                 <Col xs={6} className="tweets-info-title">Geography:</Col>

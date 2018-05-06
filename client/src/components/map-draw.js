@@ -5,7 +5,6 @@ import {debounce} from 'throttle-debounce';
 const DrawCircle = (svg, locations) => {
   let circleCenter, circleOuter; //control points
   let circleSelected = false; //have we completed the circle?
-  let circleClicked =false; //did the user click on the circle or the map?
   let dragging = false; //track whether we are dragging
   let active = false; // user can turn on/off this behavior
   let doubleClicked = false;
@@ -39,7 +38,6 @@ const DrawCircle = (svg, locations) => {
           // Set the outer point
           circleOuter = ll;
           circleSelected = true;
-          circleClicked = true;
 
         }
         else if(circleSelected){
@@ -56,19 +54,18 @@ const DrawCircle = (svg, locations) => {
           modelInstance.resetPlaceName();
           // dispatch.clear();
         }
-        else{
-          circleClicked = false;
-        }
 
       }
     else {
       // We set the center to the initial click
       circleCenter = ll;
       circleOuter = ll;
+
+      //Search the place name for this coordinate
+      reverseGeocode(circleCenter.lat, circleCenter.lng)
     }
 
-    //Search the place name for this coordinate
-    reverseGeocode(circleCenter.lat, circleCenter.lng)
+
 
 
     if(circleCenter) {
@@ -114,6 +111,7 @@ const DrawCircle = (svg, locations) => {
         dragging = true;
         let p = d3.mouse(svg.node());
         let ll = unproject([p[0],p[1]])
+
         if(i) {
           circleOuter = ll;
         } else {
@@ -134,14 +132,13 @@ const DrawCircle = (svg, locations) => {
         return false;
       }
     })
-    // .on("dragend", function() {
-    //   setTimeout(function() {
-    //     dragging = false;
-    //     console.log('Dragend');
-    //     // d3.event.sourceEvent.stopPropagation(); // silence other listeners
-    //
-    //   },100)
-    // })
+    .on("dragend", function() {
+      setTimeout(function() {
+        dragging = false;
+        // d3.event.sourceEvent.stopPropagation(); // silence other listeners
+
+      },100)
+    })
 
 
 
@@ -346,7 +343,7 @@ const DrawCircle = (svg, locations) => {
    }
 
   function geoCode (lat, lng, distance) {
-    if(circleSelected && circleClicked){
+    if(circleSelected){
       let location = lat.toFixed(6) + ',' + lng.toFixed(6) + ',' + distance.toFixed(0) + 'km';
       modelInstance.setGeocode(location);
       return location
@@ -354,18 +351,18 @@ const DrawCircle = (svg, locations) => {
   }
 
   function reverseGeocode (lat, lng){
-    if(circleCenter && (!circleSelected || dragging) ){
+    if(circleCenter ){ //&& (!circleSelected || dragging) 
       modelInstance.setLatLng(lat.toFixed(6), lng.toFixed(6));
       modelInstance.reverseGeocode(lat, lng).then(result => {
 
         var refreshTime = new Date( result.resp.headers["x-rate-limit-reset"] *1000 )
         var now = new Date()
-        console.log('Reverse API calls remaining: ' + result.resp.headers["x-rate-limit-remaining"] + '  Reset in: ' + (refreshTime.getMinutes() - now.getMinutes()) + ' minutes'); 
+        console.log('Reverse API calls remaining: ' + result.resp.headers["x-rate-limit-remaining"] + '  Reset in: ' + (refreshTime.getMinutes() - now.getMinutes()) + ' minutes');
         modelInstance.setPlaceName(result.data.result.places[0].full_name)
       })
       .catch((error) => {
         // console.log('reverseGeocode failed:' + error);
-        modelInstance.setPlaceName('error');
+        modelInstance.setErrorMessages('RATE_LIMITED');
       });
     }
   }

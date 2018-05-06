@@ -17,7 +17,6 @@ class DiscoverContainer extends React.Component {
         super(props);
         this.state = {
             status: 'INITIAL',
-            notifications: 'INITIAL',
 
             //Intro.js
             initialStep: 0,
@@ -34,9 +33,6 @@ class DiscoverContainer extends React.Component {
         }
     }
 
-    componentDidMount() {
-      modelInstance.addObserver(this);
-    }
 
     handleStatusChange = newStatus => {
       this.setState({
@@ -51,21 +47,6 @@ class DiscoverContainer extends React.Component {
     toggleSteps = () => {
       this.setState(prevState => ({ stepsEnabled: !prevState.stepsEnabled }));
     };
-
-
-    update(details){
-        if(details==="emptySearch"){
-          this.setState({
-            notification:'EMPTY'
-          });
-        }
-
-        if(details==="rateLimited"){
-          this.setState({
-            notification:'RATE_LIMITED'
-          });
-        }
-      }
 
     render () {
       const { stepsEnabled, steps, initialStep} = this.state;
@@ -90,7 +71,7 @@ class DiscoverContainer extends React.Component {
                   </div>
               </div>
               <div className="container-discover-bottom">
-                  <SentimentContainer status={this.state.status} notifications={this.state.notification}/>
+                  <SentimentContainer status={this.state.status}/>
               </div>
             </div>
 
