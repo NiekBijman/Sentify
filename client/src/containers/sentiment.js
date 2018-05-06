@@ -106,6 +106,12 @@ class Sentiment extends Component {
       });
     }
 
+    if(details ==='placeNameReset'){
+        this.setState({
+          placeName: '' 
+        })
+    }
+
     //Notifications
     if(details==="noTweetsFound"){
 
@@ -129,6 +135,13 @@ class Sentiment extends Component {
         openNotification: true
       });
     }
+
+    if(details==="locationNotFound"){
+      this.setState({
+        notifications:'NO_LOCATION',
+        openNotification: true
+      });
+    }
   }
 
   sentimentAnalysis = () => {
@@ -136,9 +149,6 @@ class Sentiment extends Component {
 
     modelInstance.analyzeSentiment().then(result => {
       modelInstance.setSentimentData(result);
-      this.setState({
-        status: 'LOADED SENTIMENT'
-      });
     }).catch(() => {
       this.setState({
         status: 'ERROR'
@@ -260,8 +270,6 @@ class Sentiment extends Component {
             </svg>
         break;
 
-
-
         case 'ERROR':
         pieChart = <Notification
                     open={this.state.openNotification}
@@ -277,8 +285,6 @@ class Sentiment extends Component {
       break;
 
       case 'NO_TWEETS':
-
-      console.log("NO_TWEETS")
         notification = <Notification
                         open={this.state.openNotification}
                         handleClose={this.handleClose}
@@ -288,8 +294,6 @@ class Sentiment extends Component {
       break;
 
       case 'NO_SEARCH':
-
-        console.log("NO_SEARCH")
         notification = <Notification
                         open={this.state.openNotification}
                         handleClose={this.handleClose}
@@ -299,13 +303,20 @@ class Sentiment extends Component {
       break;
 
       case 'RATE_LIMITED':
-
-        console.log('RATE_LIMITED')
         notification = <Notification
                           open={this.state.openNotification}
                           handleClose={this.handleClose}
                           text="Can't update location because the App has been Rate Limited by Twitter"
                         />
+      break;
+
+
+      case 'NO_LOCATION':
+      notification = <Notification
+                  open={this.state.openNotification}
+                  handleClose={this.handleClose}
+                  text="We couldn't find that location"
+                />
       break;
     }
 
@@ -336,10 +347,6 @@ class Sentiment extends Component {
               <Row>
                 <Col xs={6} className="tweets-info-title">Amount of tweets:</Col>
                 <Col xs={6} className="tweets-info-value">{this.state.tweetAmount}</Col>
-              </Row>
-              <Row>
-                <Col xs={6} className="tweets-info-title">Geolocated Tweets:</Col>
-                <Col xs={6} className="tweets-info-value">{this.state.geoLocated}</Col>
               </Row>
               <Row>
                 <Col xs={6} className="tweets-info-title">Geography:</Col>

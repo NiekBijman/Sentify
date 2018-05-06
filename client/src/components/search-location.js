@@ -25,6 +25,7 @@ const SearchLocation = props => {
     <div className={classes.container}>
       <TextField
           className={classes.textField}
+          placeholder="LOCATION"
           value={props.placeName.toUpperCase()}
           onChange={evt => props.handleLocation(evt)}
         />

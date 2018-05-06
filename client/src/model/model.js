@@ -96,12 +96,12 @@ const Model = function () {
 
             console.log("Current user searches");
             console.log(currUserSearches);
-            
+
             if (currUserSearches === undefined)
               currUserSearches = [];
 
             currUserSearches.push(newSearchKey);
-            
+
             return userRef.set(currUserSearches);
           })
           .then( () => {
@@ -122,7 +122,7 @@ const Model = function () {
   * Gets searches for logged in user
   */
   this.getSearchHistory = function(){
-    
+
     let currUserSearches;
     return new Promise((resolve, reject)=>{
       firebase.auth().onAuthStateChanged(function(user){
@@ -130,7 +130,7 @@ const Model = function () {
           let uid = user.uid;
 
           let userRef = database.ref("users/"+uid);
-      
+
           return userRef.once("value")
           .then( (value) => {
             let currUserSearchesIDs = value.val();
@@ -150,17 +150,10 @@ const Model = function () {
       }
     )
     });
-    
+
   //return searchHistory;
   }
 
-
-
-  // {"data": [{"text": "I love Titanic.", "id":1234, "polarity": 4},
-  // {"text": "I love Titanic.", "id":1234, "polarity": 4},
-  // {"text": "I don't mind Titanic.", "id":1234, "polarity": 2},
-  // {"text": "I like Titanic.", "id":1234, "polarity": 4},
-  // {"text": "I hate Titanic.", "id":4567, "polarity": 0}]};
 
   // Draw random tweet from bucket and eliminate drawn tweet from bucket
   this.randomDrawTweet = function(){
@@ -232,10 +225,10 @@ const Model = function () {
   }
 
   this.setPlaceName = function(string){
-    if(string === 'error'){
-      notifyObservers('rateLimited');
-      return
-    }
+    // if(string === 'error'){
+    //   notifyObservers('rateLimited');
+    //   return
+    // }
     placeName = string;
     notifyObservers('placeNameSet');
   }
@@ -344,6 +337,19 @@ const Model = function () {
     }
   }
 
+
+    this.setErrorMessages = function(error){
+      if(error === 'RATE_LIMITED'){
+        notifyObservers('rateLimited');
+        return
+      }
+      if(error === 'NO_LOCATION'){
+        notifyObservers('locationNotFound');
+        return
+      }
+    }
+
+
   //API Calls
   this.searchTweets = function () {
     let url = '/api/twitter/search?'
@@ -354,6 +360,7 @@ const Model = function () {
       else{
         notifyObservers('noSearchInputGiven');
       }
+      console.log(url);
 
     return fetch(url)
       .then(processResponse)

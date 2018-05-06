@@ -76,21 +76,21 @@ class Map extends React.Component {
           //   this.circleRender(circleControl, svg)
           // })
           map.on("move", () => {
-            this.circleRender(circleControl, svg, this.state.userLocations)
-          })
 
-          // render our initial visualization
-          this.circleRender(circleControl, svg, this.state.userLocations)
-
-         map.on('move', () => {
             const { lng, lat } = map.getCenter();
+            this.circleRender(circleControl, svg, this.state.userLocations)
+
 
             this.setState({
               lng: lng.toFixed(4),
               lat: lat.toFixed(4),
               zoom: map.getZoom().toFixed(2)
             });
-          });
+          })
+
+          // render our initial visualization
+          this.circleRender(circleControl, svg, this.state.userLocations)
+
       }
 
   circleRender(circleControl, svg, userLocations) {

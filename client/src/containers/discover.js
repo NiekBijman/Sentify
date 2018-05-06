@@ -33,6 +33,7 @@ class DiscoverContainer extends React.Component {
         }
     }
 
+
     handleStatusChange = newStatus => {
       this.setState({
           status: newStatus
@@ -70,7 +71,7 @@ class DiscoverContainer extends React.Component {
                   </div>
               </div>
               <div className="container-discover-bottom">
-                  <SentimentContainer status={this.state.status} notifications={this.state.notification}/>
+                  <SentimentContainer status={this.state.status}/>
               </div>
             </div>
 
