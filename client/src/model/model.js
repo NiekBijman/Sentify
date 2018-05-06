@@ -1,7 +1,5 @@
 import {Key} from '../config';
 
-
-
 const Model = function () {
   let container = 'Map';
   let observers = [];
