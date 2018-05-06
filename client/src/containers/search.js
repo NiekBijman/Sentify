@@ -86,7 +86,6 @@ class Search extends Component {
     // }
     this.props.handleStatusChange('INITIAL');
     modelInstance.searchTweets().then(result => {
-      console.log(result);
       modelInstance.setTweets(result);
       this.props.handleStatusChange('LOADED');
       this.setState({
