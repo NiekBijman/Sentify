@@ -32,6 +32,7 @@ class Sentiment extends Component {
       geoLocated: null,
       tweetID: tweetID+"",
       openPDFModal: false,
+      openNotification: false
     }
   }
 
@@ -55,14 +56,26 @@ class Sentiment extends Component {
       });
     }
 
-    if(details==="emptySearchString"){
+    if(details==="emptySearch"){
       // Show no sentiment pie chart
-      this.setState({status: "EMPTY"});
+      console.log('Arrived')
+      this.setState({
+        status: "EMPTY",
+        openNotification: true
+      });
+    }
+
+    if(details==="rateLimited"){
+      // Show no sentiment pie chart
+      this.setState({
+        status: "RATE_LIMITED",
+        openNotification: true
+      });
     }
 
     if(details ==='tweetsSet'){
-      console.log("The tweets");
-      console.log(modelInstance.getTweets());
+      // console.log("The tweets");
+      // console.log(modelInstance.getTweets());
       let randomTweetID = modelInstance.randomDrawTweet().id_str;
       this.setState({tweetID: randomTweetID});
       this.sentimentAnalysis();
@@ -164,7 +177,7 @@ class Sentiment extends Component {
   }
 
   handleTweetLoadSuccess = event => {
-    console.log('Tweet loaded successfully');
+    // console.log('Tweet loaded successfully');
   }
 
   handlePDFCreation = event => {
@@ -178,12 +191,12 @@ class Sentiment extends Component {
       });
   }
 
-  handleOpen = () => {
-    this.setState({ open: true});
+  handleOpenNotification = () => {
+    this.setState({ openNotification: true});
   };
 
   handleClose = () => {
-    this.setState({ open: false });
+    this.setState({ openNotification: false });
   };
 
   handleOpenPDFModal = () => {
@@ -254,13 +267,20 @@ class Sentiment extends Component {
       break;
 
       case 'EMPTY':
-        console.log('EMPTY')
-        notification = <Notification open={this.state.open} handleClose={this.handleClose.bind(this)} text="We couldn't find any tweets for that search"/>
+        notification = <Notification
+                        open={this.state.openNotification}
+                        handleClose={this.handleClose}
+                        text="We couldn't find any tweets for that search"
+                      />
+
       break;
 
       case 'RATE_LIMITED':
-        console.log('LIMITED');
-        notification = <Notification open={this.state.open} close={this.handleClose.bind(this)} text="The app is rate limited for making too many API calls"/>
+        notification = <Notification
+                          open={this.state.openNotification}
+                          handleClose={this.handleClose}
+                          text="Can't update location because the App has been Rate Limited by Twitter"
+                        />
       break;
     }
 
