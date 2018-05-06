@@ -10,7 +10,7 @@ const Model = function () {
 
   //Date
   let date = new Date();
-  let dateRange = '';
+  let dateParam = '';
 
   //Geocode
   let location = '';
@@ -83,12 +83,12 @@ const Model = function () {
 
         console.log("Current user searches");
         console.log(currUserSearches);
-        
+
         if (currUserSearches === undefined)
           currUserSearches = [];
-          
+
         currUserSearches.push(newSearchKey);
-        
+
         return userRef.set(currUserSearches);
       })
       .then( () => {
@@ -118,6 +118,7 @@ const Model = function () {
 
   this.setDate = function(dateIn){
     date = dateIn;
+    dateParam = this.getDateString()
     notifyObservers("dateSet");
   }
   this.getDate = function(){
@@ -187,6 +188,9 @@ const Model = function () {
   }
 
   this.setTweets = function(results){
+    // Number of API calls remaining (renews each 15 minutes)
+    console.log('Search API calls remaining: ' + results.resp.headers["x-rate-limit-remaining"]); //.x-rate-limit-remaining ["x-rate-limit-remaining"]
+
     if(results.data.statuses.length === 0){
       notifyObservers('emptySearch');
       return
@@ -287,16 +291,21 @@ const Model = function () {
 
   //API Calls
   this.searchTweets = function () {
-    let url = '/api/twitter/search?' + 'q=' + encodeURIComponent(searchInput) 
-    if (location !== "")
-      url += '&geocode=' + location;
-  
-    let year = date.getFullYear();
-    let month = date.getMonth()+1; // January is 0 in js
-    let day = date.getDate();
-    let dateParam = year+"-"+month+"-"+day;
+    let url = '/api/twitter/search?'
 
-    url += "&until=" + dateParam; 
+    if (searchInput !=='') {
+      url += 'q=' + encodeURIComponent(searchInput)
+      }
+
+    if (location !== '') {
+      url += '&geocode=' + location;
+      }
+
+    if(dateParam !== '') {
+      url += '&until=' + dateParam;
+      }
+
+    // console.log(url);
 
     return fetch(url)
       .then(processResponse)
