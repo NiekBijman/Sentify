@@ -32,6 +32,7 @@ class Sentiment extends Component {
       geoLocated: null,
       tweetID: tweetID+"",
       openPDFModal: false,
+      notifications: 'INITIAL',
       openNotification: false
     }
   }
@@ -53,23 +54,6 @@ class Sentiment extends Component {
     if(details === "searchInputSet"){
       this.setState({
         searchInput: modelInstance.getSearch()
-      });
-    }
-
-    if(details==="emptySearch"){
-      // Show no sentiment pie chart
-      console.log('Arrived')
-      this.setState({
-        status: "EMPTY",
-        openNotification: true
-      });
-    }
-
-    if(details==="rateLimited"){
-      // Show no sentiment pie chart
-      this.setState({
-        status: "RATE_LIMITED",
-        openNotification: true
       });
     }
 
@@ -122,6 +106,29 @@ class Sentiment extends Component {
       });
     }
 
+    //Notifications
+    if(details==="noTweetsFound"){
+
+      this.setState({
+        notifications:'NO_TWEETS',
+        openNotification: true
+      });
+    }
+
+    if(details==="noSearchInputGiven"){
+      // Notify user that he/she needs to input a search
+      this.setState({
+        notifications: "NO_SEARCH",
+        openNotification: true
+      });
+    }
+
+    if(details==="rateLimited"){
+      this.setState({
+        notifications:'RATE_LIMITED',
+        openNotification: true
+      });
+    }
   }
 
   sentimentAnalysis = () => {
@@ -255,18 +262,23 @@ class Sentiment extends Component {
 
 
 
-      default:
-        pieChart = <Notification text='There seems to be an error in your request'/> //  <div className="error">Failed to load data, please try again</div>
+        case 'ERROR':
+        pieChart = <Notification
+                    open={this.state.openNotification}
+                    handleClose={this.handleClose}
+                    text='Failed to load data, please try again'/>
         break;
     }
 
     // Error Messages for App 'misuses'
-    switch (this.props.notifications) {
+    switch (this.state.notifications) {
       case 'INITIAL':
         notification = null;
       break;
 
-      case 'EMPTY':
+      case 'NO_TWEETS':
+
+      console.log("NO_TWEETS")
         notification = <Notification
                         open={this.state.openNotification}
                         handleClose={this.handleClose}
@@ -275,7 +287,20 @@ class Sentiment extends Component {
 
       break;
 
+      case 'NO_SEARCH':
+
+        console.log("NO_SEARCH")
+        notification = <Notification
+                        open={this.state.openNotification}
+                        handleClose={this.handleClose}
+                        text="Please input a search query"
+                      />
+
+      break;
+
       case 'RATE_LIMITED':
+
+        console.log('RATE_LIMITED')
         notification = <Notification
                           open={this.state.openNotification}
                           handleClose={this.handleClose}

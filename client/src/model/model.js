@@ -192,7 +192,7 @@ const Model = function () {
     console.log('Search API calls remaining: ' + results.resp.headers["x-rate-limit-remaining"]); //.x-rate-limit-remaining ["x-rate-limit-remaining"]
 
     if(results.data.statuses.length === 0){
-      notifyObservers('emptySearch');
+      notifyObservers('noTweetsFound');
       return
     }
 
@@ -293,19 +293,12 @@ const Model = function () {
   this.searchTweets = function () {
     let url = '/api/twitter/search?'
 
-    if (searchInput !=='') {
-      url += 'q=' + encodeURIComponent(searchInput)
+      if (searchInput !=='') {
+        url += 'q=' + encodeURIComponent(searchInput) + '&geocode=' + location + '&until=' + dateParam;
+        }
+      else{
+        notifyObservers('noSearchInputGiven');
       }
-
-    if (location !== '') {
-      url += '&geocode=' + location;
-      }
-
-    if(dateParam !== '') {
-      url += '&until=' + dateParam;
-      }
-
-    // console.log(url);
 
     return fetch(url)
       .then(processResponse)
