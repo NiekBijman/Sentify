@@ -45,23 +45,8 @@ const Model = function () {
   let firebase = require("firebase");
   //firebase initialization
   firebase.initializeApp(firebaseConfig);
-<<<<<<< HEAD
   //database instantiaton
   var database = firebase.database();
-=======
-  //database instiation
-  let database = firebase.database();
-
-  this.signIn = function() {
-    var provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithRedirect(provider);
-  }
-
-  this.greetUser = function(){
-    var user = firebase.auth().currentUser;
-    alert("Hello " + user.displayName);
-  }
->>>>>>> ae55bf6ba249b02b1c8eb5f189e923f42da72e25
 
   /*
   * Inserts a search into the database
@@ -101,7 +86,7 @@ const Model = function () {
 
             console.log("Current user searches");
             console.log(currUserSearches);
-            
+
             if (currUserSearches === undefined || currUserSearches === null)
               currUserSearches = [];
 
@@ -392,18 +377,6 @@ const Model = function () {
 
   //API Calls
   this.searchTweets = function () {
-<<<<<<< HEAD
-    let url = '/api/twitter/search?' + 'q=' + encodeURIComponent(searchInput)
-    if (location !== "")
-      url += '&geocode=' + location;
-
-    let year = date.getFullYear();
-    let month = date.getMonth()+1; // January is 0 in js
-    let day = date.getDate();
-    let dateParam = year+"-"+month+"-"+day;
-
-    url += "&until=" + dateParam;
-=======
     let url = '/api/twitter/search?'
 
       if (searchInput !=='') {
@@ -413,7 +386,6 @@ const Model = function () {
         notifyObservers('noSearchInputGiven');
       }
       console.log(url);
->>>>>>> ae55bf6ba249b02b1c8eb5f189e923f42da72e25
 
     return fetch(url)
       .then(processResponse)
