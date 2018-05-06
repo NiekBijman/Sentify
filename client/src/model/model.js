@@ -45,7 +45,7 @@ const Model = function () {
   var firebase = require("firebase");
   //firebase initialization
   firebase.initializeApp(firebaseConfig);
-  //database instiation
+  //database instantiaton
   var database = firebase.database();
 
   /*
@@ -68,6 +68,42 @@ const Model = function () {
   // {"text": "I like Titanic.", "id":1234, "polarity": 4},
   // {"text": "I hate Titanic.", "id":4567, "polarity": 0}]};
 
+  this.googleSignIn = function () {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider).then(function(result) {
+
+      notifyObservers("userName");
+
+    }).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+    });
+  }
+
+  this.signOut = function () {
+    firebase.auth().signOut().then(function() {
+        // Sign-out successful.
+        notifyObservers("userName")
+      }).catch(function(error) {
+        // An error happened.
+    });
+  }
+
+  this.getUserName = function () {
+    var user = firebase.auth().currentUser;
+    if (user) {
+      return (user.displayName.toString());
+    }
+    else{
+      return "user not logged in";
+    }
+  }
+
   // Draw random tweet from bucket and eliminate drawn tweet from bucket
   this.randomDrawTweet = function(){
     if (tweetBucket === null) return null;
@@ -78,7 +114,6 @@ const Model = function () {
   }
 
   // API Calls
-
   this.setDate = function(dateIn){
     date = dateIn;
     notifyObservers("dateSet");
@@ -250,16 +285,16 @@ const Model = function () {
 
   //API Calls
   this.searchTweets = function () {
-    let url = '/api/twitter/search?' + 'q=' + encodeURIComponent(searchInput) 
+    let url = '/api/twitter/search?' + 'q=' + encodeURIComponent(searchInput)
     if (location !== "")
       url += '&geocode=' + location;
-  
+
     let year = date.getFullYear();
     let month = date.getMonth()+1; // January is 0 in js
     let day = date.getDate();
     let dateParam = year+"-"+month+"-"+day;
 
-    url += "&until=" + dateParam; 
+    url += "&until=" + dateParam;
 
     return fetch(url)
       .then(processResponse)
@@ -321,7 +356,6 @@ const Model = function () {
     console.error('API Error:', error.message || error)
     }
   }
-
 
   // Observer pattern
   this.addObserver = function (observer) {

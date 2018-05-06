@@ -22,10 +22,10 @@ class App extends Component {
           <header className="App-header">
             {/* <h1 className="App-title">{this.state.title}</h1> */}
             {/* We rended diffrent component based on the path */}
+            <Route path="/" component={Login}/>
             <Route exact path="/" component={Welcome}/>
             <Route path="/discover" component={Discover}/>
             <Route path="/my-searches" component={MySearches}/>
-            <Route path="/login" component={Login}/>
             {/* <Route path="/database" component={Database}/> */}
           </header>
         </div>
