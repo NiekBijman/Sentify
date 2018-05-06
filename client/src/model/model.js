@@ -32,21 +32,31 @@ const Model = function () {
   let sentimentData = null;
 
   let searchHistory = {"data": [
-    {"query":"#LastWeekTonight", "location": "America", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"query":"FrenchElection", "location": "Europe", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"query":"CharlieHebdo", "location": "Europe", "until": "14-05-17", "dateCreated": "15-05-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"query":"@JaneGoodman", "location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"query":"NATO", "location": "Europe", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"query":"#SomosJuntos", "location": "South-America", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"query":"#FindKadyrovsCat", "location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25}
+    {"id": 1, "query":"#LastWeekTonight", "location": "America", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 2, "query":"FrenchElection", "location": "Europe", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 3, "query":"CharlieHebdo", "location": "Europe", "until": "14-05-17", "dateCreated": "15-05-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 4, "query":"@JaneGoodman", "location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 5, "query":"NATO", "location": "Europe", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 6, "query":"#SomosJuntos", "location": "South-America", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 7, "query":"#FindKadyrovsCat", "location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25}
   ]};
 
   // firebase
-  var firebase = require("firebase");
+  let firebase = require("firebase");
   //firebase initialization
   firebase.initializeApp(firebaseConfig);
   //database instiation
-  var database = firebase.database();
+  let database = firebase.database();
+
+  this.signIn = function() {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithRedirect(provider);
+  }
+
+  this.greetUser = function(){
+    var user = firebase.auth().currentUser;
+    alert("Hello " + user.displayName);
+  }
 
   /*
   * Inserts a search into the database
@@ -54,10 +64,11 @@ const Model = function () {
   this.addSearchToDB = function(positive, negative, neutral){
     let today = new Date();
     let dateCreated = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate();
+    let until = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
     var search = {
                 "query": searchInput,
-                "location": location,
-                "until": date,
+                "location": placeName,
+                "until": until,
                 "dateCreated": dateCreated,
                 "amount": tweetAmount,
                 "positive": positive,
@@ -71,33 +82,79 @@ const Model = function () {
     console.log("newSearchRef key:");
     console.log(newSearchKey);
 
-    let user = firebase.auth().currentUser;
-    let uid = user.uid;
-    console.log("Curr user id: "+uid);
+    // Check if user is logged in
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        let uid = user.uid;
+        console.log("Curr user id: "+uid);
 
-    let userRef = database.ref("users/"+uid);
-    let currUserSearches;
-    userRef.once("value")
-      .then( (value) => {
-        currUserSearches = value.val();
+        let userRef = database.ref("users/"+uid);
+        let currUserSearches;
+        userRef.once("value")
+          .then( (value) => {
+            currUserSearches = value.val();
 
-        console.log("Current user searches");
-        console.log(currUserSearches);
-        
-        if (currUserSearches === undefined)
-          currUserSearches = [];
-          
-        currUserSearches.push(newSearchKey);
-        
-        return userRef.set(currUserSearches);
-      })
-      .then( () => {
-        return database.ref("users/"+uid).once("value");
-      })
-      .then( (value) => {
-        console.log(value.val());
-      });
+            console.log("Current user searches");
+            console.log(currUserSearches);
+            
+            if (currUserSearches === undefined)
+              currUserSearches = [];
+
+            currUserSearches.push(newSearchKey);
+            
+            return userRef.set(currUserSearches);
+          })
+          .then( () => {
+            return database.ref("users/"+uid).once("value");
+          })
+          .then( (value) => {
+            console.log(value.val());
+          });
+
+      } else {
+        user = null;
+      }
+    });
+
   }
+
+  /*
+  * Gets searches for logged in user
+  */
+  this.getSearchHistory = function(){
+    
+    let currUserSearches;
+    return new Promise((resolve, reject)=>{
+      firebase.auth().onAuthStateChanged(function(user){
+        if(user){
+          let uid = user.uid;
+
+          let userRef = database.ref("users/"+uid);
+      
+          return userRef.once("value")
+          .then( (value) => {
+            let currUserSearchesIDs = value.val();
+            let currUserSearches = currUserSearchesIDs.map( searchID => {
+              return database.ref("searches/"+searchID).once("value")
+                  .then( (value) => {
+                    let obj = value.val();
+                    obj["id"] = searchID;
+                    return obj;
+                  });
+            });
+            resolve(currUserSearches);
+          });
+        }else{
+          reject("Must log in"); // user must log in
+        }
+      }
+    )
+    });
+    
+  //return searchHistory;
+  }
+
+
 
   // {"data": [{"text": "I love Titanic.", "id":1234, "polarity": 4},
   // {"text": "I love Titanic.", "id":1234, "polarity": 4},
@@ -259,14 +316,12 @@ const Model = function () {
     return sentimentData;
   }
 
-  this.getSearchHistory = function() {
-    return searchHistory;
-  }
-
   this.deleteSearchHistory = function(selectedSearches) {
+    /*
     searchHistory.data = searchHistory.data.filter(function(el) {
       return !selectedSearches.includes(el.id);
     });
+    */
     notifyObservers();
   }
 
