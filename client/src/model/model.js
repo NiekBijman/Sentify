@@ -10,7 +10,7 @@ const Model = function () {
 
   //Date
   let date = new Date();
-  let dateRange = '';
+  let dateParam = '';
 
   //Geocode
   let location = '';
@@ -32,41 +32,133 @@ const Model = function () {
   let sentimentData = null;
 
   let searchHistory = {"data": [
-    {"subject":"#LastWeekTonight", "Location": "America", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"subject":"FrenchElection", "Location": "Europe", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"subject":"CharlieHebdo", "Location": "Europe", "until": "14-05-17", "dateCreated": "15-05-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"subject":"@JaneGoodman", "Location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"subject":"NATO", "Location": "Europe", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"subject":"#SomosJuntos", "Location": "South-America", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"subject":"#FindKadyrovsCat", "Location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25}
+    {"id": 1, "query":"#LastWeekTonight", "location": "America", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 2, "query":"FrenchElection", "location": "Europe", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 3, "query":"CharlieHebdo", "location": "Europe", "until": "14-05-17", "dateCreated": "15-05-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 4, "query":"@JaneGoodman", "location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 5, "query":"NATO", "location": "Europe", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 6, "query":"#SomosJuntos", "location": "South-America", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 7, "query":"#FindKadyrovsCat", "location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25}
   ]};
 
   // firebase
-  var firebase = require("firebase");
+  let firebase = require("firebase");
   //firebase initialization
   firebase.initializeApp(firebaseConfig);
+<<<<<<< HEAD
   //database instantiaton
   var database = firebase.database();
+=======
+  //database instiation
+  let database = firebase.database();
+
+  this.signIn = function() {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithRedirect(provider);
+  }
+
+  this.greetUser = function(){
+    var user = firebase.auth().currentUser;
+    alert("Hello " + user.displayName);
+  }
+>>>>>>> ae55bf6ba249b02b1c8eb5f189e923f42da72e25
 
   /*
   * Inserts a search into the database
   */
-  this.setFirebaseData = function(){
-    var search = searchHistory.data[0];
+  this.addSearchToDB = function(positive, negative, neutral){
+    let today = new Date();
+    let dateCreated = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate();
+    let until = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
+    var search = {
+                "query": searchInput,
+                "location": placeName,
+                "until": until,
+                "dateCreated": dateCreated,
+                "amount": tweetAmount,
+                "positive": positive,
+                "negative": negative,
+                "neutral": neutral
+                };
     //setup of path to reference the data
     var searchesRef = database.ref("searches");
-    var newSearchRef = searchesRef.push(search, function(){
-      database.ref("searches/"+newSearchRef).once("value").then( (value) => {
-        alert(value);
-      });
+    var newSearchKey = searchesRef.push(search).key;
+
+    console.log("newSearchRef key:");
+    console.log(newSearchKey);
+
+    // Check if user is logged in
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        let uid = user.uid;
+        console.log("Curr user id: "+uid);
+
+        let userRef = database.ref("users/"+uid);
+        let currUserSearches;
+        userRef.once("value")
+          .then( (value) => {
+            currUserSearches = value.val();
+
+            console.log("Current user searches");
+            console.log(currUserSearches);
+            
+            if (currUserSearches === undefined || currUserSearches === null)
+              currUserSearches = [];
+
+            currUserSearches.push(newSearchKey);
+
+            return userRef.set(currUserSearches);
+          })
+          .then( () => {
+            return database.ref("users/"+uid).once("value");
+          })
+          .then( (value) => {
+            console.log(value.val());
+          });
+
+      } else {
+        user = null;
+      }
     });
+
   }
 
-  // {"data": [{"text": "I love Titanic.", "id":1234, "polarity": 4},
-  // {"text": "I love Titanic.", "id":1234, "polarity": 4},
-  // {"text": "I don't mind Titanic.", "id":1234, "polarity": 2},
-  // {"text": "I like Titanic.", "id":1234, "polarity": 4},
-  // {"text": "I hate Titanic.", "id":4567, "polarity": 0}]};
+  /*
+  * Gets searches for logged in user
+  */
+  this.getSearchHistory = function(){
+
+    let currUserSearches;
+    return new Promise((resolve, reject)=>{
+      firebase.auth().onAuthStateChanged(function(user){
+        if(user){
+          let uid = user.uid;
+
+          let userRef = database.ref("users/"+uid);
+
+          return userRef.once("value")
+          .then( (value) => {
+            let currUserSearchesIDs = value.val();
+            let currUserSearches = currUserSearchesIDs.map( searchID => {
+              return database.ref("searches/"+searchID).once("value")
+                  .then( (value) => {
+                    let obj = value.val();
+                    obj["id"] = searchID;
+                    return obj;
+                  });
+            });
+            resolve(currUserSearches);
+          });
+        }else{
+          reject("Must log in"); // user must log in
+        }
+      }
+    )
+    });
+
+  //return searchHistory;
+  }
+
 
   this.googleSignIn = function () {
     var provider = new firebase.auth.GoogleAuthProvider();
@@ -116,6 +208,7 @@ const Model = function () {
   // API Calls
   this.setDate = function(dateIn){
     date = dateIn;
+    dateParam = this.getDateString()
     notifyObservers("dateSet");
   }
   this.getDate = function(){
@@ -172,10 +265,10 @@ const Model = function () {
   }
 
   this.setPlaceName = function(string){
-    if(string === 'error'){
-      notifyObservers('rateLimited');
-      return
-    }
+    // if(string === 'error'){
+    //   notifyObservers('rateLimited');
+    //   return
+    // }
     placeName = string;
     notifyObservers('placeNameSet');
   }
@@ -185,8 +278,11 @@ const Model = function () {
   }
 
   this.setTweets = function(results){
+    // Number of API calls remaining (renews each 15 minutes)
+    console.log('Search API calls remaining: ' + results.resp.headers["x-rate-limit-remaining"]); //.x-rate-limit-remaining ["x-rate-limit-remaining"]
+
     if(results.data.statuses.length === 0){
-      notifyObservers('emptySearch');
+      notifyObservers('noTweetsFound');
       return
     }
 
@@ -257,14 +353,12 @@ const Model = function () {
     return sentimentData;
   }
 
-  this.getSearchHistory = function() {
-    return searchHistory;
-  }
-
   this.deleteSearchHistory = function(selectedSearches) {
+    /*
     searchHistory.data = searchHistory.data.filter(function(el) {
       return !selectedSearches.includes(el.id);
     });
+    */
     notifyObservers();
   }
 
@@ -283,8 +377,22 @@ const Model = function () {
     }
   }
 
+
+    this.setErrorMessages = function(error){
+      if(error === 'RATE_LIMITED'){
+        notifyObservers('rateLimited');
+        return
+      }
+      if(error === 'NO_LOCATION'){
+        notifyObservers('locationNotFound');
+        return
+      }
+    }
+
+
   //API Calls
   this.searchTweets = function () {
+<<<<<<< HEAD
     let url = '/api/twitter/search?' + 'q=' + encodeURIComponent(searchInput)
     if (location !== "")
       url += '&geocode=' + location;
@@ -295,6 +403,17 @@ const Model = function () {
     let dateParam = year+"-"+month+"-"+day;
 
     url += "&until=" + dateParam;
+=======
+    let url = '/api/twitter/search?'
+
+      if (searchInput !=='') {
+        url += 'q=' + encodeURIComponent(searchInput) + '&geocode=' + location + '&until=' + dateParam;
+        }
+      else{
+        notifyObservers('noSearchInputGiven');
+      }
+      console.log(url);
+>>>>>>> ae55bf6ba249b02b1c8eb5f189e923f42da72e25
 
     return fetch(url)
       .then(processResponse)

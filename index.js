@@ -62,7 +62,7 @@ app.get('/api/twitter/reverse_geocode', (req, res) => {
 
   Twitter.get('geo/reverse_geocode', parameters)
     .then(response => {
-       res.send(response.data.result.places);
+       res.send(response);
     })
     .catch(e => {
       // res.status(500).send('Something broke!');
@@ -87,16 +87,33 @@ app.get('/api/twitter/geocode', (req, res) => {
 });
 
 app.get('/api/twitter/search', (req, res) => {
+
+  let q = '';
+  if(req.query.q){
+    q = req.query.q;
+  }
+
+  let geocode = '';
+  if(req.query.geocode){
+    geocode = req.query.geocode;
+  }
+
+  let until = '';
+  if(req.query.until){
+    until = req.query.until;
+  }
+
   var parameters = {
-    q : req.query.q,
-    geocode: req.query.geocode,
+    q : q,
+    geocode: geocode,
+    until: until,
     lang: "en",
     // result_type: "popular",
     count: 100,
     include_entities: true,
-    until: req.query.until,
   }
-  console.log("Searching, q="+parameters.q+", geocode="+parameters.geocode+"until="+parameters.until)
+  // console.log(q);
+  console.log("Searching, q="+q+", geocode="+geocode+"until="+until)
   Twitter.get('search/tweets', parameters)
     .then(response => {
        res.send(response);
@@ -121,7 +138,10 @@ app.post('/api/sentiment', (req, res) => {
         .then(response => {
           res.send(response)
         })
-        .catch(e => res.status(500).send('Something broke!'));
+        .catch(e => {
+          console.log(e)
+          res.status(500).send('Something broke!')
+        });
 });
 
 

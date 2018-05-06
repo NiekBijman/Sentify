@@ -17,7 +17,7 @@ class Search extends Component {
       searchSuggestion: 'Search for tweets here',
       anchorEl: null,
       page: 0,
-      placeName: modelInstance.getPlaceName() === '' ? "LOCATION" : modelInstance.getPlaceName(),
+      placeName: modelInstance.getPlaceName(), // === '' ? "LOCATION" : modelInstance.getPlaceName()
       searchInput: modelInstance.getSearch()
     }
     // Defining debounce is needed in constructor https://goo.gl/3D3vdf
@@ -72,26 +72,21 @@ class Search extends Component {
       let location = result[1].toFixed(6) + ',' + result[0].toFixed(6) + ',100km';
       modelInstance.setGeocode(location);
     }).catch( error => {
-      console.log(error.response)
-      this.props.handleStatusChange('ERROR');
+      console.log(error)
+      modelInstance.setErrorMessages('NO_LOCATION');
+      this.props.handleStatusChange('NO_LOCATION');
     });
   }
 
   searchTweets = () => {
-    // if( modelInstance.getSearch() === "" ) {
-    //   this.setState({data: null});
-    //   modelInstance.setTweets(null);
-    //   this.props.handleStatusChange("INITIAL");
-    //   return;
-    // }
     this.props.handleStatusChange('INITIAL');
     modelInstance.searchTweets().then(result => {
-      console.log(result);
       modelInstance.setTweets(result);
-      this.props.handleStatusChange('LOADED');
       this.setState({
         data: result
       });
+      this.props.handleStatusChange('LOADED');
+
     }).catch(() => {
       this.props.handleStatusChange('ERROR');
     });
@@ -112,8 +107,11 @@ class Search extends Component {
         placeName: modelInstance.getPlaceName() //.toUpperCase()
       })
     }
-    if(details ==='placeNameReset' && modelInstance.getSearch() !== ''){
+    if(details ==='placeNameReset'){ // && modelInstance.getSearch() !== ''
         this.searchTweets();
+        this.setState({
+          placeName: '' //.toUpperCase()
+        })
     }
   }
 
