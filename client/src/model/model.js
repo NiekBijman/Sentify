@@ -97,7 +97,7 @@ const Model = function () {
             console.log("Current user searches");
             console.log(currUserSearches);
             
-            if (currUserSearches === undefined)
+            if (currUserSearches === undefined || currUserSearches === null)
               currUserSearches = [];
 
             currUserSearches.push(newSearchKey);
