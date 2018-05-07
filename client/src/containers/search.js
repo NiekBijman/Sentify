@@ -81,6 +81,7 @@ class Search extends Component {
   searchTweets = () => {
     this.props.handleStatusChange('INITIAL');
     modelInstance.searchTweets().then(result => {
+      console.log(result);
       modelInstance.setTweets(result);
       this.setState({
         data: result

@@ -64,13 +64,8 @@ app.get('/api/twitter/reverse_geocode', (req, res) => {
     .then(response => {
        res.send(response);
     })
-    .catch(e => {
-      // res.status(500).send('Something broke!');
-      res.sendStatus(res.statusCode)
-      console.log("statusCode: ", res.statusCode);
-      }
-    )
-});
+    .catch(e => res.sendStatus(res.statusCode).send(e))
+  });
 
 app.get('/api/twitter/geocode', (req, res) => {
   var parameters = {
@@ -81,7 +76,7 @@ app.get('/api/twitter/geocode', (req, res) => {
     .then(response => {
        res.send(response.data.result.places[0].centroid);
     })
-    .catch(e => res.status(500).send(e)
+    .catch(e => res.sendStatus(res.statusCode).send(e)
     )
 
 });

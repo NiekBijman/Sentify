@@ -351,7 +351,7 @@ const DrawCircle = (svg, locations) => {
   }
 
   function reverseGeocode (lat, lng){
-    if(circleCenter ){ //&& (!circleSelected || dragging) 
+    if(circleCenter ){ //&& (!circleSelected || dragging)
       modelInstance.setLatLng(lat.toFixed(6), lng.toFixed(6));
       modelInstance.reverseGeocode(lat, lng).then(result => {
 
@@ -361,7 +361,7 @@ const DrawCircle = (svg, locations) => {
         modelInstance.setPlaceName(result.data.result.places[0].full_name)
       })
       .catch((error) => {
-        // console.log('reverseGeocode failed:' + error);
+        console.log('reverseGeocode failed:' + error);
         modelInstance.setErrorMessages('RATE_LIMITED');
       });
     }
