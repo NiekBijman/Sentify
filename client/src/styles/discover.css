@@ -6,6 +6,7 @@
 
 .container-discover {
   height: 100%;
+
 }
 
 .container-discover-top {
@@ -19,6 +20,25 @@
 .intro{
   text-align: right;
   padding-top: 8px;
+}
+
+.drawAnimation{
+  position: absolute;
+  mix-blend-mode: screen;
+}
+
+.gif{
+    width: 20vw;
+    padding-top: 50px;
+    padding-left: 900px;
+}
+
+.introjs-tooltiptext{
+  font-family: Roboto thin;
+}
+
+.h1{
+  /* font-family: Roboto bold; */
 }
 
 #title-steps {

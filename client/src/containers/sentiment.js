@@ -108,7 +108,7 @@ class Sentiment extends Component {
 
     if(details ==='placeNameReset'){
         this.setState({
-          placeName: '' 
+          placeName: ''
         })
     }
 
@@ -238,6 +238,11 @@ class Sentiment extends Component {
 
   saveSearch = () => {
     modelInstance.addSearchToDB(this.state.positive, this.state.negative, this.state.neutral);
+
+    this.setState({
+      notifications: 'SEARCH_SAVED',
+      openNotification: true,
+    })
   }
 
   render(){
@@ -254,6 +259,10 @@ class Sentiment extends Component {
     let notification = null;
 
     switch (this.props.status) {
+      case 'NULL' :
+        pieChart = null;
+        break;
+        
       case 'INITIAL':
         pieChart = <CircularIndeterminate/>
         break;
@@ -318,6 +327,14 @@ class Sentiment extends Component {
                   text="We couldn't find that location"
                 />
       break;
+
+      case 'SEARCH_SAVED':
+      notification = <Notification
+                  open={this.state.openNotification}
+                  handleClose={this.handleClose}
+                  text="Search saved"
+                />
+      break;
     }
 
     return(
@@ -379,9 +396,9 @@ class Sentiment extends Component {
                 <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
               </div>
             </Hidden>
-            <Button onClick={this.saveSearch}>Save Search</Button>
+            <Button className="sentiment-save" onClick={this.saveSearch}>Save Search</Button>
             <Button variant="raised" onClick={this.newRandomTweet}>New Tweet</Button>
-            <TweetEmbed id={this.state.tweetID} options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
+            <TweetEmbed className="sentiment-tweet" id={this.state.tweetID} options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
           </Col>
         </Row>
         <CreatePDFModal
