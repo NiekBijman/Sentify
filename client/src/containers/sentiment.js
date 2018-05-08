@@ -28,7 +28,7 @@ class Sentiment extends Component {
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
       tweetAmount: modelInstance.getTweetAmount(),
-      until: modelInstance.getDateString(),
+      until: '',
       geoLocated: null,
       tweetID: tweetID+"",
       openPDFModal: false,
@@ -62,7 +62,7 @@ class Sentiment extends Component {
       // console.log(modelInstance.getTweets());
       let randomTweetID = modelInstance.randomDrawTweet().id_str;
       this.setState({tweetID: randomTweetID});
-      this.sentimentAnalysis();
+      // this.sentimentAnalysis();
       // Set state to LOADING, which should disable save-search button
     }
 
@@ -113,6 +113,13 @@ class Sentiment extends Component {
     }
 
     //Notifications
+    if(details==="networkError"){
+      this.setState({
+        notifications:'ERROR',
+        openNotification: true
+      });
+    }
+
     if(details==="noTweetsFound"){
 
       this.setState({
@@ -144,17 +151,9 @@ class Sentiment extends Component {
     }
   }
 
-  sentimentAnalysis = () => {
-    // if(this.state.searchInput === "") return;
 
-    modelInstance.analyzeSentiment().then(result => {
-      modelInstance.setSentimentData(result);
-    }).catch(() => {
-      this.setState({
-        status: 'ERROR'
-      });
-    });
-  }
+
+
 
   calculateSentiment = () => {
     let result = modelInstance.getSentimentData();
@@ -262,7 +261,7 @@ class Sentiment extends Component {
       case 'NULL' :
         pieChart = null;
         break;
-        
+
       case 'INITIAL':
         pieChart = <CircularIndeterminate/>
         break;
@@ -279,18 +278,21 @@ class Sentiment extends Component {
             </svg>
         break;
 
-        case 'ERROR':
-        pieChart = <Notification
-                    open={this.state.openNotification}
-                    handleClose={this.handleClose}
-                    text='Failed to load data, please try again'/>
-        break;
+
     }
 
     // Error Messages for App 'misuses'
     switch (this.state.notifications) {
       case 'INITIAL':
         notification = null;
+      break;
+
+      case 'ERROR':
+        notification = <Notification
+                        open={this.state.openNotification}
+                        handleClose={this.handleClose}
+                        text='Failed to load data, please try again'
+                      />
       break;
 
       case 'NO_TWEETS':
@@ -322,18 +324,18 @@ class Sentiment extends Component {
 
       case 'NO_LOCATION':
       notification = <Notification
-                  open={this.state.openNotification}
-                  handleClose={this.handleClose}
-                  text="We couldn't find that location"
-                />
+                        open={this.state.openNotification}
+                        handleClose={this.handleClose}
+                        text="We couldn't find that location"
+                      />
       break;
 
       case 'SEARCH_SAVED':
       notification = <Notification
-                  open={this.state.openNotification}
-                  handleClose={this.handleClose}
-                  text="Search saved"
-                />
+                        open={this.state.openNotification}
+                        handleClose={this.handleClose}
+                        text="Search saved"
+                      />
       break;
     }
 

@@ -28,9 +28,10 @@
 }
 
 .gif{
+  position: relative;
     width: 20vw;
-    padding-top: 50px;
-    padding-left: 900px;
+    margin-top: 50px;
+    margin-left: 900px;
 }
 
 .introjs-tooltiptext{
@@ -83,6 +84,10 @@
   font-family: Roboto light;
 }
 
+.title{
+  font-size: 35px;
+  font-family: Roboto;
+}
 #divToPrint {
   width: 100%;
   text-align: center;

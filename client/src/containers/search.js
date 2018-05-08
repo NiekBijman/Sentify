@@ -64,35 +64,59 @@ class Search extends Component {
 
   searchGeocode = () => {
     //Searching for the Coordinates of the Place the user searched for
-    modelInstance.geocode().then(result => {
-      console.log(result);
-      //When the data arrives we wwant to set the Coordinates to update the Map
-      modelInstance.setCoordinates(result[0], result[1]);
-      console.log(result);
+    if(modelInstance.getPlaceName() !== ''){
+      modelInstance.geocode().then(result => {
+        console.log(result);
+        //When the data arrives we wwant to set the Coordinates to update the Map
+        modelInstance.setCoordinates(result[0], result[1]);
+        console.log(result);
 
-      //We also want to use the data as an input for the geocode in the Search Tweets API Call
-      //IMPORTANT: Lat & Long are switched in the 'GET search/tweets' call
-      let location = result[1].toFixed(6) + ',' + result[0].toFixed(6) + ',100km';
-      modelInstance.setGeocode(location);
-    }).catch( error => {
-      console.log(error)
-      modelInstance.setErrorMessages('NO_LOCATION');
-      this.props.handleStatusChange('NO_LOCATION');
-    });
+        //We also want to use the data as an input for the geocode in the Search Tweets API Call
+        //IMPORTANT: Lat & Long are switched in the 'GET search/tweets' call
+        let location = result[1].toFixed(6) + ',' + result[0].toFixed(6) + ',100km';
+        modelInstance.setGeocode(location);
+      }).catch( error => {
+        console.log(error)
+        modelInstance.setErrorMessages('NO_LOCATION');
+      });
+    }
   }
 
   searchTweets = () => {
     this.props.handleStatusChange('INITIAL');
-    modelInstance.searchTweets().then(result => {
-      console.log(result);
-      modelInstance.setTweets(result);
-      this.setState({
-        data: result
-      });
-      this.props.handleStatusChange('LOADED');
+    if(modelInstance.getSearch() !== ''){
+      modelInstance.searchTweets().then(result => {
+        //Check if the search found any tweets
+        if(result.data.statuses.length === 0){
+          modelInstance.setErrorMessages('NO_TWEETS');
+          return
+        }
 
-    }).catch(() => {
-      this.props.handleStatusChange('ERROR');
+        console.log(result);
+        modelInstance.setTweets(result);
+        this.setState({
+          data: result
+        });
+        this.sentimentAnalysis();
+
+      }).catch(() => {
+        // this.props.handleStatusChange('ERROR');
+        modelInstance.setErrorMessages('ERROR');
+      });
+    }
+    else{
+      this.props.handleStatusChange('NULL');
+      modelInstance.setErrorMessages('NO_SEARCH');
+    }
+  }
+
+  sentimentAnalysis = () => {
+    modelInstance.analyzeSentiment().then(result => {
+      this.props.handleStatusChange('LOADED');
+      modelInstance.setSentimentData(result);
+    }).catch( e => {
+      console.log(e);
+      // modelInstance.setErrorMessages('ERROR')
     });
   }
 
