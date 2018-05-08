@@ -22,7 +22,7 @@ class App extends Component {
           <header className="App-header">
             {/* <Route path="/" component={Login}/> */}
             <Route exact path="/" component={Welcome}/>
-            <Route path="/discover" component={Discover}/>
+            <Route path="/discover/:query?" component={Discover}/>
             <Route path="/my-searches" component={MySearches}/>
             {/* <Route path="/database" component={Database}/> */}
           </header>

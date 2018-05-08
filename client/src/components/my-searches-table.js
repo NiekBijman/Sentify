@@ -171,13 +171,19 @@ class MySearchesTable extends React.Component {
 
   componentDidMount() {
       modelInstance.getSearchHistory().then( (promises) => {
-        console.log("promise resolved");
         // get the resolve value of all promises in `promises`
-        Promise.all(promises).then(data => {
+        if (promises === null || promises === undefined){
           this.setState({
-            data: data
+            data: null
           });
-        });
+        }else{
+          Promise.all(promises).then(data => {
+            data = data.filter( val => val !== undefined);
+            this.setState({
+              data: data
+            });
+          });
+        }
       });
       modelInstance.addObserver(this);
   }
@@ -222,7 +228,15 @@ class MySearchesTable extends React.Component {
       if (event.target.tagName === "I") {
           alert("Creating PDF file for download");
       } else if (event.target.tagName !== "INPUT" && !event.target.getAttribute("class").includes("checkbox")) {
-          window.location.assign('/search?id=' + id);
+        //get search query from firebase
+        let query;
+        modelInstance.getSearchFromDB(id).then( (searchObject) => {
+          let query = searchObject.query;
+          modelInstance.setSearch(query);
+          window.location.assign('/discover');
+        }).catch( () => {
+          // TODO: catch error?
+        });
       }
   };
 
@@ -271,9 +285,7 @@ class MySearchesTable extends React.Component {
 
     let tableBody;
     let emptyRows;
-    if (data !== null){
-      console.log("data not null");
-      console.log(data);
+    if (data !== null && data !== undefined){
       emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
       tableBody = data.length > 0 && data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
         const isSelected = this.isSelected(n.id);
@@ -303,7 +315,6 @@ class MySearchesTable extends React.Component {
         );
       });
     }else{
-      console.log("data null");
       tableBody = null;
       emptyRows = rowsPerPage;
     }
@@ -323,7 +334,7 @@ class MySearchesTable extends React.Component {
             <EnhancedTableHead
               numSelected={selected.length}
               onSelectAllClick={this.handleSelectAllClick}
-              rowCount={data === null ? -1 : (data.length || -1)}
+              rowCount={data === null || data === undefined ? -1 : (data.length || -1)}
             />
             <TableBody>
               {tableBody}
@@ -337,7 +348,7 @@ class MySearchesTable extends React.Component {
         </div>
         <TablePagination
           component="div"
-          count={data === null ? 0 : data.length || 0}
+          count={data === null || data === undefined ? 0 : data.length || 0}
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{

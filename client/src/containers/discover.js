@@ -6,12 +6,11 @@ import { Steps } from 'intro.js-react';
 import ButtonImportant from '../components/button-important';
 import { modelInstance } from '../model/model';
 import DrawingAnimation from '../components/intro-drawing-animation'
-
+import {withRouter} from 'react-router';
 
 import 'intro.js/introjs.css';
 import '../styles/discover.css';
 import '../styles/search.css';
-
 
 class DiscoverContainer extends React.Component {
     constructor(props){
@@ -55,6 +54,12 @@ class DiscoverContainer extends React.Component {
         }
     }
 
+    componentDidMount() {
+      let query = this.props.match.params.query;
+      if (query !== undefined){
+        modelInstance.setSearch(query);
+      }
+    }
 
     handleStatusChange = newStatus => {
       this.setState({
@@ -144,4 +149,4 @@ class DiscoverContainer extends React.Component {
     }
 }
 
-export default DiscoverContainer;
+export default withRouter(DiscoverContainer);

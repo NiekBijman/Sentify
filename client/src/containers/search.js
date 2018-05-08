@@ -26,8 +26,11 @@ class Search extends Component {
   }
 
   componentDidMount() {
+    // check if url id param was provided
+
+
     modelInstance.addObserver(this);
-    this.searchTweets();
+    //this.searchTweets();
   }
 
   handleClick = event => {
@@ -137,6 +140,12 @@ class Search extends Component {
         this.setState({
           placeName: '' //.toUpperCase()
         })
+    }
+    if(details === 'searchInputSet'){
+      this.searchTweets();
+      this.setState({
+        searchInput: modelInstance.getSearch()
+      })
     }
   }
 
