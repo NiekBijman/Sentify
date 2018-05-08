@@ -69,23 +69,16 @@ const Model = function () {
     var searchesRef = database.ref("searches");
     var newSearchKey = searchesRef.push(search).key;
 
-    console.log("newSearchRef key:");
-    console.log(newSearchKey);
-
     // Check if user is logged in
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
         let uid = user.uid;
-        console.log("Curr user id: "+uid);
 
         let userRef = database.ref("users/"+uid);
         let currUserSearches;
         userRef.once("value")
           .then( (value) => {
             currUserSearches = value.val();
-
-            console.log("Current user searches");
-            console.log(currUserSearches);
 
             if (currUserSearches === undefined || currUserSearches === null)
               currUserSearches = [];
@@ -124,14 +117,22 @@ const Model = function () {
           return userRef.once("value")
           .then( (value) => {
             let currUserSearchesIDs = value.val();
-            let currUserSearches = currUserSearchesIDs.map( searchID => {
-              return database.ref("searches/"+searchID).once("value")
-                  .then( (value) => {
-                    let obj = value.val();
-                    obj["id"] = searchID;
-                    return obj;
-                  });
-            });
+            if(currUserSearchesIDs === null || currUserSearchesIDs === undefined){
+              let currUserSearches = null;
+            }else{
+              let currUserSearches = currUserSearchesIDs.map( searchID => {
+                return database.ref("searches/"+searchID).once("value")
+                    .then( (value) => {
+                      let obj = value.val();
+                      if (obj){
+                        obj["id"] = searchID;
+                        return obj;
+                      }else{
+                        return undefined;
+                      }
+                    });
+              });
+            }
             resolve(currUserSearches);
           });
         }else{
@@ -140,9 +141,17 @@ const Model = function () {
       }
     )
     });
-
-  //return searchHistory;
   }
+
+    /*
+    * Get search object for provided search ID
+    */
+   this.getSearchFromDB = function(searchID) {
+    return database.ref("searches/"+searchID).once("value").then( (result) => {
+      let searchObject = result.val();
+      return searchObject;
+    });
+   }
 
 
   this.googleSignIn = function () {

@@ -21,22 +21,6 @@ class Welcome extends React.Component {
     console.log(event.target.value);
   }
 
-
-  handleClick = () => {
-    modelInstance.searchTweets().then(result => {
-      console.log(result);
-      modelInstance.setSentimentData(result);
-      this.setState({
-        status: 'LOADED',
-        data: result
-      });
-    }).catch(() => {
-      this.setState({
-        status: 'ERROR'
-      });
-    });
-  }
-
   render () {
     return (
       <div className="container-welcome">
