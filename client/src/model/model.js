@@ -266,11 +266,6 @@ const Model = function () {
     // Number of API calls remaining (renews each 15 minutes)
     console.log('Search API calls remaining: ' + results.resp.headers["x-rate-limit-remaining"]); //.x-rate-limit-remaining ["x-rate-limit-remaining"]
 
-    if(results.data.statuses.length === 0){
-      notifyObservers('noTweetsFound');
-      return
-    }
-
     //Set twitter responses
     tweets = results.data.statuses;
     // Set tweet bucket to draw randoms from
@@ -370,6 +365,18 @@ const Model = function () {
       }
       if(error === 'NO_LOCATION'){
         notifyObservers('locationNotFound');
+        return
+      }
+      if(error === 'ERROR'){
+        notifyObservers('networkError');
+        return
+      }
+      if(error === 'NO_SEARCH'){
+        notifyObservers('noSearchInputGiven');
+        return
+      }
+      if(error === 'NO_TWEETS'){
+        notifyObservers('noTweetsFound');
         return
       }
     }

@@ -64,7 +64,9 @@ app.get('/api/twitter/reverse_geocode', (req, res) => {
     .then(response => {
        res.send(response);
     })
-    .catch(e => res.sendStatus(res.statusCode).send(e))
+    .catch(e => {
+      res.sendStatus(res.statusCode).send(e);
+    })
   });
 
 app.get('/api/twitter/geocode', (req, res) => {
@@ -103,7 +105,7 @@ app.get('/api/twitter/search', (req, res) => {
     geocode: geocode,
     until: until,
     lang: "en",
-    // result_type: "popular",
+    result_type: "mixed",
     count: 100,
     include_entities: true,
   }

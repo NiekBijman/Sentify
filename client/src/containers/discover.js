@@ -37,7 +37,11 @@ class DiscoverContainer extends React.Component {
               },
               {
                 element: '.location',
-                intro: 'Type in place names or interact with the map to look for tweets in specific locations',
+                intro: 'You can filter your search to specific locations',
+              },
+              {
+                element: '.container-discover-top',
+                intro: 'Or interact with the map to look for locations in a certain radius',
               },
               {
                 element: '.sentiment-tweet',
@@ -78,7 +82,7 @@ class DiscoverContainer extends React.Component {
         // this.step.updateStepElement(nextStepIndex);
       }
 
-      else if (nextStepIndex === 3) {
+      else if (nextStepIndex === 4) {
         this.setState({
           introState: 'MAP'
         })
@@ -132,7 +136,7 @@ class DiscoverContainer extends React.Component {
                   </div>
               </div>
               <div className="container-discover-bottom">
-                  <SentimentContainer status={this.state.status}/>
+                  <SentimentContainer status={this.state.status} />
               </div>
             </div>
 

@@ -358,11 +358,22 @@ const DrawCircle = (svg, locations) => {
         var refreshTime = new Date( result.resp.headers["x-rate-limit-reset"] *1000 )
         var now = new Date()
         console.log('Reverse API calls remaining: ' + result.resp.headers["x-rate-limit-remaining"] + '  Reset in: ' + (refreshTime.getMinutes() - now.getMinutes()) + ' minutes');
+        console.log(result);
+        if(result.resp.statusCode === 429){
+          modelInstance.setErrorMessages('RATE_LIMITED');
+          return
+        }
+        else if(result.resp.statusCode === 404){
+          modelInstance.setErrorMessages('NO_LOCATION');
+          return
+        }
+
         modelInstance.setPlaceName(result.data.result.places[0].full_name)
+
       })
       .catch((error) => {
         console.log('reverseGeocode failed:' + error);
-        modelInstance.setErrorMessages('RATE_LIMITED');
+        // modelInstance.setErrorMessages('ERROR');
       });
     }
   }
