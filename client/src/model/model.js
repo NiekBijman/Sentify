@@ -111,35 +111,45 @@ const Model = function () {
       firebase.auth().onAuthStateChanged(function(user){
         if(user){
           let uid = user.uid;
-
+          console.log("user:");
+          console.log(user);
           let userRef = database.ref("users/"+uid);
 
           return userRef.once("value")
           .then( (value) => {
             let currUserSearchesIDs = value.val();
+            console.log("currUserSearchesIDs:");
+            console.log(currUserSearchesIDs);
             if(currUserSearchesIDs === null || currUserSearchesIDs === undefined){
+              console.log("SET TO NULL");
               let currUserSearches = null;
+              resolve(null);
             }else{
               let currUserSearches = currUserSearchesIDs.map( searchID => {
                 return database.ref("searches/"+searchID).once("value")
                     .then( (value) => {
                       let obj = value.val();
+
                       if (obj){
                         obj["id"] = searchID;
+                        console.log("obj:");
+                        console.log(obj);
                         return obj;
                       }else{
                         return undefined;
                       }
                     });
               });
+              resolve(currUserSearches);
             }
-            resolve(currUserSearches);
+            console.log("currUserSearches");
+            console.log(currUserSearches);
+            
           });
         }else{
           reject("Must log in"); // user must log in
         }
-      }
-    )
+      });
     });
   }
 

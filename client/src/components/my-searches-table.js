@@ -172,6 +172,8 @@ class MySearchesTable extends React.Component {
   componentDidMount() {
       modelInstance.getSearchHistory().then( (promises) => {
         // get the resolve value of all promises in `promises`
+        console.log("promises:");
+        console.log(promises);
         if (promises === null || promises === undefined){
           this.setState({
             data: null
@@ -232,8 +234,7 @@ class MySearchesTable extends React.Component {
         let query;
         modelInstance.getSearchFromDB(id).then( (searchObject) => {
           let query = searchObject.query;
-          modelInstance.setSearch(query);
-          window.location.assign('/discover');
+          window.location.assign('/discover/'+query);
         }).catch( () => {
           // TODO: catch error?
         });
