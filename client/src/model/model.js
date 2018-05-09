@@ -295,7 +295,7 @@ const Model = function () {
 
     //Build the object to POST to Sentiment Analysis
     const tweetObject = results.data.statuses.map(function(tweet){
-      return {"text": tweet.text}
+      return {"text": tweet.text, "query": searchInput }
     })
     tweetsJSON = JSON.stringify({data: tweetObject})
     notifyObservers('tweetsSet');

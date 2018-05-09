@@ -256,7 +256,7 @@ class Sentiment extends Component {
     let minViewportSize = Math.min(width, height);
     // This sets the radius of the pie chart to fit within
     // the current window size, with some additional padding
-    let radius = (minViewportSize * .9) / 2;
+    let radius = (minViewportSize * 1.1) / 2;
     // Centers the pie chart
     let x = width / 2;
     let y = height / 2;
@@ -273,7 +273,7 @@ class Sentiment extends Component {
         break;
       case 'LOADED':
         pieChart =
-              <svg onClick={this.handleChartClick} width="100%" height="100%">
+              <svg onClick={this.handleChartClick} width="120%" height="120%">
                 <SentimentPie x={x}
                               y={y}
                               innerRadius={radius * .00}

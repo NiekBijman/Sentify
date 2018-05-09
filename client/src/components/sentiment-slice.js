@@ -32,6 +32,7 @@ class SentimentSlice extends React.Component {
         return (
             <g onMouseOver={this.onMouseOver}
                onMouseOut={this.onMouseOut}
+               className='pieSlice' 
                >
                 <path d={arc(value)} fill={fill} />
                 <text transform={`translate(${arc.centroid(value)})`}
