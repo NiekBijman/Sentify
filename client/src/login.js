@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import Button from 'material-ui/Button';
 import { modelInstance } from './model/model';
+import ButtonImportant from './components/button-important';
 
 export default class Login extends Component {
   constructor(props){
     super(props);
     this.update = this.update.bind(this);
     this.state = {
-      userName: modelInstance.getUserName()
+      userName: 'Sign in'
     }
   }
 
@@ -30,14 +31,14 @@ export default class Login extends Component {
       });
     }
   }
-  
+
   render() {
     return(
-      <div className = "loginHeader">
-        <Button onClick = {this.handleSignIn} >Sign in with google</Button>
-        <Button onClick = {this.handleSignOut} >Sign Out</Button>
-        <Button>{this.state.userName}</Button>
-      </div>
+      <React.Fragment>
+        <ButtonImportant className='intro-button' size="small" text='Explain App' toggleSteps={this.props.toggleSteps}/>
+        <Button size="small" onClick = {this.handleSignIn} >{this.state.userName}</Button>
+        <Button size="small" onClick = {this.handleSignOut} >Sign Out</Button>
+      </React.Fragment>
     )
   }
 }

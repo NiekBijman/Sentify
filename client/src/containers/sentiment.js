@@ -21,9 +21,10 @@ class Sentiment extends Component {
     let tweetID = modelInstance.randomDrawTweet();
     if (tweetID === null) tweetID = "692527862369357824";
     this.state = {
-      positive: 50,
+      positive: 60,
       negative: 40,
-      neutral: 10,
+      // neutral: 10,
+      quantity:'',
       sentiment: modelInstance.getSentimentData(),
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
@@ -33,7 +34,7 @@ class Sentiment extends Component {
       tweetID: tweetID+"",
       openPDFModal: false,
       notifications: 'INITIAL',
-      openNotification: false
+      openNotification: false,
     }
   }
 
@@ -177,14 +178,15 @@ class Sentiment extends Component {
     })
 
     let total = pos + neg + neu;
-    sentiment.positive = (pos/total)*100;
-    sentiment.negative = (neg/total)*100;
-    sentiment.neutral = (neu/total)*100;
+    sentiment.positive = (pos/(pos+neg))*100;
+    sentiment.negative = (neg/(pos+neg))*100;
+    // sentiment.neutral = (neu/total)*100;
 
     this.setState({
-      positive: (result !== null) ? Math.round(sentiment.positive) : 50,
+      positive: (result !== null) ? Math.round(sentiment.positive) : 60,
       negative:  (result !== null) ? Math.round(sentiment.negative) : 40,
-      neutral: (result !== null) ? Math.round(sentiment.neutral) : 10,
+      quantity:  (neu + '/' + total),
+      // neutral: (result !== null) ? Math.round(sentiment.neutral) : 10,
     })
   }
 
@@ -227,6 +229,10 @@ class Sentiment extends Component {
     });
   };
 
+  handleChartClick = () => {
+    console.log('hey');
+  }
+
 
   newRandomTweet = () => {
     let randomTweet = modelInstance.randomDrawTweet();
@@ -267,18 +273,16 @@ class Sentiment extends Component {
         break;
       case 'LOADED':
         pieChart =
-            <svg width="100%" height="100%">
-              <SentimentPie x={x}
-                            y={y}
-                            innerRadius={radius * .35}
-                            outerRadius={radius}
-                            cornerRadius={2}
-                            padAngle={.02}
-                            data={[this.state.positive, this.state.negative, this.state.neutral]}/>
-            </svg>
+              <svg onClick={this.handleChartClick} width="100%" height="100%">
+                <SentimentPie x={x}
+                              y={y}
+                              innerRadius={radius * .00}
+                              outerRadius={radius}
+                              cornerRadius={2}
+                              padAngle={.00}
+                              data={[this.state.positive, this.state.negative]}/>
+              </svg>
         break;
-
-
     }
 
     // Error Messages for App 'misuses'
@@ -286,56 +290,23 @@ class Sentiment extends Component {
       case 'INITIAL':
         notification = null;
       break;
-
       case 'ERROR':
-        notification = <Notification
-                        open={this.state.openNotification}
-                        handleClose={this.handleClose}
-                        text='Failed to load data, please try again'
-                      />
+        notification = <Notification text='Failed to load data, please try again' open={this.state.openNotification} handleClose={this.handleClose}/>
       break;
-
       case 'NO_TWEETS':
-        notification = <Notification
-                        open={this.state.openNotification}
-                        handleClose={this.handleClose}
-                        text="We couldn't find any tweets for that search"
-                      />
-
+        notification = <Notification text="We couldn't find any tweets for that search" open={this.state.openNotification} handleClose={this.handleClose}/>
       break;
-
       case 'NO_SEARCH':
-        notification = <Notification
-                        open={this.state.openNotification}
-                        handleClose={this.handleClose}
-                        text="Please input a search query"
-                      />
-
+        notification = <Notification text="Please input a search query" open={this.state.openNotification} handleClose={this.handleClose}/>
       break;
-
       case 'RATE_LIMITED':
-        notification = <Notification
-                          open={this.state.openNotification}
-                          handleClose={this.handleClose}
-                          text="Can't update location because the App has been Rate Limited by Twitter"
-                        />
+        notification = <Notification text="Can't update location because the App has been Rate Limited by Twitter" open={this.state.openNotification} handleClose={this.handleClose}/>
       break;
-
-
       case 'NO_LOCATION':
-      notification = <Notification
-                        open={this.state.openNotification}
-                        handleClose={this.handleClose}
-                        text="We couldn't find that location"
-                      />
+      notification = <Notification text="We couldn't find that location" open={this.state.openNotification} handleClose={this.handleClose}/>
       break;
-
       case 'SEARCH_SAVED':
-      notification = <Notification
-                        open={this.state.openNotification}
-                        handleClose={this.handleClose}
-                        text="Search saved"
-                      />
+      notification = <Notification text="Search saved" open={this.state.openNotification} handleClose={this.handleClose} />
       break;
     }
 
@@ -364,8 +335,8 @@ class Sentiment extends Component {
                 <Col xs={6} className="tweets-info-value">{this.state.searchInput}</Col>
               </Row>
               <Row>
-                <Col xs={6} className="tweets-info-title">Amount of tweets:</Col>
-                <Col xs={6} className="tweets-info-value">{this.state.tweetAmount}</Col>
+                <Col xs={6} className="tweets-info-title">Tweets with sentiment:</Col>
+                <Col xs={6} className="tweets-info-value">{this.state.quantity}</Col>
               </Row>
               <Row>
                 <Col xs={6} className="tweets-info-title">Geography:</Col>
@@ -398,9 +369,9 @@ class Sentiment extends Component {
                 <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
               </div>
             </Hidden>
-            <Button className="sentiment-save" onClick={this.saveSearch}>Save Search</Button>
-            <Button variant="raised" onClick={this.newRandomTweet}>New Tweet</Button>
-            <TweetEmbed className="sentiment-tweet" id={this.state.tweetID} options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
+            {/* <Button className="sentiment-save" onClick={this.saveSearch}>Save Search</Button>
+            <Button variant="raised" onClick={this.newRandomTweet}>New Tweet</Button> */}
+            <TweetEmbed className="sentiment-tweet" id={this.state.tweetID} options={{width:'100', cards: 'hidden'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
           </Col>
         </Row>
         <CreatePDFModal

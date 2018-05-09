@@ -292,10 +292,6 @@ const Model = function () {
   }
 
   this.setUserLocations = tweets => {
-    // if (tweets === null){
-    //   userLocations = null;
-    //   return;
-    // }
     var coordinates = tweets.data.statuses.reduce((coordinates, tweet) => {
       if(tweet.coordinates !== null){
         coordinates.push({lng: tweet.coordinates.coordinates[0], lat: tweet.coordinates.coordinates[1], id: tweet.id_str});

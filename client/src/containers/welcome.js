@@ -5,6 +5,7 @@ import SearchInput from '../components/search-input';
 import { Row, Col } from 'react-flexbox-grid';
 import Hidden from 'material-ui/Hidden';
 import { modelInstance } from '../model/model';
+import Login from '../login'
 
 class Welcome extends React.Component {
   constructor(props){
@@ -25,6 +26,7 @@ class Welcome extends React.Component {
     return (
       <div className="container-welcome">
         <div className="container-top">
+          <Login/>
           <div className="container-search">
             <SearchInput handleInput={this.handleInput.bind(this)} page={1}/>
             <Link to="/discover">

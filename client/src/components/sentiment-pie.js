@@ -21,15 +21,16 @@ class SentimentPie extends React.Component {
   }
 
   renderSlice(value, i) {
-    let {innerRadius, outerRadius, cornerRadius, padAngle} = this.props;
+    let {innerRadius, outerRadius, cornerRadius, padAngle, onChartClick} = this.props;
     return (
       <SentimentSlice key={i}
+                      // onClick={onChartClick}
                       innerRadius={innerRadius}
                       outerRadius={outerRadius}
                       cornerRadius={cornerRadius}
                       padAngle={padAngle}
                       value={value}
-                      label={value.data}
+                      label={value.data +" %"}
                       fill={this.colorScale[i]} />
     );
   }

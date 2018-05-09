@@ -105,7 +105,7 @@ app.get('/api/twitter/search', (req, res) => {
     geocode: geocode,
     until: until,
     lang: "en",
-    result_type: "mixed",
+    // result_type: "mixed",
     count: 100,
     include_entities: true,
   }

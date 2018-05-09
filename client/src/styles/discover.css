@@ -6,7 +6,6 @@
 
 .container-discover {
   height: 100%;
-
 }
 
 .container-discover-top {
@@ -19,6 +18,10 @@
 
 .intro{
   text-align: right;
+}
+
+.intro-button{
+  text-align: left;
   padding-top: 8px;
 }
 
@@ -38,9 +41,6 @@
   font-family: Roboto thin;
 }
 
-.h1{
-  /* font-family: Roboto bold; */
-}
 
 #title-steps {
   font-family: Roboto medium;
@@ -88,6 +88,13 @@
   font-size: 35px;
   font-family: Roboto;
 }
+
+.sentiment-tweet{
+    max-height:12vw;
+    overflow: auto;
+}
+
+
 #divToPrint {
   width: 100%;
   text-align: center;
