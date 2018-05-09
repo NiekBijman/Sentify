@@ -144,7 +144,7 @@ const Model = function () {
             }
             console.log("currUserSearches");
             console.log(currUserSearches);
-            
+
           });
         }else{
           reject("Must log in"); // user must log in
@@ -196,7 +196,7 @@ const Model = function () {
       return (user.displayName.toString());
     }
     else{
-      return "user not logged in";
+      return "Sign in";
     }
   }
 

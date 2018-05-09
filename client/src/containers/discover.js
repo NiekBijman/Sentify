@@ -24,7 +24,7 @@ class DiscoverContainer extends React.Component {
             steps: [
               {
                 element: '.sentiment-pie',
-                intro: "This app shows people's sentiment towards subjects based on tweets.</br> <h5><ButtonImportant><a target='_blank' href='https://en.wikipedia.org/wiki/Sentiment_analysis'>What is Sentiment Analysis?</a></ButtonImportant></h5> ",
+                intro: "This app shows sentiment towards subjects based on tweets. </br> <h5><ButtonImportant><a target='_blank' href='https://en.wikipedia.org/wiki/Sentiment_analysis'>What is Sentiment Analysis?</a></ButtonImportant></h5> <h6><i>*Tweets without sentiment are not included in the chart</i></h6>",
               },
               {
                 element: '#searchInput',
