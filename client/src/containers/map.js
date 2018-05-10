@@ -2,7 +2,6 @@ import React from 'react';
 import mapboxgl from 'mapbox-gl';
 import * as d3 from "d3";
 import DrawCircle from '../components/map-draw'
-// import UserLocations from '../components/map-dots'
 import LocationInfo from '../components/map-location-info';
 import '../styles/map.css';
 import Button from 'material-ui/Button';

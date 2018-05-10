@@ -69,20 +69,6 @@ app.get('/api/twitter/reverse_geocode', (req, res) => {
     })
   });
 
-app.get('/api/twitter/geocode', (req, res) => {
-  var parameters = {
-    query: req.query.query
-  }
-
-  Twitter.get('geo/search', parameters)
-    .then(response => {
-       res.send(response.data.result.places[0].centroid);
-    })
-    .catch(e => res.sendStatus(res.statusCode).send(e)
-    )
-
-});
-
 app.get('/api/twitter/search', (req, res) => {
 
   let q = '';

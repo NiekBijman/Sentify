@@ -17,6 +17,7 @@ const Model = function () {
   let latitude = '';
   let longitude = '';
   let placeName = '';
+  let placeOptions = '';
   let coordinates = [5,34];
   let userLocations = {locations:[]};
   let tweetID = '';
@@ -268,17 +269,22 @@ const Model = function () {
     longitude = lng;
   }
 
-  this.setPlaceName = function(string){
-    // if(string === 'error'){
-    //   notifyObservers('rateLimited');
-    //   return
-    // }
-    placeName = string;
+  this.setPlaceName = function(place){
+    placeName = place;
+    // console.log(suggestions.places);
+    // placeOptions = suggestions.places.map(data => {
+    //     // return {label: data.full_name};
+    //     return {value: data.full_name, label: data.full_name}
+    // });
     notifyObservers('placeNameSet');
   }
 
   this.getPlaceName = function(){
     return placeName;
+  }
+
+  this.getPlaceOptions = function(){
+    return placeOptions;
   }
 
   this.setTweets = function(results){
@@ -444,14 +450,6 @@ const Model = function () {
       .then(processResponse)
       .catch(handleError)
   }
-
-  this.geocode = () => {
-    const url = '/api/twitter/geocode?' + 'query=' + encodeURIComponent(placeName);
-    return fetch(url)
-      .then(processResponse)
-      .catch(handleError)
-  }
-
 
   // API Helper methods
   const processResponse = function (response) {
