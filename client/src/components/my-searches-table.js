@@ -293,7 +293,7 @@ class MySearchesTable extends React.Component {
       case "LOADING":
     tableBody = (
               <tr>
-                <td>
+                <td colspan="6">
                   <CircularIndeterminate/>
                 </td>
               </tr>
@@ -330,13 +330,6 @@ class MySearchesTable extends React.Component {
               </TableRow>
             );
           });
-          tableBody = (
-            <tr>
-              <td>
-                <CircularIndeterminate/>
-              </td>
-            </tr>
-            );
         }else{
           tableBody = null;
           emptyRows = rowsPerPage;

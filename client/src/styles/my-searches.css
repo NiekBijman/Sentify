@@ -3,6 +3,10 @@ svg {
     position: static;
 }
 
+.progress{
+    text-align:center;
+}
+
 tbody tr:hover {
     cursor: pointer
 }
