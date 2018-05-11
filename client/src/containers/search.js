@@ -18,6 +18,7 @@ class Search extends Component {
       anchorEl: null,
       page: 0,
       placeName: modelInstance.getPlaceName(), // === '' ? "LOCATION" : modelInstance.getPlaceName()
+      placeOptions: modelInstance.getPlaceOptions(),
       searchInput: modelInstance.getSearch()
     }
     // Defining debounce is needed in constructor https://goo.gl/3D3vdf
@@ -49,9 +50,17 @@ class Search extends Component {
     this.searchTweets();
   }
 
-  handleLocation = event => {
-    modelInstance.setPlaceName(this.capitalize(event.target.value));
-    this.searchGeocode();
+  handleLocation = (result, lat, lng, text) => {
+    console.log(result);
+    modelInstance.setPlaceName(this.capitalize(result));
+
+    //When the data arrives we wwant to set the Coordinates to update the Map
+    modelInstance.setCoordinates(lng, lat);
+
+
+    let location = lat + ',' + lng + ',100km';
+    console.log(location);
+    modelInstance.setGeocode(location);
   }
 
   // Turn uppercase into capitalized strings
@@ -60,26 +69,6 @@ class Search extends Component {
      if (word[0] === undefined) return "";
      return word.replace(word[0], word[0].toUpperCase());
    }).join(' ');
-  }
-
-  searchGeocode = () => {
-    //Searching for the Coordinates of the Place the user searched for
-    if(modelInstance.getPlaceName() !== ''){
-      modelInstance.geocode().then(result => {
-        console.log(result);
-        //When the data arrives we wwant to set the Coordinates to update the Map
-        modelInstance.setCoordinates(result[0], result[1]);
-        console.log(result);
-
-        //We also want to use the data as an input for the geocode in the Search Tweets API Call
-        //IMPORTANT: Lat & Long are switched in the 'GET search/tweets' call
-        let location = result[1].toFixed(6) + ',' + result[0].toFixed(6) + ',100km';
-        modelInstance.setGeocode(location);
-      }).catch( error => {
-        console.log(error)
-        modelInstance.setErrorMessages('NO_LOCATION');
-      });
-    }
   }
 
   searchTweets = () => {
@@ -132,8 +121,10 @@ class Search extends Component {
     }
     if(details ==='placeNameSet'){
       this.setState({
-        placeName: modelInstance.getPlaceName() //.toUpperCase()
+        placeName: modelInstance.getPlaceName(), //.toUpperCase()
+        placeOptions: modelInstance.getPlaceOptions()
       })
+      console.log(modelInstance.getPlaceOptions());
     }
     if(details ==='placeNameReset'){ // && modelInstance.getSearch() !== ''
         this.searchTweets();
@@ -167,7 +158,7 @@ class Search extends Component {
               <p>IN</p>
             </Col>
             <Col xs={4} sm={4} md={4} className='location'>
-              <SearchLocation placeName = {this.state.placeName} handleLocation={this.handleLocation.bind(this)}/>
+              <SearchLocation placeName = {this.state.placeName} placeOptions = {this.state.placeOptions}  handleLocation={this.handleLocation.bind(this)}/>
             </Col>
 
           </Row>

@@ -3,10 +3,10 @@ import Map from './map';
 import Search from './search';
 import SentimentContainer from './sentiment';
 import { Steps } from 'intro.js-react';
-import ButtonImportant from '../components/button-important';
 import { modelInstance } from '../model/model';
 import DrawingAnimation from '../components/intro-drawing-animation'
 import {withRouter} from 'react-router';
+import Login from '../login'
 
 import 'intro.js/introjs.css';
 import '../styles/discover.css';
@@ -16,7 +16,7 @@ class DiscoverContainer extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            status: 'INITIAL',
+            status: 'NULL',
 
             //Intro.js
             initialStep: 0,
@@ -24,7 +24,7 @@ class DiscoverContainer extends React.Component {
             steps: [
               {
                 element: '.sentiment-pie',
-                intro: "This app shows people's sentiment towards subjects based on tweets.</br> <h5><ButtonImportant><a target='_blank' href='https://en.wikipedia.org/wiki/Sentiment_analysis'>What is Sentiment Analysis?</a></ButtonImportant></h5> ",
+                intro: "This app shows sentiment towards subjects based on tweets. </br> <h5><ButtonImportant><a target='_blank' href='https://en.wikipedia.org/wiki/Sentiment_analysis'>What is Sentiment Analysis?</a></ButtonImportant></h5> <h6><i>*Tweets without sentiment are not included in the chart</i></h6>",
               },
               {
                 element: '#searchInput',
@@ -134,7 +134,7 @@ class DiscoverContainer extends React.Component {
                   </div>
                   <div className="intro">
                       {media}
-                      <ButtonImportant size="small" text='Explain App' toggleSteps={this.toggleSteps.bind(this)}/>
+                      <Login toggleSteps={this.toggleSteps.bind(this)}/>
                   </div>
                   <div className='container-search'>
                     <Search handleStatusChange={this.handleStatusChange}/>

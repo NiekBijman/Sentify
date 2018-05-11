@@ -17,6 +17,7 @@ const Model = function () {
   let latitude = '';
   let longitude = '';
   let placeName = '';
+  let placeOptions = '';
   let coordinates = [5,34];
   let userLocations = {locations:[]};
   let tweetID = '';
@@ -144,7 +145,7 @@ const Model = function () {
             }
             console.log("currUserSearches");
             console.log(currUserSearches);
-            
+
           });
         }else{
           reject("Must log in"); // user must log in
@@ -196,7 +197,7 @@ const Model = function () {
       return (user.displayName.toString());
     }
     else{
-      return "user not logged in";
+      return "Sign in";
     }
   }
 
@@ -268,17 +269,22 @@ const Model = function () {
     longitude = lng;
   }
 
-  this.setPlaceName = function(string){
-    // if(string === 'error'){
-    //   notifyObservers('rateLimited');
-    //   return
-    // }
-    placeName = string;
+  this.setPlaceName = function(place){
+    placeName = place;
+    // console.log(suggestions.places);
+    // placeOptions = suggestions.places.map(data => {
+    //     // return {label: data.full_name};
+    //     return {value: data.full_name, label: data.full_name}
+    // });
     notifyObservers('placeNameSet');
   }
 
   this.getPlaceName = function(){
     return placeName;
+  }
+
+  this.getPlaceOptions = function(){
+    return placeOptions;
   }
 
   this.setTweets = function(results){
@@ -295,17 +301,13 @@ const Model = function () {
 
     //Build the object to POST to Sentiment Analysis
     const tweetObject = results.data.statuses.map(function(tweet){
-      return {"text": tweet.text}
+      return {"text": tweet.text, "query": searchInput }
     })
     tweetsJSON = JSON.stringify({data: tweetObject})
     notifyObservers('tweetsSet');
   }
 
   this.setUserLocations = tweets => {
-    // if (tweets === null){
-    //   userLocations = null;
-    //   return;
-    // }
     var coordinates = tweets.data.statuses.reduce((coordinates, tweet) => {
       if(tweet.coordinates !== null){
         coordinates.push({lng: tweet.coordinates.coordinates[0], lat: tweet.coordinates.coordinates[1], id: tweet.id_str});
@@ -448,14 +450,6 @@ const Model = function () {
       .then(processResponse)
       .catch(handleError)
   }
-
-  this.geocode = () => {
-    const url = '/api/twitter/geocode?' + 'query=' + encodeURIComponent(placeName);
-    return fetch(url)
-      .then(processResponse)
-      .catch(handleError)
-  }
-
 
   // API Helper methods
   const processResponse = function (response) {

@@ -6,7 +6,6 @@
 
 .container-discover {
   height: 100%;
-
 }
 
 .container-discover-top {
@@ -17,8 +16,16 @@
   height: 25%;
 }
 
+.h7{
+  font-family: Roboto light;
+}
+
 .intro{
   text-align: right;
+}
+
+.intro-button{
+  text-align: left;
   padding-top: 8px;
 }
 
@@ -38,9 +45,6 @@
   font-family: Roboto thin;
 }
 
-.h1{
-  /* font-family: Roboto bold; */
-}
 
 #title-steps {
   font-family: Roboto medium;
@@ -67,6 +71,11 @@
 
 .sentiment-pie svg {
   position: inherit;
+  overflow: visible;
+}
+
+.pieSlice {
+  overflow: visible;
 }
 
 .tweets-info {
@@ -88,6 +97,13 @@
   font-size: 35px;
   font-family: Roboto;
 }
+
+.sentiment-tweet{
+    max-height:12vw;
+    overflow: auto;
+}
+
+
 #divToPrint {
   width: 100%;
   text-align: center;
@@ -155,6 +171,7 @@ iframe, twitterwidget {
       width: 100% !important;
       transform: none !important;
   }
+
 }
 
 @media screen and (min-width: 576px) and (max-width: 599px) {
@@ -174,5 +191,9 @@ iframe, twitterwidget {
 
   .tweets-info {
     padding-top: 0;
+  }
+  .sentiment-tweet{
+      max-height:100vw;
+      overflow: none;
   }
 }

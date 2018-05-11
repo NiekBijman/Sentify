@@ -12,15 +12,13 @@ const styles = theme => ({
     marginTop: '20'
   },
   textField: {
-    // marginLeft: theme.spacing.unit,
-    // marginRight: theme.spacing.unit,
     width: "100%"
   },
 });
 
 /*
 *  Returns Date object which is num days away from today
-*/ 
+*/
 const fromToday = num => {
   let date = new Date();
   date.setDate(date.getDate() + num);
@@ -29,7 +27,7 @@ const fromToday = num => {
 
 const SearchDate = ({handleClose, anchorEl, click, dayChange}) => {
 
-  /* 
+  /*
   *  Sets dateString variable to a string that tells us how far back we are searching.
   *  Dates in the future will be treated as today.
   *  Dates more than 7 days ago will be set to 7 days ago.
@@ -44,7 +42,7 @@ const SearchDate = ({handleClose, anchorEl, click, dayChange}) => {
     diffDays = 0;
   }else{
     diffDays = Math.floor( diffMillis / ( 1000 * 60 * 60 * 24 ) );
-    // Can only go back 7 days maximum. 
+    // Can only go back 7 days maximum.
     if (diffDays > 7){
       diffDays = 7;
     }
@@ -58,26 +56,6 @@ const SearchDate = ({handleClose, anchorEl, click, dayChange}) => {
     dateString = diffDays + " DAYS BACK";
   }
 
-    // const days = [
-    //     {date: 'Today'},
-    //     {date: 'Yesterday'},
-    //     {date: '2 days ago'},
-    //     {date: '3 days ago'},
-    //     {date: '4 days ago'},
-    //     {date: '5 days ago'},
-    //     {date: '6 days ago '},
-    //     {date: '7 days ago'},
-    //     ];
-    //
-    // let daysList = null;
-    // {daysList = days.map((date, index) => (
-    //   console.log(days, index),
-    //   <MenuItem
-    //       key={index}
-    //       onClick={this.onDayChange(date.date)}
-    //   >{date.date}</MenuItem>)
-    // )}
-   
     return(
     <React.Fragment>
       <Button
