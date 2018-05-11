@@ -36,7 +36,6 @@ export default class Login extends Component {
 
   handleSignIn(){
       modelInstance.googleSignIn();
-      this.setState({logged_in: true})
   }
 
   handleSignOut(){
@@ -46,9 +45,10 @@ export default class Login extends Component {
   }
 
   update(details){
-    if (details === "userName") {
+    if (details === "signInSuccess") {
       this.setState({
         userName: modelInstance.getUserName(),
+        logged_in: true
       });
     }
   }
