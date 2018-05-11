@@ -149,13 +149,13 @@ class Search extends Component {
             <Col xs={2} sm={2} md={2} className='text'>
               <p>FROM</p>
             </Col>
-            <Col xs={4} sm={4} md={4} className='date'>
+            <Col xs={3} sm={3} md={3} className='date'>
               <SearchDate handleClose={this.handleClose} anchorEl={this.state.anchorEl} click={this.handleClick} dayChange={this.onDayChange}/>
             </Col>
             <Col xs={2} sm={2} md={2} className='text'>
               <p>IN</p>
             </Col>
-            <Col xs={4} sm={4} md={4} className='location'>
+            <Col xs={5} sm={5} md={5} className='location'>
               <SearchLocation placeName = {this.state.placeName} placeOptions = {this.state.placeOptions}  handleLocation={this.handleLocation.bind(this)}/>
             </Col>
 

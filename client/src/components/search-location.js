@@ -6,14 +6,13 @@ import MapboxAutocomplete from 'react-mapbox-autocomplete';
 
 const styles = theme => ({
   container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    align: 'center',
-
+    // display: 'flex',
+    // flexWrap: 'wrap',
+    // align: 'center',
+    // 'margin-top': '10',
 
   },
   textField: {
-    // width: '90%',
     marginLeft: 'auto',
     marginRight: 'auto',
     marginBottom: '0',

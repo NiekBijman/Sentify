@@ -9,10 +9,9 @@ const styles = theme => ({
   container: {
     display: 'flex',
     flexWrap: 'wrap',
-    marginTop: '20'
   },
   textField: {
-    width: "100%"
+    width: "80%"
   },
 });
 
@@ -60,6 +59,7 @@ const SearchDate = ({handleClose, anchorEl, click, dayChange}) => {
     <React.Fragment>
       <Button
         // variant="raised"
+        size='small'
         aria-owns={anchorEl ? 'simple-menu' : null}
         aria-haspopup="true"
         onClick={click}
