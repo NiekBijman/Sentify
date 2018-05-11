@@ -26,12 +26,12 @@ class Map extends React.Component {
   componentDidMount() {
       modelInstance.addObserver(this);
       this.mapBox(this.state.coordinates, this.state.zoom);
+
   }
 
   mapBox = (coordinates, zoom) => {
 
           mapboxgl.accessToken = 'pk.eyJ1Ijoibmlla2Jpam1hbiIsImEiOiJjamY0MnN2NXkxaGpjMzRwZHloM3FoZG9uIn0.eZBRbD2LO-4yNS-gXVtRag';
-
           const map = new mapboxgl.Map({
             container: this.mapContainer,
             style: 'mapbox://styles/niekbijman/cjftubitf16572rpdp0scokcm',
@@ -60,7 +60,8 @@ class Map extends React.Component {
 
           this.setState({
             svg: svg,
-            circleControl: circleControl
+            circleControl: circleControl,
+            map: map
           })
 
           function project(d) {
@@ -101,6 +102,9 @@ class Map extends React.Component {
     if(details ==='jumpToCoordinates'){
       var coordinates = modelInstance.getCoordinates();
       var zoom = 8;
+
+      //Remove old map and create new one using new coordinates
+      this.state.map.remove()
       this.mapBox(coordinates, zoom);
     }
     if(details ==='userLocationsSet'){
