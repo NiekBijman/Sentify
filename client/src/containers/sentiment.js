@@ -330,6 +330,9 @@ class Sentiment extends Component {
               <p>Info</p>
             </Hidden>
             <div className="tweets-info">
+              {/* <Row> */}
+                <Button className="sentiment-save" onClick={this.saveSearch}>Save Search</Button>
+              {/* </Row> */}
               <Row>
                 <Col xs={6} className="tweets-info-title">Search:</Col>
                 <Col xs={6} className="tweets-info-value">{this.state.searchInput}</Col>
@@ -346,6 +349,7 @@ class Sentiment extends Component {
                 <Col xs={6} className="tweets-info-title">Until:</Col>
                 <Col xs={6} className="tweets-info-value">{this.state.until}</Col>
               </Row>
+
             </div>
           </Col>
 
@@ -369,8 +373,7 @@ class Sentiment extends Component {
                 <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
               </div>
             </Hidden>
-            {/* <Button className="sentiment-save" onClick={this.saveSearch}>Save Search</Button>
-            <Button variant="raised" onClick={this.newRandomTweet}>New Tweet</Button> */}
+            <Button variant="raised" onClick={this.newRandomTweet}>New Tweet</Button>
             <TweetEmbed className="sentiment-tweet" id={this.state.tweetID} options={{width:'100', cards: 'hidden'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
           </Col>
         </Row>
