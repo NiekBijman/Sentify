@@ -1,8 +1,4 @@
 /* for CircularIndeterminate (loading circle animation) */
-svg {
-    position: static;
-}
-
 .progress{
     text-align:center;
 }
