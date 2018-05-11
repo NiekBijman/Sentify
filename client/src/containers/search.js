@@ -19,7 +19,8 @@ class Search extends Component {
       page: 0,
       placeName: modelInstance.getPlaceName(), // === '' ? "LOCATION" : modelInstance.getPlaceName()
       placeOptions: modelInstance.getPlaceOptions(),
-      searchInput: modelInstance.getSearch()
+      searchInput: modelInstance.getSearch(),
+      locationPlaceholder: "LOCATION"
     }
     // Defining debounce is needed in constructor https://goo.gl/3D3vdf
     this.searchTweets = debounce(500, this.searchTweets);
@@ -122,15 +123,19 @@ class Search extends Component {
     if(details ==='placeNameSet'){
       this.setState({
         placeName: modelInstance.getPlaceName(), //.toUpperCase()
-        placeOptions: modelInstance.getPlaceOptions()
+        placeOptions: modelInstance.getPlaceOptions(),
+        locationPlaceholder: modelInstance.getPlaceName()
       })
+
       console.log(modelInstance.getPlaceOptions());
     }
     if(details ==='placeNameReset'){ // && modelInstance.getSearch() !== ''
         this.searchTweets();
         this.setState({
-          placeName: '' //.toUpperCase()
+          placeName: '', //.toUpperCase()
+          locationPlaceholder: "LOCATION"
         })
+
     }
     if(details === 'searchInputSet'){
       this.searchTweets();
@@ -158,7 +163,7 @@ class Search extends Component {
               <p>IN</p>
             </Col>
             <Col xs={4} sm={4} md={4} className='location'>
-              <SearchLocation placeName = {this.state.placeName} placeOptions = {this.state.placeOptions}  handleLocation={this.handleLocation.bind(this)}/>
+              <SearchLocation placeName = {this.state.placeName} placeOptions = {this.state.placeOptions}  handleLocation={this.handleLocation.bind(this)} placeholder={this.state.locationPlaceholder}/>
             </Col>
 
           </Row>
