@@ -152,10 +152,6 @@ class Sentiment extends Component {
     }
   }
 
-
-
-
-
   calculateSentiment = () => {
     let result = modelInstance.getSentimentData();
     let sentiment = {positive: undefined, negative: undefined, neutral: undefined};

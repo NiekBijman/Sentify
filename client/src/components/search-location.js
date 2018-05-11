@@ -46,7 +46,7 @@ const SearchLocation = props => {
           onSuggestionSelect={props.handleLocation}
           // query =  {props.placeName}
           resetSearch={true}
-          placeholder="LOCATION"
+          placeholder={props.placeholder}
           value={props.placeName}
         />
     </div>

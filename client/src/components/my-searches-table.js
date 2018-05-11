@@ -19,6 +19,7 @@ import DeleteMySearches from '../components/delete-my-searches';
 import HistoryMySearches from '../components/history-my-searches';
 import SentimentPDF from '../components/sentiment-pdf';
 import DeleteMySearchesModal from '../components/delete-my-searches-modal';
+import CircularIndeterminate from '../components/circular-indeterminate';
 
 const columnData = [
   { id: 'subject', numeric: false, disablePadding: true, label: 'Subject' },
@@ -165,6 +166,7 @@ class MySearchesTable extends React.Component {
         page: 0,
         rowsPerPage: 5,
         open: false,
+        status: "LOADING"
       };
 
   }
@@ -176,13 +178,15 @@ class MySearchesTable extends React.Component {
         console.log(promises);
         if (promises === null || promises === undefined){
           this.setState({
-            data: null
+            data: null,
+            status: "LOADED"
           });
         }else{
           Promise.all(promises).then(data => {
             data = data.filter( val => val !== undefined);
             this.setState({
-              data: data
+              data: data,
+              status: "LOADED"
             });
           });
         }
@@ -283,41 +287,54 @@ class MySearchesTable extends React.Component {
   render() {
     const { classes } = this.props;
     const { data, selected, rowsPerPage, page } = this.state;
-
     let tableBody;
     let emptyRows;
-    if (data !== null && data !== undefined){
-      emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
-      tableBody = data.length > 0 && data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
-        const isSelected = this.isSelected(n.id);
-        return (
-          <TableRow
-            hover
-            onClick={event => this.handleRedirection(event, n.id)}
-            role="checkbox"
-            aria-checked={isSelected}
-            tabIndex={-1}
-            key={n.id}
-            selected={isSelected}
-          >
-            <TableCell padding="checkbox" className="checkbox">
-              <Checkbox checked={isSelected} color="primary" onClick={event => this.handleClick(event, n.id)}/>
-            </TableCell>
-            <TableCell padding="none">{n.query}</TableCell>
-            <TableCell>{n.location}</TableCell>
-            <TableCell>{n.until}</TableCell>
-            <TableCell>{n.dateCreated}</TableCell>
-            <TableCell>{(1
-                            ? <SentimentPDF/>
-                            : <span></span>
-                        )}
-            </TableCell>
-          </TableRow>
-        );
-      });
-    }else{
-      tableBody = null;
-      emptyRows = rowsPerPage;
+    switch(this.state.status){
+      case "LOADING":
+    tableBody = (
+              <tr>
+                <td colspan="6">
+                  <CircularIndeterminate/>
+                </td>
+              </tr>
+              );
+        emptyRows = undefined;
+        break;
+      case "LOADED":
+        if (data !== null && data !== undefined){
+          emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+          tableBody = data.length > 0 && data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
+            const isSelected = this.isSelected(n.id);
+            return (
+              <TableRow
+                hover
+                onClick={event => this.handleRedirection(event, n.id)}
+                role="checkbox"
+                aria-checked={isSelected}
+                tabIndex={-1}
+                key={n.id}
+                selected={isSelected}
+              >
+                <TableCell padding="checkbox" className="checkbox">
+                  <Checkbox checked={isSelected} color="primary" onClick={event => this.handleClick(event, n.id)}/>
+                </TableCell>
+                <TableCell padding="none">{n.query}</TableCell>
+                <TableCell>{n.location}</TableCell>
+                <TableCell>{n.until}</TableCell>
+                <TableCell>{n.dateCreated}</TableCell>
+                <TableCell>{(1
+                                ? <SentimentPDF/>
+                                : <span></span>
+                            )}
+                </TableCell>
+              </TableRow>
+            );
+          });
+        }else{
+          tableBody = null;
+          emptyRows = rowsPerPage;
+        }
+        break;
     }
 
     return (
