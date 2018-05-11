@@ -17,14 +17,12 @@ class Search extends Component {
       searchSuggestion: 'Search for tweets here',
       anchorEl: null,
       page: 0,
-      placeName: modelInstance.getPlaceName(), // === '' ? "LOCATION" : modelInstance.getPlaceName()
+      placeName: "LOCATION", // === '' ? "LOCATION" : modelInstance.getPlaceName()
       placeOptions: modelInstance.getPlaceOptions(),
       searchInput: modelInstance.getSearch(),
-      locationPlaceholder: "LOCATION"
     }
     // Defining debounce is needed in constructor https://goo.gl/3D3vdf
     this.searchTweets = debounce(500, this.searchTweets);
-    this.searchGeocode = debounce(500, this.searchGeocode);
   }
 
   componentDidMount() {
@@ -55,12 +53,12 @@ class Search extends Component {
     console.log(result);
     modelInstance.setPlaceName(this.capitalize(result));
 
-    //When the data arrives we wwant to set the Coordinates to update the Map
+    //When the data arrives we want to set the Coordinates to update the Map
     modelInstance.setCoordinates(lng, lat);
-
+    console.log(lng, lat);
 
     let location = lat + ',' + lng + ',100km';
-    console.log(location);
+
     modelInstance.setGeocode(location);
   }
 
@@ -123,17 +121,12 @@ class Search extends Component {
     if(details ==='placeNameSet'){
       this.setState({
         placeName: modelInstance.getPlaceName(), //.toUpperCase()
-        placeOptions: modelInstance.getPlaceOptions(),
-        locationPlaceholder: modelInstance.getPlaceName()
       })
-
-      console.log(modelInstance.getPlaceOptions());
     }
     if(details ==='placeNameReset'){ // && modelInstance.getSearch() !== ''
         this.searchTweets();
         this.setState({
-          placeName: '', //.toUpperCase()
-          locationPlaceholder: "LOCATION"
+          placeName: "LOCATION", //.toUpperCase()
         })
 
     }
@@ -163,7 +156,7 @@ class Search extends Component {
               <p>IN</p>
             </Col>
             <Col xs={4} sm={4} md={4} className='location'>
-              <SearchLocation placeName = {this.state.placeName} placeOptions = {this.state.placeOptions}  handleLocation={this.handleLocation.bind(this)} placeholder={this.state.locationPlaceholder}/>
+              <SearchLocation placeName = {this.state.placeName} placeOptions = {this.state.placeOptions}  handleLocation={this.handleLocation.bind(this)}/>
             </Col>
 
           </Row>

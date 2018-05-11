@@ -30,24 +30,15 @@ const styles = theme => ({
 
 const SearchLocation = props => {
   const { classes } = props;
-  console.log(props.placeName)
 
   return (
     <div className={classes.container}>
-      {/* <TextField
-          className={classes.textField}
-          placeholder="LOCATION"
-          value={props.placeName.toUpperCase()}
-          onChange={evt => props.handleLocation(evt)}
-        /> */}
       <MapboxAutocomplete
           publicKey='pk.eyJ1Ijoibmlla2Jpam1hbiIsImEiOiJjamY0MnN2NXkxaGpjMzRwZHloM3FoZG9uIn0.eZBRbD2LO-4yNS-gXVtRag'
           inputClass={classes.textField}
           onSuggestionSelect={props.handleLocation}
-          // query =  {props.placeName}
           resetSearch={true}
-          placeholder={props.placeholder}
-          value={props.placeName}
+          placeholder={props.placeName}
         />
     </div>
   );
