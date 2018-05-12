@@ -180,7 +180,6 @@ const Model = function () {
   this.signOut = function () {
     firebase.auth().signOut().then(function() {
         // Sign-out successful.
-        notifyObservers("userName")
       }).catch(function(error) {
         // An error happened.
     });
