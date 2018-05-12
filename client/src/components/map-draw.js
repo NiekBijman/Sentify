@@ -200,7 +200,8 @@ const DrawCircle = (svg, locations) => {
 
       dots.on('click', element => {
         d3.event.stopPropagation();
-        modelInstance.setTweetID(element.id);
+        modelInstance.geoTweetID(element.id);
+        console.log(element);
       })
 
 

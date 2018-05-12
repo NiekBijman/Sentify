@@ -28,6 +28,7 @@ const Model = function () {
   let tweets = null;
   // tweet bucket for random draw
   let tweetBucket = null;
+  let tweetIndex = null;
 
   //Sentiment data
   let sentimentData = null;
@@ -52,7 +53,7 @@ const Model = function () {
   /*
   * Inserts a search into the database
   */
-  this.addSearchToDB = function(positive, negative, neutral){
+  this.addSearchToDB = function(positive, negative){
     let today = new Date();
     let dateCreated = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate();
     let until = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
@@ -64,7 +65,6 @@ const Model = function () {
                 "amount": tweetAmount,
                 "positive": positive,
                 "negative": negative,
-                "neutral": neutral
                 };
     //setup of path to reference the data
     var searchesRef = database.ref("searches");
@@ -196,13 +196,48 @@ const Model = function () {
     }
   }
 
+  this.getMostPopularTweet = () => {
+    let maxRetweets = 0;
+    let mostPopularTweetId = null;
+
+    if (tweets !== null) {
+      tweets.forEach(function (tweet, index) {
+        if (tweet.retweet_count > maxRetweets) {
+          maxRetweets = tweet.retweet_count;
+          mostPopularTweetId = tweet.id_str;
+          tweetIndex = index;
+        }
+      });
+      console.log(tweetIndex)
+      return mostPopularTweetId;
+    }
+    else{
+      return null
+    }
+  }
+
+  this.getTweetIndex = () =>{
+    return tweetIndex;
+  }
+
   // Draw random tweet from bucket and eliminate drawn tweet from bucket
-  this.randomDrawTweet = function(){
-    if (tweetBucket === null) return null;
-    if (tweetBucket.length === 0) tweetBucket = tweets; // reset bucket if empty
-    let index = Math.floor(Math.random()*tweetBucket.length);
-    let randomTweet = tweetBucket.splice(index, 1)[0];
-    return randomTweet;
+  this.pickTweet = navigate => {
+    if (tweets === null) return null;
+    let currentTweet = 0;
+    if(navigate === 'next'){
+      tweetIndex ++;
+      currentTweet = tweets[tweetIndex]
+    }
+    if(navigate === 'previous'){
+      tweetIndex --;
+      currentTweet = tweets[tweetIndex]
+    }
+    console.log(tweetIndex);
+    return currentTweet
+    // if (tweetBucket.length === 0) tweetBucket = tweets; // reset bucket if empty
+    // let index = Math.floor(Math.random()*tweetBucket.length);
+    // let randomTweet = tweetBucket.splice(index, 1)[0];
+    // return randomTweet;
   }
 
   // API Calls
@@ -305,7 +340,8 @@ const Model = function () {
   this.setUserLocations = tweets => {
     var coordinates = tweets.data.statuses.reduce((coordinates, tweet) => {
       if(tweet.coordinates !== null){
-        coordinates.push({lng: tweet.coordinates.coordinates[0], lat: tweet.coordinates.coordinates[1], id: tweet.id_str});
+        // console.log(tweets.indexOf(tweet.id_str));
+        coordinates.push({lng: tweet.coordinates.coordinates[0], lat: tweet.coordinates.coordinates[1], id: tweet.id_str}); //, index: tweets.indexOf(tweet)
       }
       return coordinates;
     }, []);
@@ -317,12 +353,12 @@ const Model = function () {
     return userLocations;
   }
 
-  this.setTweetID = function(id){
+  this.geoTweetID = function(id){
     tweetID = id;
-    notifyObservers('tweetIDSet');
+    notifyObservers('geoIDSet');
   }
 
-  this.getTweetID = function(){
+  this.getGeoTweetID = function(){
     return tweetID;
   }
 
@@ -356,21 +392,6 @@ const Model = function () {
     });
     */
     notifyObservers();
-  }
-
-  this.getMostPopularTweet = () => {
-    let maxRetweets = 0;
-    let mostPopularTweetId = null;
-
-    if (tweets !== null) {
-      tweets.forEach(function (tweet, index) {
-        if (tweet.retweet_count > maxRetweets) {
-          maxRetweets = tweet.retweet_count;
-          mostPopularTweetId = tweet.id;
-        }
-      });
-      return mostPopularTweetId.toString();
-    }
   }
 
 

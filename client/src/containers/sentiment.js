@@ -13,12 +13,15 @@ import TweetEmbed from 'react-tweet-embed';
 import Notification from '../components/notification';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import NavigateBefore from '@material-ui/icons/NavigateBefore';
+import NavigateNext from '@material-ui/icons/NavigateNext';
+import Tooltip from 'material-ui/Tooltip';
 
 
 class Sentiment extends Component {
   constructor(props){
     super(props);
-    let tweetID = modelInstance.randomDrawTweet();
+    let tweetID = modelInstance.getMostPopularTweet();
     if (tweetID === null) tweetID = "692527862369357824";
     this.state = {
       positive: 60,
@@ -59,12 +62,8 @@ class Sentiment extends Component {
     }
 
     if(details ==='tweetsSet'){
-      // console.log("The tweets");
-      // console.log(modelInstance.getTweets());
-      let randomTweetID = modelInstance.randomDrawTweet().id_str;
-      this.setState({tweetID: randomTweetID});
-      // this.sentimentAnalysis();
-      // Set state to LOADING, which should disable save-search button
+      let mostPopularID = modelInstance.getMostPopularTweet();
+      this.setState({tweetID: mostPopularID});
     }
 
     if (details==="sentimentSet") {
@@ -72,7 +71,6 @@ class Sentiment extends Component {
       this.setState({
         searchInput: modelInstance.getSearch(),
         tweetAmount: modelInstance.getTweetAmount(),
-        mostPopularTweetId: modelInstance.getMostPopularTweet(),
       })
     }
 
@@ -89,9 +87,9 @@ class Sentiment extends Component {
       })
     }
 
-    if(details==='tweetIDSet'){
+    if(details==='geoIDSet'){
       this.setState({
-        tweetID: modelInstance.getTweetID()
+        tweetID: modelInstance.getGeoTweetID()
       })
     }
 
@@ -229,16 +227,15 @@ class Sentiment extends Component {
     console.log('hey');
   }
 
-
-  newRandomTweet = () => {
-    let randomTweet = modelInstance.randomDrawTweet();
-    if (randomTweet === null) return;
-    let randomTweetID = randomTweet.id_str;
-    this.setState({tweetID: randomTweetID});
+  handleNavigation = navigate => {
+    let currentTweet = modelInstance.pickTweet(navigate);
+    if(currentTweet !== null){
+      this.setState({ tweetID: currentTweet.id_str});
+      }
   }
 
   saveSearch = () => {
-    modelInstance.addSearchToDB(this.state.positive, this.state.negative, this.state.neutral);
+    modelInstance.addSearchToDB(this.state.positive, this.state.negative);
 
     this.setState({
       notifications: 'SEARCH_SAVED',
@@ -326,9 +323,7 @@ class Sentiment extends Component {
               <p>Info</p>
             </Hidden>
             <div className="tweets-info">
-              {/* <Row> */}
                 <Button className="sentiment-save" onClick={this.saveSearch}>Save Search</Button>
-              {/* </Row> */}
               <Row>
                 <Col xs={6} className="tweets-info-title">Search:</Col>
                 <Col xs={6} className="tweets-info-value">{this.state.searchInput}</Col>
@@ -369,8 +364,24 @@ class Sentiment extends Component {
                 <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
               </div>
             </Hidden>
-            <Button variant="raised" onClick={this.newRandomTweet}>New Tweet</Button>
-            <TweetEmbed className="sentiment-tweet" id={this.state.tweetID} options={{width:'100', cards: 'hidden'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
+            {/* <Button variant="raised" onClick={this.chooseTweet}>New Tweet</Button> */}
+            <Row>
+              <Col className='sentiment-tweet-navigate' sm={1} md={1} xs={0}>
+                <Tooltip id="tooltip-icon" title="Previous Tweet">
+                  <NavigateBefore onClick={ () => {this.handleNavigation('previous')}} aria-label="navigate_before" disabled={true}/>
+                </Tooltip>
+              </Col>
+
+              <Col sm={10} md={10} xs={12}>
+                <TweetEmbed className="sentiment-tweet" id={this.state.tweetID} options={{width:'100', cards: 'hidden'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
+              </Col>
+
+              <Col className='sentiment-tweet-navigate' sm={1} md={1} xs={0}>
+                <Tooltip id="tooltip-icon" title="Next Tweet">
+                  <NavigateNext onClick={ () => {this.handleNavigation('next')}} aria-label="navigate_next" disabled={false}/>
+                </Tooltip>
+              </Col>
+            </Row>
           </Col>
         </Row>
         <CreatePDFModal

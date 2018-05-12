@@ -14,7 +14,7 @@ function CircularIndeterminate(props) {
   const { classes } = props;
   return (
     <div className="progress">
-      <CircularProgress value='indeterminate' className={classes.progress} size={100} thickness={4}/>
+      <CircularProgress className={classes.progress} size={100} thickness={4}/>
     </div>
   );
 }

@@ -7,8 +7,9 @@ import {modelInstance} from "../model/model";
 
 const styles = theme => ({
   container: {
-    display: 'flex',
-    flexWrap: 'wrap',
+    // display: 'flex',
+    // flexWrap: 'wrap',
+    // background: 'rgba(255, 255, 255, 0.48)!important'
   },
   textField: {
     width: "80%"
@@ -24,8 +25,9 @@ const fromToday = num => {
   return date;
 };
 
-const SearchDate = ({handleClose, anchorEl, click, dayChange}) => {
-
+const SearchDate = props => {
+  const { classes,handleClose, anchorEl, click, dayChange } = props;
+  const ITEM_HEIGHT = 48;
   /*
   *  Sets dateString variable to a string that tells us how far back we are searching.
   *  Dates in the future will be treated as today.
@@ -68,20 +70,30 @@ const SearchDate = ({handleClose, anchorEl, click, dayChange}) => {
         {dateString}
       </Button>
       <Menu
-        id="simple-menu"
+        className={classes.container}
+        PaperProps={{
+          style: {
+            maxHeight: ITEM_HEIGHT * 4.5,
+            // width: 200,
+            'border-radius': '10',
+            background: 'rgba(255, 255, 255, 0.48)!important',
+
+          },
+        }}
+        id="simple-date-menu"
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={ () => handleClose() }
       >
         {/* {daysList} */}
-        <MenuItem onClick={ () => dayChange( fromToday(0) ) }>TODAY</MenuItem>
-        <MenuItem onClick={ () => dayChange( fromToday(-1) ) }>YESTERDAY</MenuItem>
-        <MenuItem onClick={ () => dayChange( fromToday(-2) ) }>2 DAYS BACK</MenuItem>
-        <MenuItem onClick={ () => dayChange( fromToday(-3) ) }>3 DAYS BACK</MenuItem>
-        <MenuItem onClick={ () => dayChange( fromToday(-4) ) }>4 DAYS BACK</MenuItem>
-        <MenuItem onClick={ () => dayChange( fromToday(-5) ) }>5 DAYS BACK</MenuItem>
-        <MenuItem onClick={ () => dayChange( fromToday(-6) ) }>6 DAYS BACK</MenuItem>
-        <MenuItem onClick={ () => dayChange( fromToday(-7) ) }>7 DAYS BACK</MenuItem>
+        <MenuItem onClick={ () => dayChange( fromToday(0) ) }>Today</MenuItem>
+        <MenuItem onClick={ () => dayChange( fromToday(-1) ) }>Yesterday</MenuItem>
+        <MenuItem onClick={ () => dayChange( fromToday(-2) ) }>2 days ago</MenuItem>
+        <MenuItem onClick={ () => dayChange( fromToday(-3) ) }>3 days ago</MenuItem>
+        <MenuItem onClick={ () => dayChange( fromToday(-4) ) }>4 days ago</MenuItem>
+        <MenuItem onClick={ () => dayChange( fromToday(-5) ) }>5 days ago</MenuItem>
+        <MenuItem onClick={ () => dayChange( fromToday(-6) ) }>6 days ago</MenuItem>
+        <MenuItem onClick={ () => dayChange( fromToday(-7) ) }>7 days ago</MenuItem>
       </Menu>
     </React.Fragment>
   );
