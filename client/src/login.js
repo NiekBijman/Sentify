@@ -40,7 +40,7 @@ export default class Login extends Component {
 
   handleSignOut(){
     modelInstance.signOut();
-    this.setState({logged_in: false})
+    this.setState({logged_in: false, userName: 'Sign in'})
     this.handleClose()
   }
 
