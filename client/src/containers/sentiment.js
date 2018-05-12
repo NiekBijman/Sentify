@@ -148,6 +148,12 @@ class Sentiment extends Component {
         openNotification: true
       });
     }
+    if(details==="signInFailed"){
+      this.setState({
+        notifications:'SIGN_IN_FAILED',
+        openNotification: true
+      });
+    }
   }
 
   calculateSentiment = () => {
@@ -300,6 +306,17 @@ class Sentiment extends Component {
       break;
       case 'SEARCH_SAVED':
       notification = <Notification text="Search saved" open={this.state.openNotification} handleClose={this.handleClose} />
+      break;
+      case 'SIGN_IN_FAILED':
+      notification = <Notification
+                      text="Not able to login. Your browser does not allow Firebase to store cookies "
+                      // action = {
+                      //   <Button href='chrome://settings/content/cookies' color="secondary" size="small">
+                      //     Chrome Cookie Settings
+                      //   </Button>
+                      // }
+                      open={this.state.openNotification}
+                      handleClose={this.handleClose} />
       break;
     }
 

@@ -173,6 +173,7 @@ const Model = function () {
     }).catch(function(error) {
       if (error.code === "auth/web-storage-unsupported") {
         console.log("fail XD");
+        notifyObservers("signInFailed");
       }
     });
   }
