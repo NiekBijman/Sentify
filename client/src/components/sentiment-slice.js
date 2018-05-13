@@ -16,7 +16,7 @@ class SentimentSlice extends React.Component {
 
     onMouseOver() {
         this.setState({isHovered: true});
-        console.log(this.state.isSelected);
+        // console.log(this.state.isSelected);
     }
 
     onMouseOut() {

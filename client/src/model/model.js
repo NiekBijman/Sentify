@@ -193,7 +193,7 @@ const Model = function () {
   }
 
   this.getMostPopularTweet = () => {
-    console.log(tweets);
+    // console.log(tweets);
     let maxRetweets = 0;
     let mostPopularTweetId = null;
 
@@ -216,9 +216,6 @@ const Model = function () {
     return tweetIndex;
   }
 
-<<<<<<< HEAD
-  // Navigate through different tweets using arrows
-=======
   this.getDateString = getDateString;
 
   function getDateString() {
@@ -229,7 +226,6 @@ const Model = function () {
   }
 
   // Draw random tweet from bucket and eliminate drawn tweet from bucket
->>>>>>> d77e474d9a1543e7940ea7d52d0b9edc5227a130
   this.pickTweet = navigate => {
     if (tweets === null) return null;
     let currentTweet = 0;
