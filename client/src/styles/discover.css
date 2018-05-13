@@ -4,6 +4,10 @@
   position: absolute;
 }
 
+.sentiment-save{
+  margin-bottom: 8px !important;
+}
+
 .container-discover {
   height: 100%;
 }
@@ -16,10 +20,35 @@
   height: 25%;
 }
 
+.h7{
+  font-family: Roboto light;
+}
+
 .intro{
   text-align: right;
+}
+
+.intro-button{
+  text-align: left;
   padding-top: 8px;
 }
+
+.drawAnimation{
+  position: absolute;
+  mix-blend-mode: screen;
+}
+
+.gif{
+  position: relative;
+    width: 20vw;
+    margin-top: 50px;
+    margin-left: 900px;
+}
+
+.introjs-tooltiptext{
+  font-family: Roboto thin;
+}
+
 
 #title-steps {
   font-family: Roboto medium;
@@ -46,6 +75,11 @@
 
 .sentiment-pie svg {
   position: inherit;
+  overflow: visible;
+}
+
+.pieSlice {
+  overflow: visible;
 }
 
 .tweets-info {
@@ -62,6 +96,38 @@
   text-align: left;
   font-family: Roboto light;
 }
+
+.title{
+  font-size: 35px;
+  font-family: Roboto;
+}
+
+.sentiment-tweet{
+    max-height:12vw;
+    overflow: auto;
+}
+
+.sentiment-tweet-navigate{
+  text-align: center;
+  padding-top: 5vw;
+  padding-right: 2vw;
+}
+
+#simple-date-menu{
+  text-align: left;
+  margin: 4% 0 0 0!important;
+  max-height:29vw;
+}
+
+.react-mapbox-ac-menu{
+  text-align: left;
+  margin: 4% 0 0 0!important;
+  background: rgba(255, 255, 255, 0.48)!important;
+  border-radius: 10px;
+  max-height:8vw;
+  overflow: auto;
+}
+
 
 #divToPrint {
   width: 100%;
@@ -130,6 +196,18 @@ iframe, twitterwidget {
       width: 100% !important;
       transform: none !important;
   }
+
+  .react-mapbox-ac-menu{
+    max-height:15vw;
+  }
+
+  #simple-date-menu{
+    margin: 4% 0 0 0;
+    max-height:30vw;
+    /* overflow: auto; */
+  }
+
+
 }
 
 @media screen and (min-width: 576px) and (max-width: 599px) {
@@ -142,6 +220,9 @@ iframe, twitterwidget {
   #content-steps svg {
     width: 35%;
   }
+  .react-mapbox-ac-menu{
+    max-height:30vw;
+  }
 
   #content-steps .sentiment-pie {
     margin-bottom: 10%;
@@ -149,5 +230,9 @@ iframe, twitterwidget {
 
   .tweets-info {
     padding-top: 0;
+  }
+  .sentiment-tweet{
+      max-height:100vw;
+      overflow: none;
   }
 }

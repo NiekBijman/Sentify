@@ -10,13 +10,14 @@ const Model = function () {
 
   //Date
   let date = new Date();
-  let dateRange = '';
+  let dateParam = getDateString();
 
   //Geocode
   let location = '';
   let latitude = '';
   let longitude = '';
   let placeName = '';
+  let placeOptions = '';
   let coordinates = [5,34];
   let userLocations = {locations:[]};
   let tweetID = '';
@@ -27,97 +28,212 @@ const Model = function () {
   let tweets = null;
   // tweet bucket for random draw
   let tweetBucket = null;
+  let tweetIndex = null;
 
-  //Sentiment data
+  //Sentiment data. Changed to {positive: undefined, negative: undefined}
   let sentimentData = null;
 
   let searchHistory = {"data": [
-    {"query":"#LastWeekTonight", "location": "America", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"query":"FrenchElection", "location": "Europe", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"query":"CharlieHebdo", "location": "Europe", "until": "14-05-17", "dateCreated": "15-05-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"query":"@JaneGoodman", "location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"query":"NATO", "location": "Europe", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"query":"#SomosJuntos", "location": "South-America", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"query":"#FindKadyrovsCat", "location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25}
+    {"id": 1, "query":"#LastWeekTonight", "location": "America", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 2, "query":"FrenchElection", "location": "Europe", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 3, "query":"CharlieHebdo", "location": "Europe", "until": "14-05-17", "dateCreated": "15-05-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 4, "query":"@JaneGoodman", "location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 5, "query":"NATO", "location": "Europe", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 6, "query":"#SomosJuntos", "location": "South-America", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
+    {"id": 7, "query":"#FindKadyrovsCat", "location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25}
   ]};
 
   // firebase
-  var firebase = require("firebase");
+  let firebase = require("firebase");
   //firebase initialization
   firebase.initializeApp(firebaseConfig);
-  //database instiation
+  //database instantiaton
   var database = firebase.database();
 
   /*
   * Inserts a search into the database
   */
-  this.addSearchToDB = function(positive, negative, neutral){
+  this.addSearchToDB = function(positive, negative, total){
     let today = new Date();
     let dateCreated = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate();
+    let until = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
     var search = {
                 "query": searchInput,
-                "location": location,
-                "until": date,
+                "location": placeName,
+                "until": until,
                 "dateCreated": dateCreated,
                 "amount": tweetAmount,
                 "positive": positive,
                 "negative": negative,
-                "neutral": neutral
+                "total": total,
                 };
     //setup of path to reference the data
     var searchesRef = database.ref("searches");
     var newSearchKey = searchesRef.push(search).key;
 
-    console.log("newSearchRef key:");
-    console.log(newSearchKey);
+    // Check if user is logged in
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        let uid = user.uid;
 
-    let user = firebase.auth().currentUser;
-    let uid = user.uid;
-    console.log("Curr user id: "+uid);
+        let userRef = database.ref("users/"+uid);
+        let currUserSearches;
+        userRef.once("value")
+          .then( (value) => {
+            currUserSearches = value.val();
 
-    let userRef = database.ref("users/"+uid);
-    let currUserSearches;
-    userRef.once("value")
-      .then( (value) => {
-        currUserSearches = value.val();
+            if (currUserSearches === undefined || currUserSearches === null)
+              currUserSearches = [];
 
-        console.log("Current user searches");
-        console.log(currUserSearches);
-        
-        if (currUserSearches === undefined)
-          currUserSearches = [];
-          
-        currUserSearches.push(newSearchKey);
-        
-        return userRef.set(currUserSearches);
-      })
-      .then( () => {
-        return database.ref("users/"+uid).once("value");
-      })
-      .then( (value) => {
-        console.log(value.val());
-      });
+            currUserSearches.push(newSearchKey);
+
+            return userRef.set(currUserSearches);
+          })
+          .then( () => {
+            return database.ref("users/"+uid).once("value");
+          })
+          .then( (value) => {
+            console.log(value.val());
+          });
+
+      } else {
+        user = null;
+      }
+    });
+
   }
 
-  // {"data": [{"text": "I love Titanic.", "id":1234, "polarity": 4},
-  // {"text": "I love Titanic.", "id":1234, "polarity": 4},
-  // {"text": "I don't mind Titanic.", "id":1234, "polarity": 2},
-  // {"text": "I like Titanic.", "id":1234, "polarity": 4},
-  // {"text": "I hate Titanic.", "id":4567, "polarity": 0}]};
+  /*
+  * Gets searches for logged in user
+  */
+  this.getSearchHistory = function(){
+
+    let currUserSearches;
+    return new Promise((resolve, reject)=>{
+      firebase.auth().onAuthStateChanged(function(user){
+        if(user){
+          let uid = user.uid;
+          let userRef = database.ref("users/"+uid);
+
+          return userRef.once("value")
+          .then( (value) => {
+            let currUserSearchesIDs = value.val();
+
+            if(currUserSearchesIDs === null || currUserSearchesIDs === undefined){
+              let currUserSearches = null;
+              resolve(null);
+            }else{
+              let currUserSearches = currUserSearchesIDs.map( searchID => {
+                return database.ref("searches/"+searchID).once("value")
+                    .then( (value) => {
+                      let obj = value.val();
+
+                      if (obj){
+                        obj["id"] = searchID;
+                        return obj;
+                      }else{
+                        return undefined;
+                      }
+                    });
+              });
+              resolve(currUserSearches);
+            }
+          });
+        }else{
+          reject("Must log in"); // user must log in
+        }
+      });
+    });
+  }
+
+    /*
+    * Get search object for provided search ID
+    */
+   this.getSearchFromDB = function(searchID) {
+    return database.ref("searches/"+searchID).once("value").then( (result) => {
+      let searchObject = result.val();
+      return searchObject;
+    });
+   }
+
+
+  this.googleSignIn = function () {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider).then(function(result) {
+      notifyObservers("signInSuccess");
+
+    }).catch(function(error) {
+      if (error.code === "auth/web-storage-unsupported") {
+        console.log("fail XD");
+        notifyObservers("signInFailed");
+      }
+    });
+  }
+
+  this.signOut = function () {
+    firebase.auth().signOut().then(function() {
+        // Sign-out successful.
+      }).catch(function(error) {
+        // An error happened.
+    });
+  }
+
+  this.getUserName = function () {
+    var user = firebase.auth().currentUser;
+    if (user) {
+      return (user.displayName.toString());
+    }
+    else{
+      return "Sign in";
+    }
+  }
+
+  this.getMostPopularTweet = () => {
+    let maxRetweets = 0;
+    let mostPopularTweetId = null;
+
+    if (tweets !== null) {
+      tweets.forEach(function (tweet, index) {
+        if (tweet.retweet_count > maxRetweets) {
+          maxRetweets = tweet.retweet_count;
+          mostPopularTweetId = tweet.id_str;
+          tweetIndex = index;
+        }
+      });
+      return mostPopularTweetId;
+    }
+    else{
+      return null
+    }
+  }
+
+  this.getTweetIndex = () =>{
+    return tweetIndex;
+  }
 
   // Draw random tweet from bucket and eliminate drawn tweet from bucket
-  this.randomDrawTweet = function(){
-    if (tweetBucket === null) return null;
-    if (tweetBucket.length === 0) tweetBucket = tweets; // reset bucket if empty
-    let index = Math.floor(Math.random()*tweetBucket.length);
-    let randomTweet = tweetBucket.splice(index, 1)[0];
-    return randomTweet;
+  this.pickTweet = navigate => {
+    if (tweets === null) return null;
+    let currentTweet = 0;
+    if(navigate === 'next'){
+      tweetIndex ++;
+      currentTweet = tweets[tweetIndex]
+    }
+    if(navigate === 'previous'){
+      tweetIndex --;
+      currentTweet = tweets[tweetIndex]
+    }
+    return currentTweet
+    // if (tweetBucket.length === 0) tweetBucket = tweets; // reset bucket if empty
+    // let index = Math.floor(Math.random()*tweetBucket.length);
+    // let randomTweet = tweetBucket.splice(index, 1)[0];
+    // return randomTweet;
   }
 
   // API Calls
-
   this.setDate = function(dateIn){
     date = dateIn;
+    dateParam = this.getDateString()
     notifyObservers("dateSet");
   }
   this.getDate = function(){
@@ -133,8 +249,11 @@ const Model = function () {
     return container;
   }
 
-  this.setSearch = function(search){
+  this.setSearch = function(search, noNotification){
     searchInput = search;
+    if(noNotification){
+      return;
+    }
     notifyObservers("searchInputSet");
   }
 
@@ -151,7 +270,7 @@ const Model = function () {
     return location;
   }
 
-  this.getDateString = () => {
+  function getDateString() {
     let year = date.getFullYear();
     let month = date.getMonth()+1;
     let day = date.getDate();
@@ -173,12 +292,13 @@ const Model = function () {
     longitude = lng;
   }
 
-  this.setPlaceName = function(string){
-    if(string === 'error'){
-      notifyObservers('rateLimited');
-      return
-    }
-    placeName = string;
+  this.setPlaceName = function(place){
+    placeName = place;
+    // console.log(suggestions.places);
+    // placeOptions = suggestions.places.map(data => {
+    //     // return {label: data.full_name};
+    //     return {value: data.full_name, label: data.full_name}
+    // });
     notifyObservers('placeNameSet');
   }
 
@@ -186,11 +306,13 @@ const Model = function () {
     return placeName;
   }
 
+  this.getPlaceOptions = function(){
+    return placeOptions;
+  }
+
   this.setTweets = function(results){
-    if(results.data.statuses.length === 0){
-      notifyObservers('emptySearch');
-      return
-    }
+    // Number of API calls remaining (renews each 15 minutes)
+    console.log('Search API calls remaining: ' + results.resp.headers["x-rate-limit-remaining"]); //.x-rate-limit-remaining ["x-rate-limit-remaining"]
 
     //Set twitter responses
     tweets = results.data.statuses;
@@ -202,20 +324,17 @@ const Model = function () {
 
     //Build the object to POST to Sentiment Analysis
     const tweetObject = results.data.statuses.map(function(tweet){
-      return {"text": tweet.text}
+      return {"text": tweet.text, "query": searchInput }
     })
     tweetsJSON = JSON.stringify({data: tweetObject})
     notifyObservers('tweetsSet');
   }
 
   this.setUserLocations = tweets => {
-    // if (tweets === null){
-    //   userLocations = null;
-    //   return;
-    // }
     var coordinates = tweets.data.statuses.reduce((coordinates, tweet) => {
       if(tweet.coordinates !== null){
-        coordinates.push({lng: tweet.coordinates.coordinates[0], lat: tweet.coordinates.coordinates[1], id: tweet.id_str});
+        // console.log(tweets.indexOf(tweet.id_str));
+        coordinates.push({lng: tweet.coordinates.coordinates[0], lat: tweet.coordinates.coordinates[1], id: tweet.id_str}); //, index: tweets.indexOf(tweet)
       }
       return coordinates;
     }, []);
@@ -227,12 +346,12 @@ const Model = function () {
     return userLocations;
   }
 
-  this.setTweetID = function(id){
+  this.geoTweetID = function(id){
     tweetID = id;
-    notifyObservers('tweetIDSet');
+    notifyObservers('geoIDSet');
   }
 
-  this.getTweetID = function(){
+  this.getGeoTweetID = function(){
     return tweetID;
   }
 
@@ -250,54 +369,91 @@ const Model = function () {
     return tweets;
   }
 
-  this.setSentimentData = function(results){
-    sentimentData = results;
+  this.setSentimentDataFromTweets = function(tweets){
+    sentimentData = this.calculateSentiment(tweets);
     notifyObservers('sentimentSet');
+  }
+
+  this.setSentimentData = function(data){
+    sentimentData = data;
+    notifyObservers("sentimentSet");
   }
 
   this.getSentimentData = function(){
     return sentimentData;
   }
 
-  this.getSearchHistory = function() {
-    return searchHistory;
+  this.calculateSentiment = function(results){
+    let sentiment = {positive: undefined, negative: undefined, neutral: undefined};
+    let pos = 0;
+    let neg = 0;
+    let neu = 0;
+
+    results.data.map(data =>{
+      switch(data.polarity){
+        case 4:
+          pos += 1
+          break
+        case 0:
+          neg += 1
+          break
+        case 2:
+          neu += 1
+          break
+      }
+    })
+
+    sentiment.positive = (pos/(pos+neg))*100;
+    sentiment.negative = (neg/(pos+neg))*100;
+    sentiment.noOfNeutral = neu;
+    sentiment.total = pos + neg + neu;
+    return sentiment;
   }
 
   this.deleteSearchHistory = function(selectedSearches) {
+    /*
     searchHistory.data = searchHistory.data.filter(function(el) {
       return !selectedSearches.includes(el.id);
     });
+    */
     notifyObservers();
   }
 
-  this.getMostPopularTweet = () => {
-    let maxRetweets = 0;
-    let mostPopularTweetId = null;
 
-    if (tweets !== null) {
-      tweets.forEach(function (tweet, index) {
-        if (tweet.retweet_count > maxRetweets) {
-          maxRetweets = tweet.retweet_count;
-          mostPopularTweetId = tweet.id;
-        }
-      });
-      return mostPopularTweetId.toString();
+    this.setErrorMessages = function(error){
+      if(error === 'RATE_LIMITED'){
+        notifyObservers('rateLimited');
+        return
+      }
+      if(error === 'NO_LOCATION'){
+        notifyObservers('locationNotFound');
+        return
+      }
+      if(error === 'ERROR'){
+        notifyObservers('networkError');
+        return
+      }
+      if(error === 'NO_SEARCH'){
+        notifyObservers('noSearchInputGiven');
+        return
+      }
+      if(error === 'NO_TWEETS'){
+        notifyObservers('noTweetsFound');
+        return
+      }
     }
-  }
+
 
   //API Calls
   this.searchTweets = function () {
-    let url = '/api/twitter/search?' + 'q=' + encodeURIComponent(searchInput) 
-    if (location !== "")
-      url += '&geocode=' + location;
-  
-    let year = date.getFullYear();
-    let month = date.getMonth()+1; // January is 0 in js
-    let day = date.getDate();
-    let dateParam = year+"-"+month+"-"+day;
+    let url = '/api/twitter/search?'
 
-    url += "&until=" + dateParam; 
-
+      if (searchInput !=='') {
+        url += 'q=' + encodeURIComponent(searchInput) + '&geocode=' + location + '&until=' + dateParam;
+        }
+      else{
+        notifyObservers('noSearchInputGiven');
+      }
     return fetch(url)
       .then(processResponse)
       .catch(handleError)
@@ -334,14 +490,6 @@ const Model = function () {
       .catch(handleError)
   }
 
-  this.geocode = () => {
-    const url = '/api/twitter/geocode?' + 'query=' + encodeURIComponent(placeName);
-    return fetch(url)
-      .then(processResponse)
-      .catch(handleError)
-  }
-
-
   // API Helper methods
   const processResponse = function (response) {
     if (response.ok) {
@@ -358,7 +506,6 @@ const Model = function () {
     console.error('API Error:', error.message || error)
     }
   }
-
 
   // Observer pattern
   this.addObserver = function (observer) {

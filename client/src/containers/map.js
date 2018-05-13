@@ -2,7 +2,6 @@ import React from 'react';
 import mapboxgl from 'mapbox-gl';
 import * as d3 from "d3";
 import DrawCircle from '../components/map-draw'
-// import UserLocations from '../components/map-dots'
 import LocationInfo from '../components/map-location-info';
 import '../styles/map.css';
 import Button from 'material-ui/Button';
@@ -27,12 +26,12 @@ class Map extends React.Component {
   componentDidMount() {
       modelInstance.addObserver(this);
       this.mapBox(this.state.coordinates, this.state.zoom);
+
   }
 
   mapBox = (coordinates, zoom) => {
 
           mapboxgl.accessToken = 'pk.eyJ1Ijoibmlla2Jpam1hbiIsImEiOiJjamY0MnN2NXkxaGpjMzRwZHloM3FoZG9uIn0.eZBRbD2LO-4yNS-gXVtRag';
-
           const map = new mapboxgl.Map({
             container: this.mapContainer,
             style: 'mapbox://styles/niekbijman/cjftubitf16572rpdp0scokcm',
@@ -61,7 +60,8 @@ class Map extends React.Component {
 
           this.setState({
             svg: svg,
-            circleControl: circleControl
+            circleControl: circleControl,
+            map: map
           })
 
           function project(d) {
@@ -76,21 +76,21 @@ class Map extends React.Component {
           //   this.circleRender(circleControl, svg)
           // })
           map.on("move", () => {
-            this.circleRender(circleControl, svg, this.state.userLocations)
-          })
 
-          // render our initial visualization
-          this.circleRender(circleControl, svg, this.state.userLocations)
-
-         map.on('move', () => {
             const { lng, lat } = map.getCenter();
+            this.circleRender(circleControl, svg, this.state.userLocations)
+
 
             this.setState({
               lng: lng.toFixed(4),
               lat: lat.toFixed(4),
               zoom: map.getZoom().toFixed(2)
             });
-          });
+          })
+
+          // render our initial visualization
+          this.circleRender(circleControl, svg, this.state.userLocations)
+
       }
 
   circleRender(circleControl, svg, userLocations) {
@@ -102,6 +102,9 @@ class Map extends React.Component {
     if(details ==='jumpToCoordinates'){
       var coordinates = modelInstance.getCoordinates();
       var zoom = 8;
+
+      //Remove old map and create new one using new coordinates
+      this.state.map.remove()
       this.mapBox(coordinates, zoom);
     }
     if(details ==='userLocationsSet'){

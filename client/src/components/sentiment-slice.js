@@ -18,11 +18,11 @@ class SentimentSlice extends React.Component {
     }
 
     render() {
-        let {value, label, fill, innerRadius = 0, outerRadius, cornerRadius, padAngle} = this.props;
+        let {value, label, fill, innerRadius = 0, outerRadius, cornerRadius, padAngle, onChartClick} = this.props;
         if (this.state.isHovered) {
             outerRadius *= 1.1;
         }
-        
+
         let arc = d3.svg.arc()
             .innerRadius(innerRadius)
             .outerRadius(outerRadius)
@@ -31,7 +31,9 @@ class SentimentSlice extends React.Component {
 
         return (
             <g onMouseOver={this.onMouseOver}
-               onMouseOut={this.onMouseOut}>
+               onMouseOut={this.onMouseOut}
+               className='pieSlice' 
+               >
                 <path d={arc(value)} fill={fill} />
                 <text transform={`translate(${arc.centroid(value)})`}
                     dy=".35em"

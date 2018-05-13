@@ -13,25 +13,39 @@ import TweetEmbed from 'react-tweet-embed';
 import Notification from '../components/notification';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import NavigateBefore from '@material-ui/icons/NavigateBefore';
+import NavigateNext from '@material-ui/icons/NavigateNext';
+import Tooltip from 'material-ui/Tooltip';
 
 
 class Sentiment extends Component {
   constructor(props){
     super(props);
-    let tweetID = modelInstance.randomDrawTweet();
+    let tweetID = modelInstance.getMostPopularTweet();
     if (tweetID === null) tweetID = "692527862369357824";
+    //let sentiment = modelInstance.getSentimentData();
+    let withSentimentDefined;
+    let withSentiment;
+    if (this.props.positive !== undefined && this.props.negative !== undefined && this.props.total !== undefined){
+      withSentimentDefined = true;
+      withSentiment = Number(this.props.positive) + Number(this.props.negative);
+    }
     this.state = {
-      positive: 50,
-      negative: 40,
-      neutral: 10,
-      sentiment: modelInstance.getSentimentData(),
+      positive: this.props.positive,
+      negative: this.props.negative,
+      noOfNeutral: this.props.noOfNeutral,
+      total: this.props.total,
+      withSentiment: withSentimentDefined ? withSentiment+"/"+this.props.total : null,
+//      sentiment: modelInstance.getSentimentData(),
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
       tweetAmount: modelInstance.getTweetAmount(),
-      until: modelInstance.getDateString(),
+      until: this.props.until,
       geoLocated: null,
       tweetID: tweetID+"",
       openPDFModal: false,
+      notifications: 'INITIAL',
+      openNotification: false,
     }
   }
 
@@ -55,27 +69,21 @@ class Sentiment extends Component {
       });
     }
 
-    if(details==="emptySearchString"){
-      // Show no sentiment pie chart
-      this.setState({status: "EMPTY"});
-    }
-
     if(details ==='tweetsSet'){
-      console.log("The tweets");
-      console.log(modelInstance.getTweets());
-      let randomTweetID = modelInstance.randomDrawTweet().id_str;
-      this.setState({tweetID: randomTweetID});
-      this.sentimentAnalysis();
-      // Set state to LOADING, which should disable save-search button
+      let mostPopularID = modelInstance.getMostPopularTweet();
+      this.setState({tweetID: mostPopularID});
     }
 
     if (details==="sentimentSet") {
-      this.calculateSentiment();
+      let sentiment = modelInstance.getSentimentData();
       this.setState({
         searchInput: modelInstance.getSearch(),
         tweetAmount: modelInstance.getTweetAmount(),
-        mostPopularTweetId: modelInstance.getMostPopularTweet(),
-      })
+        positive: (sentiment !== null) ? Math.round(sentiment.positive) : null,
+        negative:  (sentiment !== null) ? Math.round(sentiment.negative) : null,
+        withSentiment:  (sentiment !== null) ? (sentiment.noOfNeutral + '/' + sentiment.total) : 0+"/"+0,
+        total: (sentiment !== null) ? sentiment.total : null
+      });
     }
 
     if(details==='userLocationsSet'){
@@ -91,9 +99,9 @@ class Sentiment extends Component {
       })
     }
 
-    if(details==='tweetIDSet'){
+    if(details==='geoIDSet'){
       this.setState({
-        tweetID: modelInstance.getTweetID()
+        tweetID: modelInstance.getGeoTweetID()
       })
     }
 
@@ -109,23 +117,57 @@ class Sentiment extends Component {
       });
     }
 
-  }
+    if(details ==='placeNameReset'){
+        this.setState({
+          placeName: ''
+        })
+    }
 
-  sentimentAnalysis = () => {
-    // if(this.state.searchInput === "") return;
-
-    modelInstance.analyzeSentiment().then(result => {
-      modelInstance.setSentimentData(result);
+    //Notifications
+    if(details==="networkError"){
       this.setState({
-        status: 'LOADED SENTIMENT'
+        notifications:'ERROR',
+        openNotification: true
       });
-    }).catch(() => {
-      this.setState({
-        status: 'ERROR'
-      });
-    });
-  }
+    }
 
+    if(details==="noTweetsFound"){
+
+      this.setState({
+        notifications:'NO_TWEETS',
+        openNotification: true
+      });
+    }
+
+    if(details==="noSearchInputGiven"){
+      // Notify user that he/she needs to input a search
+      this.setState({
+        notifications: "NO_SEARCH",
+        openNotification: true
+      });
+    }
+
+    if(details==="rateLimited"){
+      this.setState({
+        notifications:'RATE_LIMITED',
+        openNotification: true
+      });
+    }
+
+    if(details==="locationNotFound"){
+      this.setState({
+        notifications:'NO_LOCATION',
+        openNotification: true
+      });
+    }
+    if(details==="signInFailed"){
+      this.setState({
+        notifications:'SIGN_IN_FAILED',
+        openNotification: true
+      });
+    }
+  }
+/*
   calculateSentiment = () => {
     let result = modelInstance.getSentimentData();
     let sentiment = {positive: undefined, negative: undefined, neutral: undefined};
@@ -148,23 +190,24 @@ class Sentiment extends Component {
     })
 
     let total = pos + neg + neu;
-    sentiment.positive = (pos/total)*100;
-    sentiment.negative = (neg/total)*100;
-    sentiment.neutral = (neu/total)*100;
+    sentiment.positive = (pos/(pos+neg))*100;
+    sentiment.negative = (neg/(pos+neg))*100;
+    // sentiment.neutral = (neu/total)*100;
 
     this.setState({
-      positive: (result !== null) ? Math.round(sentiment.positive) : 50,
+      positive: (result !== null) ? Math.round(sentiment.positive) : 60,
       negative:  (result !== null) ? Math.round(sentiment.negative) : 40,
-      neutral: (result !== null) ? Math.round(sentiment.neutral) : 10,
+      quantity:  (neu + '/' + total),
+      // neutral: (result !== null) ? Math.round(sentiment.neutral) : 10,
     })
   }
-
+*/
   handleTweetLoadError = event => {
     console.log('Tweet loading failed');
   }
 
   handleTweetLoadSuccess = event => {
-    console.log('Tweet loaded successfully');
+    // console.log('Tweet loaded successfully');
   }
 
   handlePDFCreation = event => {
@@ -178,12 +221,12 @@ class Sentiment extends Component {
       });
   }
 
-  handleOpen = () => {
-    this.setState({ open: true});
+  handleOpenNotification = () => {
+    this.setState({ openNotification: true});
   };
 
   handleClose = () => {
-    this.setState({ open: false });
+    this.setState({ openNotification: false });
   };
 
   handleOpenPDFModal = () => {
@@ -198,16 +241,24 @@ class Sentiment extends Component {
     });
   };
 
+  handleChartClick = () => {
+    console.log('hey');
+  }
 
-  newRandomTweet = () => {
-    let randomTweet = modelInstance.randomDrawTweet();
-    if (randomTweet === null) return;
-    let randomTweetID = randomTweet.id_str;
-    this.setState({tweetID: randomTweetID});
+  handleNavigation = navigate => {
+    let currentTweet = modelInstance.pickTweet(navigate);
+    if(currentTweet !== null){
+      this.setState({ tweetID: currentTweet.id_str});
+      }
   }
 
   saveSearch = () => {
-    modelInstance.addSearchToDB(this.state.positive, this.state.negative, this.state.neutral);
+    modelInstance.addSearchToDB(this.state.positive, this.state.negative, this.state.noOfNeutral, this.state.total);
+
+    this.setState({
+      notifications: 'SEARCH_SAVED',
+      openNotification: true,
+    })
   }
 
   render(){
@@ -216,7 +267,7 @@ class Sentiment extends Component {
     let minViewportSize = Math.min(width, height);
     // This sets the radius of the pie chart to fit within
     // the current window size, with some additional padding
-    let radius = (minViewportSize * .9) / 2;
+    let radius = (minViewportSize * 1.1) / 2;
     // Centers the pie chart
     let x = width / 2;
     let y = height / 2;
@@ -224,43 +275,61 @@ class Sentiment extends Component {
     let notification = null;
 
     switch (this.props.status) {
+      case 'NULL' :
+        pieChart = null;
+        break;
+
       case 'INITIAL':
         pieChart = <CircularIndeterminate/>
         break;
       case 'LOADED':
         pieChart =
-            <svg width="100%" height="100%">
-              <SentimentPie x={x}
-                            y={y}
-                            innerRadius={radius * .35}
-                            outerRadius={radius}
-                            cornerRadius={2}
-                            padAngle={.02}
-                            data={[this.state.positive, this.state.negative, this.state.neutral]}/>
-            </svg>
-        break;
-
-
-
-      default:
-        pieChart = <Notification text='There seems to be an error in your request'/> //  <div className="error">Failed to load data, please try again</div>
+              <svg onClick={this.handleChartClick} width="120%" height="120%">
+                <SentimentPie x={x}
+                              y={y}
+                              innerRadius={radius * .00}
+                              outerRadius={radius}
+                              cornerRadius={2}
+                              padAngle={.00}
+                              data={[this.state.positive, this.state.negative]}/>
+              </svg>
         break;
     }
 
     // Error Messages for App 'misuses'
-    switch (this.props.notifications) {
+    switch (this.state.notifications) {
       case 'INITIAL':
         notification = null;
       break;
-
-      case 'EMPTY':
-        console.log('EMPTY')
-        notification = <Notification open={this.state.open} handleClose={this.handleClose.bind(this)} text="We couldn't find any tweets for that search"/>
+      case 'ERROR':
+        notification = <Notification text='Failed to load data, please try again' open={this.state.openNotification} handleClose={this.handleClose}/>
       break;
-
+      case 'NO_TWEETS':
+        notification = <Notification text="We couldn't find any tweets for that search" open={this.state.openNotification} handleClose={this.handleClose}/>
+      break;
+      case 'NO_SEARCH':
+        notification = <Notification text="Please input a search query" open={this.state.openNotification} handleClose={this.handleClose}/>
+      break;
       case 'RATE_LIMITED':
-        console.log('LIMITED');
-        notification = <Notification open={this.state.open} close={this.handleClose.bind(this)} text="The app is rate limited for making too many API calls"/>
+        notification = <Notification text="Can't update location because the App has been Rate Limited by Twitter" open={this.state.openNotification} handleClose={this.handleClose}/>
+      break;
+      case 'NO_LOCATION':
+      notification = <Notification text="We couldn't find that location" open={this.state.openNotification} handleClose={this.handleClose}/>
+      break;
+      case 'SEARCH_SAVED':
+      notification = <Notification text="Search saved" open={this.state.openNotification} handleClose={this.handleClose} />
+      break;
+      case 'SIGN_IN_FAILED':
+      notification = <Notification
+                      text="Unable to login. Please change your browser cookie settings"
+                      // action = {
+                      //   <Button href='chrome://settings/content/cookies' color="secondary" size="small">
+                      //     Chrome Cookie Settings
+                      //   </Button>
+                      // }
+                      open={this.state.openNotification}
+                      handleClose={this.handleClose}
+                      notifications={this.state.notifications} />
       break;
     }
 
@@ -284,17 +353,14 @@ class Sentiment extends Component {
               <p>Info</p>
             </Hidden>
             <div className="tweets-info">
+                <Button className="sentiment-save" onClick={this.saveSearch} variant="raised" color="primary">Save Search</Button>
               <Row>
                 <Col xs={6} className="tweets-info-title">Search:</Col>
                 <Col xs={6} className="tweets-info-value">{this.state.searchInput}</Col>
               </Row>
               <Row>
-                <Col xs={6} className="tweets-info-title">Amount of tweets:</Col>
-                <Col xs={6} className="tweets-info-value">{this.state.tweetAmount}</Col>
-              </Row>
-              <Row>
-                <Col xs={6} className="tweets-info-title">Geolocated Tweets:</Col>
-                <Col xs={6} className="tweets-info-value">{this.state.geoLocated}</Col>
+                <Col xs={6} className="tweets-info-title">Tweets with sentiment:</Col>
+                <Col xs={6} className="tweets-info-value">{this.state.withSentiment}</Col>
               </Row>
               <Row>
                 <Col xs={6} className="tweets-info-title">Geography:</Col>
@@ -304,6 +370,7 @@ class Sentiment extends Component {
                 <Col xs={6} className="tweets-info-title">Until:</Col>
                 <Col xs={6} className="tweets-info-value">{this.state.until}</Col>
               </Row>
+
             </div>
           </Col>
 
@@ -327,9 +394,24 @@ class Sentiment extends Component {
                 <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
               </div>
             </Hidden>
-            <Button onClick={this.saveSearch}>Save Search</Button>
-            <Button variant="raised" onClick={this.newRandomTweet}>New Tweet</Button>
-            <TweetEmbed id={this.state.tweetID} options={{cards: 'hidden', width: '100%'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
+            {/* <Button variant="raised" onClick={this.chooseTweet}>New Tweet</Button> */}
+            <Row>
+              <Col className='sentiment-tweet-navigate' sm={1} md={1} xs={0}>
+                <Tooltip id="tooltip-icon" title="Previous Tweet">
+                  <NavigateBefore onClick={ () => {this.handleNavigation('previous')}} aria-label="navigate_before" disabled={true}/>
+                </Tooltip>
+              </Col>
+
+              <Col sm={10} md={10} xs={12}>
+                <TweetEmbed className="sentiment-tweet" id={this.state.tweetID} options={{width:'100', cards: 'hidden'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
+              </Col>
+
+              <Col className='sentiment-tweet-navigate' sm={1} md={1} xs={0}>
+                <Tooltip id="tooltip-icon" title="Next Tweet">
+                  <NavigateNext onClick={ () => {this.handleNavigation('next')}} aria-label="navigate_next" disabled={false}/>
+                </Tooltip>
+              </Col>
+            </Row>
           </Col>
         </Row>
         <CreatePDFModal

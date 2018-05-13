@@ -17,17 +17,20 @@ class Search extends Component {
       searchSuggestion: 'Search for tweets here',
       anchorEl: null,
       page: 0,
-      placeName: modelInstance.getPlaceName() === '' ? "LOCATION" : modelInstance.getPlaceName(),
-      searchInput: modelInstance.getSearch()
+      placeName: "LOCATION", // === '' ? "LOCATION" : modelInstance.getPlaceName()
+      placeOptions: modelInstance.getPlaceOptions(),
+      searchInput: modelInstance.getSearch(),
     }
     // Defining debounce is needed in constructor https://goo.gl/3D3vdf
     this.searchTweets = debounce(500, this.searchTweets);
-    this.searchGeocode = debounce(500, this.searchGeocode);
   }
 
   componentDidMount() {
+    // check if url id param was provided
+
+
     modelInstance.addObserver(this);
-    this.searchTweets();
+    //this.searchTweets();
   }
 
   handleClick = event => {
@@ -41,14 +44,20 @@ class Search extends Component {
   };
 
   handleInput = event => {
-    this.setState({searchInput: event.target.value});
     modelInstance.setSearch(event.target.value);
-    this.searchTweets();
   }
 
-  handleLocation = event => {
-    modelInstance.setPlaceName(this.capitalize(event.target.value));
-    this.searchGeocode();
+  handleLocation = (result, lat, lng, text) => {
+    console.log(result);
+    modelInstance.setPlaceName(this.capitalize(result));
+
+    //When the data arrives we want to set the Coordinates to update the Map
+    modelInstance.setCoordinates(lng, lat);
+    console.log(lng, lat);
+
+    let location = lat + ',' + lng + ',100km';
+
+    modelInstance.setGeocode(location);
   }
 
   // Turn uppercase into capitalized strings
@@ -59,41 +68,41 @@ class Search extends Component {
    }).join(' ');
   }
 
-  searchGeocode = () => {
-    //Searching for the Coordinates of the Place the user searched for
-    modelInstance.geocode().then(result => {
-      console.log(result);
-      //When the data arrives we wwant to set the Coordinates to update the Map
-      modelInstance.setCoordinates(result[0], result[1]);
-      console.log(result);
+  searchTweets = () => {
+    this.props.handleStatusChange('INITIAL');
+    if(modelInstance.getSearch() !== ''){
+      modelInstance.searchTweets().then(result => {
+        //Check if the search found any tweets
+        if(result.data.statuses.length === 0){
+          modelInstance.setErrorMessages('NO_TWEETS');
+          return
+        }
 
-      //We also want to use the data as an input for the geocode in the Search Tweets API Call
-      //IMPORTANT: Lat & Long are switched in the 'GET search/tweets' call
-      let location = result[1].toFixed(6) + ',' + result[0].toFixed(6) + ',100km';
-      modelInstance.setGeocode(location);
-    }).catch( error => {
-      console.log(error.response)
-      this.props.handleStatusChange('ERROR');
-    });
+        console.log(result);
+        modelInstance.setTweets(result);
+        this.setState({
+          data: result
+        });
+        this.sentimentAnalysis();
+
+      }).catch(() => {
+        // this.props.handleStatusChange('ERROR');
+        modelInstance.setErrorMessages('ERROR');
+      });
+    }
+    else{
+      this.props.handleStatusChange('NULL');
+      modelInstance.setErrorMessages('NO_SEARCH');
+    }
   }
 
-  searchTweets = () => {
-    // if( modelInstance.getSearch() === "" ) {
-    //   this.setState({data: null});
-    //   modelInstance.setTweets(null);
-    //   this.props.handleStatusChange("INITIAL");
-    //   return;
-    // }
-    this.props.handleStatusChange('INITIAL');
-    modelInstance.searchTweets().then(result => {
-      console.log(result);
-      modelInstance.setTweets(result);
+  sentimentAnalysis = () => {
+    modelInstance.analyzeSentiment().then(result => {
       this.props.handleStatusChange('LOADED');
-      this.setState({
-        data: result
-      });
-    }).catch(() => {
-      this.props.handleStatusChange('ERROR');
+      modelInstance.setSentimentDataFromTweets(result);
+    }).catch( e => {
+      console.log(e);
+      // modelInstance.setErrorMessages('ERROR')
     });
   }
 
@@ -109,11 +118,21 @@ class Search extends Component {
     }
     if(details ==='placeNameSet'){
       this.setState({
-        placeName: modelInstance.getPlaceName() //.toUpperCase()
+        placeName: modelInstance.getPlaceName(), //.toUpperCase()
       })
     }
-    if(details ==='placeNameReset' && modelInstance.getSearch() !== ''){
+    if(details ==='placeNameReset'){ // && modelInstance.getSearch() !== ''
         this.searchTweets();
+        this.setState({
+          placeName: "LOCATION", //.toUpperCase()
+        })
+
+    }
+    if(details === 'searchInputSet'){
+      this.searchTweets();
+      this.setState({
+        searchInput: modelInstance.getSearch()
+      })
     }
   }
 
@@ -128,14 +147,14 @@ class Search extends Component {
             <Col xs={2} sm={2} md={2} className='text'>
               <p>FROM</p>
             </Col>
-            <Col xs={4} sm={4} md={4} className='date'>
+            <Col xs={3} sm={3} md={3} className='date'>
               <SearchDate handleClose={this.handleClose} anchorEl={this.state.anchorEl} click={this.handleClick} dayChange={this.onDayChange}/>
             </Col>
             <Col xs={2} sm={2} md={2} className='text'>
               <p>IN</p>
             </Col>
-            <Col xs={4} sm={4} md={4} className='location'>
-              <SearchLocation placeName = {this.state.placeName} handleLocation={this.handleLocation.bind(this)}/>
+            <Col xs={5} sm={5} md={5} className='location'>
+              <SearchLocation placeName = {this.state.placeName} placeOptions = {this.state.placeOptions}  handleLocation={this.handleLocation.bind(this)}/>
             </Col>
 
           </Row>

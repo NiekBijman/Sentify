@@ -20,7 +20,7 @@ function HistoryMySearches(props) {
   return (
     <div id="history-my-searches">
       <Tooltip id="tooltip-icon" title="History">
-        <IconButton aria-label="History">
+        <IconButton aria-label="History" disabled={true}>
           <HistoryIcon />
         </IconButton>
       </Tooltip>

@@ -19,12 +19,13 @@ import DeleteMySearches from '../components/delete-my-searches';
 import HistoryMySearches from '../components/history-my-searches';
 import SentimentPDF from '../components/sentiment-pdf';
 import DeleteMySearchesModal from '../components/delete-my-searches-modal';
+import CircularIndeterminate from '../components/circular-indeterminate';
 
 const columnData = [
   { id: 'subject', numeric: false, disablePadding: true, label: 'Subject' },
   { id: 'Location', numeric: false, disablePadding: false, label: 'Location' },
-  { id: 'time-span', numeric: false, disablePadding: false, label: 'Time Span' },
-  { id: 'date-created', numeric: false, disablePadding: false, label: 'Date Created' },
+  { id: 'time-span', numeric: false, disablePadding: false, label: 'Until' },
+  { id: 'date-created', numeric: false, disablePadding: false, label: 'Created' },
   { id: 'download', numeric: false, disablePadding: false, label: 'Download' },
 ];
 
@@ -159,17 +160,37 @@ const styles = theme => ({
 class MySearchesTable extends React.Component {
   constructor(props, context) {
       super(props, context);
-
       this.state = {
-          selected: [],
-          data: modelInstance.getSearchHistory().data,
-          page: 0,
-          rowsPerPage: 5,
-          open: false,
+        selected: [],
+        data: null,
+        page: 0,
+        rowsPerPage: 5,
+        open: false,
+        status: "LOADING"
       };
+
   }
 
   componentDidMount() {
+      modelInstance.getSearchHistory().then( (promises) => {
+        // get the resolve value of all promises in `promises`
+        console.log("promises:");
+        console.log(promises);
+        if (promises === null || promises === undefined){
+          this.setState({
+            data: null,
+            status: "LOADED"
+          });
+        }else{
+          Promise.all(promises).then(data => {
+            data = data.filter( val => val !== undefined);
+            this.setState({
+              data: data,
+              status: "LOADED"
+            });
+          });
+        }
+      });
       modelInstance.addObserver(this);
   }
 
@@ -213,7 +234,21 @@ class MySearchesTable extends React.Component {
       if (event.target.tagName === "I") {
           alert("Creating PDF file for download");
       } else if (event.target.tagName !== "INPUT" && !event.target.getAttribute("class").includes("checkbox")) {
-          window.location.assign('/search?id=' + id);
+        //get search query from firebase
+        modelInstance.getSearchFromDB(id).then( (searchObject) => {
+          console.log(searchObject);
+          let query = searchObject.query;
+          let pos = searchObject.positive;
+          let neg = searchObject.negative;
+          let noOfNeu = searchObject.noOfNeutral;
+          let tot = searchObject.total;
+          let withSentiment = searchObject.withSentiment;
+          let until = searchObject.until;
+                    
+          window.location.assign('/discover/'+encodeURIComponent(query)+"/"+pos+"/"+neg+"/"+noOfNeu+"/"+tot+"/"+until);
+        }).catch( (err) => {
+          console.log(err);
+        });
       }
   };
 
@@ -259,7 +294,55 @@ class MySearchesTable extends React.Component {
   render() {
     const { classes } = this.props;
     const { data, selected, rowsPerPage, page } = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    let tableBody;
+    let emptyRows;
+    switch(this.state.status){
+      case "LOADING":
+    tableBody = (
+              <tr>
+                <td colSpan="6">
+                  <CircularIndeterminate/>
+                </td>
+              </tr>
+              );
+        emptyRows = undefined;
+        break;
+      case "LOADED":
+        if (data !== null && data !== undefined){
+          emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+          tableBody = data.length > 0 && data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
+            const isSelected = this.isSelected(n.id);
+            return (
+              <TableRow
+                hover
+                onClick={event => this.handleRedirection(event, n.id)}
+                role="checkbox"
+                aria-checked={isSelected}
+                tabIndex={-1}
+                key={n.id}
+                selected={isSelected}
+              >
+                <TableCell padding="checkbox" className="checkbox">
+                  <Checkbox checked={isSelected} color="primary" onClick={event => this.handleClick(event, n.id)}/>
+                </TableCell>
+                <TableCell padding="none">{n.query}</TableCell>
+                <TableCell>{n.location}</TableCell>
+                <TableCell>{n.until}</TableCell>
+                <TableCell>{n.dateCreated}</TableCell>
+                <TableCell>{(1
+                                ? <SentimentPDF/>
+                                : <span></span>
+                            )}
+                </TableCell>
+              </TableRow>
+            );
+          });
+        }else{
+          tableBody = null;
+          emptyRows = rowsPerPage;
+        }
+        break;
+    }
 
     return (
       <Paper className={classes.root}>
@@ -276,36 +359,10 @@ class MySearchesTable extends React.Component {
             <EnhancedTableHead
               numSelected={selected.length}
               onSelectAllClick={this.handleSelectAllClick}
-              rowCount={data.length || -1}
+              rowCount={data === null || data === undefined ? -1 : (data.length || -1)}
             />
             <TableBody>
-              {data.length > 0 && data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
-                const isSelected = this.isSelected(n.id);
-                return (
-                  <TableRow
-                    hover
-                    onClick={event => this.handleRedirection(event, n.id)}
-                    role="checkbox"
-                    aria-checked={isSelected}
-                    tabIndex={-1}
-                    key={n.id}
-                    selected={isSelected}
-                  >
-                    <TableCell padding="checkbox" className="checkbox">
-                      <Checkbox checked={isSelected} color="primary" onClick={event => this.handleClick(event, n.id)}/>
-                    </TableCell>
-                    <TableCell padding="none">{n.subject}</TableCell>
-                    <TableCell>{n.Location}</TableCell>
-                    <TableCell>{n.dateStart} / {n.dateFinish}</TableCell>
-                    <TableCell>{n.dateCreated}</TableCell>
-                    <TableCell>{(n.downloadPDF
-                                    ? <SentimentPDF/>
-                                    : <span></span>
-                                )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+              {tableBody}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 49 * emptyRows }}>
                   <TableCell colSpan={6} />
@@ -316,7 +373,7 @@ class MySearchesTable extends React.Component {
         </div>
         <TablePagination
           component="div"
-          count={data.length || 0}
+          count={data === null || data === undefined ? 0 : data.length || 0}
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{

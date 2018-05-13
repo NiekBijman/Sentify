@@ -7,29 +7,28 @@ import {modelInstance} from "../model/model";
 
 const styles = theme => ({
   container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    marginTop: '20'
+    // display: 'flex',
+    // flexWrap: 'wrap',
+    // background: 'rgba(255, 255, 255, 0.48)!important'
   },
   textField: {
-    // marginLeft: theme.spacing.unit,
-    // marginRight: theme.spacing.unit,
-    width: "100%"
+    width: "80%"
   },
 });
 
 /*
 *  Returns Date object which is num days away from today
-*/ 
+*/
 const fromToday = num => {
   let date = new Date();
   date.setDate(date.getDate() + num);
   return date;
 };
 
-const SearchDate = ({handleClose, anchorEl, click, dayChange}) => {
-
-  /* 
+const SearchDate = props => {
+  const { classes,handleClose, anchorEl, click, dayChange } = props;
+  const ITEM_HEIGHT = 48;
+  /*
   *  Sets dateString variable to a string that tells us how far back we are searching.
   *  Dates in the future will be treated as today.
   *  Dates more than 7 days ago will be set to 7 days ago.
@@ -44,7 +43,7 @@ const SearchDate = ({handleClose, anchorEl, click, dayChange}) => {
     diffDays = 0;
   }else{
     diffDays = Math.floor( diffMillis / ( 1000 * 60 * 60 * 24 ) );
-    // Can only go back 7 days maximum. 
+    // Can only go back 7 days maximum.
     if (diffDays > 7){
       diffDays = 7;
     }
@@ -58,30 +57,11 @@ const SearchDate = ({handleClose, anchorEl, click, dayChange}) => {
     dateString = diffDays + " DAYS BACK";
   }
 
-    // const days = [
-    //     {date: 'Today'},
-    //     {date: 'Yesterday'},
-    //     {date: '2 days ago'},
-    //     {date: '3 days ago'},
-    //     {date: '4 days ago'},
-    //     {date: '5 days ago'},
-    //     {date: '6 days ago '},
-    //     {date: '7 days ago'},
-    //     ];
-    //
-    // let daysList = null;
-    // {daysList = days.map((date, index) => (
-    //   console.log(days, index),
-    //   <MenuItem
-    //       key={index}
-    //       onClick={this.onDayChange(date.date)}
-    //   >{date.date}</MenuItem>)
-    // )}
-   
     return(
     <React.Fragment>
       <Button
         // variant="raised"
+        size='small'
         aria-owns={anchorEl ? 'simple-menu' : null}
         aria-haspopup="true"
         onClick={click}
@@ -90,20 +70,30 @@ const SearchDate = ({handleClose, anchorEl, click, dayChange}) => {
         {dateString}
       </Button>
       <Menu
-        id="simple-menu"
+        className={classes.container}
+        PaperProps={{
+          style: {
+            maxHeight: ITEM_HEIGHT * 4.5,
+            // width: 200,
+            'border-radius': '10',
+            background: 'rgba(255, 255, 255, 0.48)!important',
+
+          },
+        }}
+        id="simple-date-menu"
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={ () => handleClose() }
       >
         {/* {daysList} */}
-        <MenuItem onClick={ () => dayChange( fromToday(0) ) }>TODAY</MenuItem>
-        <MenuItem onClick={ () => dayChange( fromToday(-1) ) }>YESTERDAY</MenuItem>
-        <MenuItem onClick={ () => dayChange( fromToday(-2) ) }>2 DAYS BACK</MenuItem>
-        <MenuItem onClick={ () => dayChange( fromToday(-3) ) }>3 DAYS BACK</MenuItem>
-        <MenuItem onClick={ () => dayChange( fromToday(-4) ) }>4 DAYS BACK</MenuItem>
-        <MenuItem onClick={ () => dayChange( fromToday(-5) ) }>5 DAYS BACK</MenuItem>
-        <MenuItem onClick={ () => dayChange( fromToday(-6) ) }>6 DAYS BACK</MenuItem>
-        <MenuItem onClick={ () => dayChange( fromToday(-7) ) }>7 DAYS BACK</MenuItem>
+        <MenuItem onClick={ () => dayChange( fromToday(0) ) }>Today</MenuItem>
+        <MenuItem onClick={ () => dayChange( fromToday(-1) ) }>Yesterday</MenuItem>
+        <MenuItem onClick={ () => dayChange( fromToday(-2) ) }>2 days ago</MenuItem>
+        <MenuItem onClick={ () => dayChange( fromToday(-3) ) }>3 days ago</MenuItem>
+        <MenuItem onClick={ () => dayChange( fromToday(-4) ) }>4 days ago</MenuItem>
+        <MenuItem onClick={ () => dayChange( fromToday(-5) ) }>5 days ago</MenuItem>
+        <MenuItem onClick={ () => dayChange( fromToday(-6) ) }>6 days ago</MenuItem>
+        <MenuItem onClick={ () => dayChange( fromToday(-7) ) }>7 days ago</MenuItem>
       </Menu>
     </React.Fragment>
   );
