@@ -56,7 +56,7 @@ const Model = function () {
   /*
   * Inserts a search into the database
   */
-  this.addSearchToDB = function(positive, negative, total){
+  this.addSearchToDB = function(positive, negative, noOfNeutral, total){
     let today = new Date();
     let dateCreated = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate();
     let until = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
@@ -68,6 +68,7 @@ const Model = function () {
                 "amount": tweetAmount,
                 "positive": positive,
                 "negative": negative,
+                "noOfNeutral": noOfNeutral,
                 "total": total,
                 };
     //setup of path to reference the data
@@ -215,7 +216,20 @@ const Model = function () {
     return tweetIndex;
   }
 
+<<<<<<< HEAD
   // Navigate through different tweets using arrows
+=======
+  this.getDateString = getDateString;
+
+  function getDateString() {
+    let year = date.getFullYear();
+    let month = date.getMonth()+1;
+    let day = date.getDate();
+    return year+"-"+month+"-"+day;
+  }
+
+  // Draw random tweet from bucket and eliminate drawn tweet from bucket
+>>>>>>> d77e474d9a1543e7940ea7d52d0b9edc5227a130
   this.pickTweet = navigate => {
     if (tweets === null) return null;
     let currentTweet = 0;
@@ -251,7 +265,7 @@ const Model = function () {
   // API Calls
   this.setDate = function(dateIn){
     date = dateIn;
-    dateParam = this.getDateString()
+    dateParam = this.getDateString();
     notifyObservers("dateSet");
   }
   this.getDate = function(){
@@ -286,13 +300,6 @@ const Model = function () {
 
   this.getGeocode = () => {
     return location;
-  }
-
-  function getDateString() {
-    let year = date.getFullYear();
-    let month = date.getMonth()+1;
-    let day = date.getDate();
-    return year+"-"+month+"-"+day;
   }
 
   this.setCoordinates = (lng, lat ) =>{
