@@ -30,7 +30,7 @@ class SearchNav extends React.Component {
     const { classes } = this.props;
 
     return (
-      <div className={classes.root}>
+      <div className={classes.root} id="search-nav">
         <AppBar position="static" color="default">
           <Tabs
             value={this.state.value}

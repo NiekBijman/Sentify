@@ -44,7 +44,7 @@ class CreatePDFModal extends React.Component {
           open={this.props.open}
           onClose={this.props.handleClose}
         >
-          <div style={getModalStyle()} className={classes.paper}>
+          <div style={getModalStyle()} className={classes.paper} id="create-pdf-modal">
             <div id="divToPrint">
                 <div className="tweets-info">
                     <div className='title'>{this.props.searchInput.toUpperCase()}</div>
