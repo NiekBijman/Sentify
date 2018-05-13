@@ -15,6 +15,7 @@ import '../styles/search.css';
 class DiscoverContainer extends React.Component {
     constructor(props){
         super(props);
+
         this.state = {
             status: 'NULL',
 
@@ -56,10 +57,30 @@ class DiscoverContainer extends React.Component {
 
     componentDidMount() {
       let query = this.props.match.params.query;
-      let pos = this.props
+      console.log("query: "+query);
       if (query !== undefined){
+        console.log("set search");
         modelInstance.setSearch(query, true);
       }
+      console.log(this.props.match.params);
+      if (this.hasNecessaryURLParams()){
+        alert("Has params");
+        this.setState({
+          status: "LOADED"
+        });
+      }
+    }
+
+    hasNecessaryURLParams = () => {
+      if (
+        this.props.match.params.pos !== undefined && 
+        this.props.match.params.neg !== undefined && 
+        this.props.match.params.tot !== undefined && 
+        this.props.match.params.noOfNeu !== undefined
+      ){
+        return true;
+      }
+      return false;
     }
 
     handleStatusChange = newStatus => {
@@ -142,7 +163,7 @@ class DiscoverContainer extends React.Component {
                   </div>
               </div>
               <div className="container-discover-bottom">
-                  <SentimentContainer status={this.state.status} positive={this.props.match.params.pos} negative={this.props.match.params.neg} total={this.props.match.params.tot} noOfNeutral={this.props.match.params.noOfNeu} until={this.props.match.params.until}/>
+                  <SentimentContainer query={this.state.searchInput} hasNecessaryURLParams={this.hasNecessaryURLParams} status={this.state.status} positive={this.props.match.params.pos} negative={this.props.match.params.neg} total={this.props.match.params.tot} noOfNeutral={this.props.match.params.noOfNeu} until={this.props.match.params.until}/>
               </div>
             </div>
 

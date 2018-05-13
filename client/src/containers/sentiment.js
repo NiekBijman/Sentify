@@ -22,20 +22,20 @@ class Sentiment extends Component {
   constructor(props){
     super(props);
     let tweetID = modelInstance.getMostPopularTweet();
-    if (tweetID === null) tweetID = "692527862369357824";
+    
     //let sentiment = modelInstance.getSentimentData();
-    let withSentimentDefined;
+    let hasNecessaryURLParams;
     let withSentiment;
-    if (this.props.positive !== undefined && this.props.negative !== undefined && this.props.total !== undefined){
-      withSentimentDefined = true;
-      withSentiment = Number(this.props.positive) + Number(this.props.negative);
+    if (this.props.hasNecessaryURLParams()){
+      withSentiment = Number(this.props.total) - Number(this.props.noOfNeutral);
     }
+    console.log(this.props);
     this.state = {
       positive: this.props.positive,
       negative: this.props.negative,
       noOfNeutral: this.props.noOfNeutral,
       total: this.props.total,
-      withSentiment: withSentimentDefined ? withSentiment+"/"+this.props.total : null,
+      withSentiment: hasNecessaryURLParams ? withSentiment+"/"+this.props.total : null,
 //      sentiment: modelInstance.getSentimentData(),
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
@@ -76,12 +76,15 @@ class Sentiment extends Component {
 
     if (details==="sentimentSet") {
       let sentiment = modelInstance.getSentimentData();
+      console.log("sentiment in sentiment.js:");
+      console.log(sentiment);
       this.setState({
         searchInput: modelInstance.getSearch(),
         tweetAmount: modelInstance.getTweetAmount(),
         positive: (sentiment !== null) ? Math.round(sentiment.positive) : null,
         negative:  (sentiment !== null) ? Math.round(sentiment.negative) : null,
-        withSentiment:  (sentiment !== null) ? (sentiment.noOfNeutral + '/' + sentiment.total) : 0+"/"+0,
+        noOfNeutral: (sentiment !== null) ? sentiment.noOfNeutral : null,
+        withSentiment:  (sentiment !== null) ? ((sentiment.total - sentiment.noOfNeutral) + '/' + sentiment.total) : 0+"/"+0,
         total: (sentiment !== null) ? sentiment.total : null
       });
     }
@@ -253,6 +256,9 @@ class Sentiment extends Component {
   }
 
   saveSearch = () => {
+    console.log("total in saveSearch:");
+    console.log(this.state.total);
+
     modelInstance.addSearchToDB(this.state.positive, this.state.negative, this.state.noOfNeutral, this.state.total);
 
     this.setState({
@@ -295,6 +301,7 @@ class Sentiment extends Component {
               </svg>
         break;
     }
+
 
     // Error Messages for App 'misuses'
     switch (this.state.notifications) {
