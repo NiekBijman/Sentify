@@ -56,8 +56,9 @@ class DiscoverContainer extends React.Component {
 
     componentDidMount() {
       let query = this.props.match.params.query;
+      let pos = this.props
       if (query !== undefined){
-        modelInstance.setSearch(query);
+        modelInstance.setSearch(query, true);
       }
     }
 
@@ -141,7 +142,7 @@ class DiscoverContainer extends React.Component {
                   </div>
               </div>
               <div className="container-discover-bottom">
-                  <SentimentContainer status={this.state.status} />
+                  <SentimentContainer status={this.state.status} positive={this.props.match.params.pos} negative={this.props.match.params.neg} total={this.props.match.params.tot} noOfNeutral={this.props.match.params.noOfNeu} until={this.props.match.params.until}/>
               </div>
             </div>
 

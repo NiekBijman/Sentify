@@ -53,7 +53,7 @@ const Model = function () {
   /*
   * Inserts a search into the database
   */
-  this.addSearchToDB = function(positive, negative){
+  this.addSearchToDB = function(positive, negative, total){
     let today = new Date();
     let dateCreated = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate();
     let until = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
@@ -65,6 +65,7 @@ const Model = function () {
                 "amount": tweetAmount,
                 "positive": positive,
                 "negative": negative,
+                "total": total,
                 };
     //setup of path to reference the data
     var searchesRef = database.ref("searches");
@@ -248,8 +249,11 @@ const Model = function () {
     return container;
   }
 
-  this.setSearch = function(search){
+  this.setSearch = function(search, noNotification){
     searchInput = search;
+    if(noNotification){
+      return;
+    }
     notifyObservers("searchInputSet");
   }
 

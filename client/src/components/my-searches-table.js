@@ -235,22 +235,19 @@ class MySearchesTable extends React.Component {
           alert("Creating PDF file for download");
       } else if (event.target.tagName !== "INPUT" && !event.target.getAttribute("class").includes("checkbox")) {
         //get search query from firebase
-        let query;
         modelInstance.getSearchFromDB(id).then( (searchObject) => {
           console.log(searchObject);
+          let query = searchObject.query;
           let pos = searchObject.positive;
           let neg = searchObject.negative;
           let noOfNeu = searchObject.noOfNeutral;
           let tot = searchObject.total;
-          let sentiment = {positive: pos, 
-                          negative: neg,
-                          noOfNeutral: noOfNeu,
-                          total: tot}
-          modelInstance.setSentimentData(sentiment);
-          //let query = searchObject.query;
-          //window.location.assign('/discover/'+query);
-        }).catch( () => {
-          // TODO: catch error?
+          let withSentiment = searchObject.withSentiment;
+          let until = searchObject.until;
+                    
+          window.location.assign('/discover/'+encodeURIComponent(query)+"/"+pos+"/"+neg+"/"+noOfNeu+"/"+tot+"/"+until);
+        }).catch( (err) => {
+          console.log(err);
         });
       }
   };
