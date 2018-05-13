@@ -197,6 +197,7 @@ const Model = function () {
   }
 
   this.getMostPopularTweet = () => {
+    console.log(tweets);
     let maxRetweets = 0;
     let mostPopularTweetId = null;
 
@@ -208,7 +209,6 @@ const Model = function () {
           tweetIndex = index;
         }
       });
-      console.log(tweetIndex)
       return mostPopularTweetId;
     }
     else{
@@ -216,11 +216,11 @@ const Model = function () {
     }
   }
 
-  this.getTweetIndex = () =>{
+  this.getTweetIndex = () => {
     return tweetIndex;
   }
 
-  // Draw random tweet from bucket and eliminate drawn tweet from bucket
+  // Navigate through different tweets using arrows
   this.pickTweet = navigate => {
     if (tweets === null) return null;
     let currentTweet = 0;
@@ -238,6 +238,11 @@ const Model = function () {
     // let index = Math.floor(Math.random()*tweetBucket.length);
     // let randomTweet = tweetBucket.splice(index, 1)[0];
     // return randomTweet;
+  }
+
+  this.setChartTweets = chartTweets => {
+    tweets = chartTweets;
+    notifyObservers("chartTweetsSet");
   }
 
   // API Calls
@@ -331,7 +336,7 @@ const Model = function () {
 
     //Build the object to POST to Sentiment Analysis
     const tweetObject = results.data.statuses.map(function(tweet){
-      return {"text": tweet.text, "query": searchInput }
+      return {"text": tweet.text, "query": searchInput, "retweet_count": tweet.retweet_count, "id_str": tweet.id_str}
     })
     tweetsJSON = JSON.stringify({data: tweetObject})
     notifyObservers('tweetsSet');

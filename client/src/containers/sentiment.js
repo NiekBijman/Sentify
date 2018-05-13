@@ -38,6 +38,8 @@ class Sentiment extends Component {
       openPDFModal: false,
       notifications: 'INITIAL',
       openNotification: false,
+      positiveTweets: [],
+      negativeTweets: [],
     }
   }
 
@@ -63,6 +65,12 @@ class Sentiment extends Component {
 
     if(details ==='tweetsSet'){
       let mostPopularID = modelInstance.getMostPopularTweet();
+      this.setState({tweetID: mostPopularID});
+    }
+
+    if(details ==='chartTweetsSet'){
+      let mostPopularID = modelInstance.getMostPopularTweet();
+      // console.log(mostPopularID);
       this.setState({tweetID: mostPopularID});
     }
 
@@ -162,14 +170,20 @@ class Sentiment extends Component {
     let pos = 0;
     let neg = 0;
     let neu = 0;
+    let positiveTweets = [];
+    let negativeTweets = [];
+
+    // console.log(result);
 
     result.data.map(data =>{
       switch(data.polarity){
         case 4:
           pos += 1
+          positiveTweets.push({retweet_count: data.retweet_count, id_str: data.id_str})
           break
         case 0:
           neg += 1
+          negativeTweets.push({retweet_count: data.retweet_count, id_str: data.id_str})
           break
         case 2:
           neu += 1
@@ -180,13 +194,13 @@ class Sentiment extends Component {
     let total = pos + neg + neu;
     sentiment.positive = (pos/(pos+neg))*100;
     sentiment.negative = (neg/(pos+neg))*100;
-    // sentiment.neutral = (neu/total)*100;
 
     this.setState({
       positive: (result !== null) ? Math.round(sentiment.positive) : 60,
       negative:  (result !== null) ? Math.round(sentiment.negative) : 40,
-      quantity:  (neu + '/' + total),
-      // neutral: (result !== null) ? Math.round(sentiment.neutral) : 10,
+      quantity:  ((total - neu) + '/' + total),
+      positiveTweets: positiveTweets,
+      negativeTweets: negativeTweets,
     })
   }
 
@@ -229,8 +243,14 @@ class Sentiment extends Component {
     });
   };
 
-  handleChartClick = () => {
-    console.log('hey');
+  handleChartClick = polarity => {
+    console.log(polarity);
+    if(polarity === 'positive'){
+      modelInstance.setChartTweets(this.state.positiveTweets)
+    }
+    else if(polarity === 'negative'){
+      modelInstance.setChartTweets(this.state.negativeTweets)
+    }
   }
 
   handleNavigation = navigate => {
@@ -272,14 +292,15 @@ class Sentiment extends Component {
         break;
       case 'LOADED':
         pieChart =
-              <svg onClick={this.handleChartClick} width="120%" height="120%">
+              <svg width="120%" height="120%">
                 <SentimentPie x={x}
                               y={y}
                               innerRadius={radius * .00}
                               outerRadius={radius}
                               cornerRadius={2}
                               padAngle={.00}
-                              data={[this.state.positive, this.state.negative]}/>
+                              data={[this.state.positive, this.state.negative]}
+                              onChartClick={this.handleChartClick}/>
               </svg>
         break;
     }

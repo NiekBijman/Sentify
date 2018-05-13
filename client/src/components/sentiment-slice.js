@@ -18,9 +18,17 @@ class SentimentSlice extends React.Component {
     }
 
     render() {
-        let {value, label, fill, innerRadius = 0, outerRadius, cornerRadius, padAngle, onChartClick} = this.props;
+        let {value, label, fill, innerRadius = 0, outerRadius, cornerRadius, padAngle, onChartClick, sentiment} = this.props;
+        let polarity = '';
         if (this.state.isHovered) {
             outerRadius *= 1.1;
+        }
+
+        if(sentiment === 0){
+          polarity = 'positive'
+        }
+        else if(sentiment === 1){
+          polarity = 'negative'
         }
 
         let arc = d3.svg.arc()
@@ -32,9 +40,10 @@ class SentimentSlice extends React.Component {
         return (
             <g onMouseOver={this.onMouseOver}
                onMouseOut={this.onMouseOut}
-               className='pieSlice' 
+               className='pieSlice'
+
                >
-                <path d={arc(value)} fill={fill} />
+                <path onClick={() => {onChartClick(polarity)}} d={arc(value)} fill={fill} /> {/*,*/}
                 <text transform={`translate(${arc.centroid(value)})`}
                     dy=".35em"
                     textAnchor="middle"

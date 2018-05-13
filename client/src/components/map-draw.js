@@ -150,7 +150,6 @@ const DrawCircle = (svg, locations) => {
     if(userLocations.locations.length === 0){
       container.selectAll("circle.dot").remove();
     }
-    console.log(userLocations);
 
     // USER LOCATIONS
     let dots = container.selectAll("circle.dot")
