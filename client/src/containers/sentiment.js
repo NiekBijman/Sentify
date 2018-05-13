@@ -23,17 +23,32 @@ class Sentiment extends Component {
     super(props);
     let tweetID = modelInstance.getMostPopularTweet();
     if (tweetID === null) tweetID = "692527862369357824";
-    let sentiment = modelInstance.getSentimentData();
+    //let sentiment = modelInstance.getSentimentData();
+    let withSentimentDefined;
+    let withSentiment;
+    if (this.props.positive !== undefined && this.props.negative !== undefined && this.props.total !== undefined){
+      withSentimentDefined = true;
+      withSentiment = Number(this.props.positive) + Number(this.props.negative);
+    }
     this.state = {
+<<<<<<< HEAD
       positive: sentiment ? sentiment.positive : null,
       negative: sentiment ? sentiment.negative : null,
 //      noOfNeutral: sentiment ? sentiment.noOfNeutral : null,
       quantity: sentiment ? (sentiment.total - sentiment.noOfNeutral)+"/"+sentiment.total : null,
       sentiment: modelInstance.getSentimentData(),
+=======
+      positive: this.props.positive,
+      negative: this.props.negative,
+      noOfNeutral: this.props.noOfNeutral,
+      total: this.props.total,
+      withSentiment: withSentimentDefined ? withSentiment+"/"+this.props.total : null,
+//      sentiment: modelInstance.getSentimentData(),
+>>>>>>> 11b4bdad278839379677100b8890f2439862b08d
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
       tweetAmount: modelInstance.getTweetAmount(),
-      until: '',
+      until: this.props.until,
       geoLocated: null,
       tweetID: tweetID+"",
       openPDFModal: false,
@@ -80,9 +95,16 @@ class Sentiment extends Component {
       this.setState({
         searchInput: modelInstance.getSearch(),
         tweetAmount: modelInstance.getTweetAmount(),
+<<<<<<< HEAD
         positive: (sentiment !== null) ? Math.round(sentiment.positive) : 60,
         negative:  (sentiment !== null) ? Math.round(sentiment.negative) : 40,
         quantity:  (sentiment !== null) ? ((sentiment.total - sentiment.noOfNeutral) + '/' + sentiment.total) : 0+"/"+0
+=======
+        positive: (sentiment !== null) ? Math.round(sentiment.positive) : null,
+        negative:  (sentiment !== null) ? Math.round(sentiment.negative) : null,
+        withSentiment:  (sentiment !== null) ? (sentiment.noOfNeutral + '/' + sentiment.total) : 0+"/"+0,
+        total: (sentiment !== null) ? sentiment.total : null
+>>>>>>> 11b4bdad278839379677100b8890f2439862b08d
       });
     }
 
@@ -219,7 +241,7 @@ class Sentiment extends Component {
   }
 
   saveSearch = () => {
-    modelInstance.addSearchToDB(this.state.positive, this.state.negative, this.state.quantity);
+    modelInstance.addSearchToDB(this.state.positive, this.state.negative, this.state.noOfNeutral, this.state.total);
 
     this.setState({
       notifications: 'SEARCH_SAVED',
@@ -327,7 +349,7 @@ class Sentiment extends Component {
               </Row>
               <Row>
                 <Col xs={6} className="tweets-info-title">Tweets with sentiment:</Col>
-                <Col xs={6} className="tweets-info-value">{this.state.quantity}</Col>
+                <Col xs={6} className="tweets-info-value">{this.state.withSentiment}</Col>
               </Row>
               <Row>
                 <Col xs={6} className="tweets-info-title">Geography:</Col>
