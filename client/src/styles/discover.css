@@ -128,7 +128,6 @@
   overflow: auto;
 }
 
-
 #divToPrint {
   width: 100%;
   text-align: center;
@@ -146,7 +145,7 @@
   font-size: initial;
 }
 
-[class*="CreatePDFModal-"] button {
+#create-pdf-modal button {
   float: right;
 }
 
@@ -163,14 +162,14 @@ iframe, twitterwidget {
   padding-top: 20%;
 }
 
-.container-discover [class*="SearchNav-"] {
+.container-discover #search-nav {
   transform: scale(0.7);
   width: 50vw;
   padding: 0;
   margin: 0 0 0 -36%;
 }
 
-.container-discover [class*="SearchNav-"] > header {
+.container-discover #search-nav > header {
   background-color: transparent;
   box-shadow: none;
 }
@@ -189,9 +188,8 @@ iframe, twitterwidget {
   color: #2c3e50;
 }
 
-
 @media screen and (max-width: 807px) {
-  .container-discover [class*="SearchNav-"] {
+  .container-discover #search-nav {
       margin-left: 0 !important;
       width: 100% !important;
       transform: none !important;
@@ -206,8 +204,6 @@ iframe, twitterwidget {
     max-height:30vw;
     /* overflow: auto; */
   }
-
-
 }
 
 @media screen and (min-width: 576px) and (max-width: 599px) {
@@ -220,6 +216,7 @@ iframe, twitterwidget {
   #content-steps svg {
     width: 35%;
   }
+  
   .react-mapbox-ac-menu{
     max-height:30vw;
   }
@@ -231,6 +228,7 @@ iframe, twitterwidget {
   .tweets-info {
     padding-top: 0;
   }
+
   .sentiment-tweet{
       max-height:100vw;
       overflow: none;

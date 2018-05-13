@@ -42,7 +42,7 @@ class DeleteMySearchesModal extends React.Component {
           open={this.props.open}
           onClose={this.props.handleClose}
         >
-          <div style={getModalStyle()} className={classes.paper}>
+          <div style={getModalStyle()} className={classes.paper} id="delete-my-searches-modal">
             <Typography variant="title" id="modal-title">
               Confirm deleting selected searches
             </Typography>

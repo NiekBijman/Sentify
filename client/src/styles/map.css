@@ -38,6 +38,7 @@ nav {
   left: 20px;
   z-index: 1;
 }
+
 #circle {
   background-color: rgba(20, 20, 20, 0.1);
   font-family: Helvetica, sans-serif;
@@ -47,6 +48,7 @@ nav {
   cursor: pointer;
   border: 1px solid #111;
 }
+
 #circle.active {
   background-color: rgba(250, 250, 250, 0.9);
 }

@@ -19,25 +19,25 @@ tr i:hover {
     margin: 5% 10% 0 10%;
 }
 
-[class*="DeleteMySearchesModal-"] h2 {
+#delete-my-searches-modal h2 {
     margin-bottom: 10%;
 }
 
-[class*="DeleteMySearchesModal-"] h3 {
+#delete-my-searches-modal h3 {
     margin-bottom: 5%;
 }
 
-[class*="DeleteMySearchesModal-"] button {
+#delete-my-searches-modal button {
     float: right;
 }
 
-.container-my-searches [class*="SearchNav-"] {
+.container-my-searches #search-nav {
     padding-top: 5%;
     margin-top: 0 !important;
 }
 
 @media screen and (max-width: 807px) {
-    .container-my-searches [class*="SearchNav-"] {
+    .container-my-searches #search-nav {
         margin-left: 0 !important;
         width: 100% !important;
         transform: none !important;
