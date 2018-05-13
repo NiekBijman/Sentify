@@ -64,7 +64,6 @@ class DiscoverContainer extends React.Component {
       }
       console.log(this.props.match.params);
       if (this.hasNecessaryURLParams()){
-        alert("Has params");
         this.setState({
           status: "LOADED"
         });

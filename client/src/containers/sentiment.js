@@ -24,18 +24,18 @@ class Sentiment extends Component {
     let tweetID = modelInstance.getMostPopularTweet();
     
     //let sentiment = modelInstance.getSentimentData();
-    let hasNecessaryURLParams;
     let withSentiment;
     if (this.props.hasNecessaryURLParams()){
       withSentiment = Number(this.props.total) - Number(this.props.noOfNeutral);
     }
+    console.log("props:");
     console.log(this.props);
     this.state = {
       positive: this.props.positive,
       negative: this.props.negative,
       noOfNeutral: this.props.noOfNeutral,
       total: this.props.total,
-      withSentiment: hasNecessaryURLParams ? withSentiment+"/"+this.props.total : null,
+      withSentiment: this.props.hasNecessaryURLParams() ? withSentiment+"/"+this.props.total : null,
 //      sentiment: modelInstance.getSentimentData(),
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
