@@ -237,8 +237,18 @@ class MySearchesTable extends React.Component {
         //get search query from firebase
         let query;
         modelInstance.getSearchFromDB(id).then( (searchObject) => {
-          let query = searchObject.query;
-          window.location.assign('/discover/'+query);
+          console.log(searchObject);
+          let pos = searchObject.positive;
+          let neg = searchObject.negative;
+          let noOfNeu = searchObject.noOfNeutral;
+          let tot = searchObject.total;
+          let sentiment = {positive: pos, 
+                          negative: neg,
+                          noOfNeutral: noOfNeu,
+                          total: tot}
+          modelInstance.setSentimentData(sentiment);
+          //let query = searchObject.query;
+          //window.location.assign('/discover/'+query);
         }).catch( () => {
           // TODO: catch error?
         });
@@ -293,7 +303,7 @@ class MySearchesTable extends React.Component {
       case "LOADING":
     tableBody = (
               <tr>
-                <td colspan="6">
+                <td colSpan="6">
                   <CircularIndeterminate/>
                 </td>
               </tr>

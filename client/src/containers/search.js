@@ -44,9 +44,7 @@ class Search extends Component {
   };
 
   handleInput = event => {
-    this.setState({searchInput: event.target.value});
     modelInstance.setSearch(event.target.value);
-    this.searchTweets();
   }
 
   handleLocation = (result, lat, lng, text) => {
@@ -100,7 +98,7 @@ class Search extends Component {
   sentimentAnalysis = () => {
     modelInstance.analyzeSentiment().then(result => {
       this.props.handleStatusChange('LOADED');
-      modelInstance.setSentimentData(result);
+      modelInstance.setSentimentDataFromTweets(result);
     }).catch( e => {
       console.log(e);
       // modelInstance.setErrorMessages('ERROR')
