@@ -16,7 +16,7 @@ class SentimentSlice extends React.Component {
 
     onMouseOver() {
         this.setState({isHovered: true});
-        // console.log(this.state.isSelected);
+        console.log(this.state.isSelected);
     }
 
     onMouseOut() {
@@ -24,29 +24,26 @@ class SentimentSlice extends React.Component {
     }
 
     handleClick = polarity => {
+      var chartContainer = document.querySelector("div.col-sm-4.col-md-4.col-xs-12.sentiment-pie");
       if(!this.state.isSelected){
-
         this.setState({isSelected: true});
         modelInstance.setChartTweets(polarity);
 
-        // attach/remove event handler
-        document.addEventListener('click', event => {
-          // console.log(event.target)
-          // if (event.target === 'svg') {
-          //   return;
-          // }
-          modelInstance.setChartTweets('all');
-          this.setState({isSelected: false});
-        }, true);
+        // attach event handler
+        chartContainer.addEventListener('click', this.handleOutsideClick, false);
 
       } else {
         this.setState({isSelected: false});
-
-        document.removeEventListener('click', event => {
-          this.setState({isSelected: true});
-        }, true);
+        //remove event handler
+        chartContainer.removeEventListener('click', this.handleOutsideClick, false);
 
       }
+    }
+
+    handleOutsideClick = () => {
+      // We want the chart to display all tweets again when the user clicks outside of the chart (in sentiment-pie div)
+      modelInstance.setChartTweets('all');
+      this.setState({isSelected: false});
     }
 
     render() {
@@ -54,6 +51,11 @@ class SentimentSlice extends React.Component {
         let polarity = '';
         if (this.state.isSelected) {
             outerRadius *= 1.1;
+        }
+        if (this.state.isHovered) {
+          if(!this.state.isSelected){
+            outerRadius *= 1.05;
+          }
         }
 
         if(sentiment === 0){
