@@ -309,14 +309,15 @@ class Sentiment extends Component {
       break;
       case 'SIGN_IN_FAILED':
       notification = <Notification
-                      text="Not able to login. Your browser does not allow Firebase to store cookies "
+                      text="Unable to login. Please change your browser cookie settings"
                       // action = {
                       //   <Button href='chrome://settings/content/cookies' color="secondary" size="small">
                       //     Chrome Cookie Settings
                       //   </Button>
                       // }
                       open={this.state.openNotification}
-                      handleClose={this.handleClose} />
+                      handleClose={this.handleClose}
+                      notifications={this.state.notifications} />
       break;
     }
 
