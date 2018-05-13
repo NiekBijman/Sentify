@@ -23,11 +23,12 @@ class Sentiment extends Component {
     super(props);
     let tweetID = modelInstance.getMostPopularTweet();
     if (tweetID === null) tweetID = "692527862369357824";
+    let sentiment = modelInstance.getSentimentData();
     this.state = {
-      positive: 60,
-      negative: 40,
-      // neutral: 10,
-      quantity:'',
+      positive: sentiment ? sentiment.positive : null,
+      negative: sentiment ? sentiment.negative : null,
+//      noOfNeutral: sentiment ? sentiment.noOfNeutral : null,
+      quantity: sentiment ? sentiment.noOfNeutral+"/"+sentiment.total : null,
       sentiment: modelInstance.getSentimentData(),
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
@@ -67,11 +68,14 @@ class Sentiment extends Component {
     }
 
     if (details==="sentimentSet") {
-      this.calculateSentiment();
+      let sentiment = modelInstance.getSentimentData();
       this.setState({
         searchInput: modelInstance.getSearch(),
         tweetAmount: modelInstance.getTweetAmount(),
-      })
+        positive: (sentiment !== null) ? Math.round(sentiment.positive) : 60,
+        negative:  (sentiment !== null) ? Math.round(sentiment.negative) : 40,
+        quantity:  (sentiment !== null) ? (sentiment.noOfNeutral + '/' + sentiment.total) : 0+"/"+0
+      });
     }
 
     if(details==='userLocationsSet'){
@@ -155,7 +159,7 @@ class Sentiment extends Component {
       });
     }
   }
-
+/*
   calculateSentiment = () => {
     let result = modelInstance.getSentimentData();
     let sentiment = {positive: undefined, negative: undefined, neutral: undefined};
@@ -189,7 +193,7 @@ class Sentiment extends Component {
       // neutral: (result !== null) ? Math.round(sentiment.neutral) : 10,
     })
   }
-
+*/
   handleTweetLoadError = event => {
     console.log('Tweet loading failed');
   }
@@ -241,7 +245,7 @@ class Sentiment extends Component {
   }
 
   saveSearch = () => {
-    modelInstance.addSearchToDB(this.state.positive, this.state.negative);
+    modelInstance.addSearchToDB(this.state.positive, this.state.negative, this.state.quantity);
 
     this.setState({
       notifications: 'SEARCH_SAVED',
@@ -341,7 +345,7 @@ class Sentiment extends Component {
               <p>Info</p>
             </Hidden>
             <div className="tweets-info">
-                <Button className="sentiment-save" onClick={this.saveSearch}>Save Search</Button>
+                <Button className="sentiment-save" onClick={this.saveSearch} variant="raised" color="primary">Save Search</Button>
               <Row>
                 <Col xs={6} className="tweets-info-title">Search:</Col>
                 <Col xs={6} className="tweets-info-value">{this.state.searchInput}</Col>

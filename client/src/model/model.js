@@ -10,7 +10,7 @@ const Model = function () {
 
   //Date
   let date = new Date();
-  let dateParam = '';
+  let dateParam = getDateString();
 
   //Geocode
   let location = '';
@@ -30,7 +30,7 @@ const Model = function () {
   let tweetBucket = null;
   let tweetIndex = null;
 
-  //Sentiment data
+  //Sentiment data. Changed to {positive: undefined, negative: undefined}
   let sentimentData = null;
 
   let searchHistory = {"data": [
@@ -112,17 +112,13 @@ const Model = function () {
       firebase.auth().onAuthStateChanged(function(user){
         if(user){
           let uid = user.uid;
-          console.log("user:");
-          console.log(user);
           let userRef = database.ref("users/"+uid);
 
           return userRef.once("value")
           .then( (value) => {
             let currUserSearchesIDs = value.val();
-            console.log("currUserSearchesIDs:");
-            console.log(currUserSearchesIDs);
+
             if(currUserSearchesIDs === null || currUserSearchesIDs === undefined){
-              console.log("SET TO NULL");
               let currUserSearches = null;
               resolve(null);
             }else{
@@ -133,8 +129,6 @@ const Model = function () {
 
                       if (obj){
                         obj["id"] = searchID;
-                        console.log("obj:");
-                        console.log(obj);
                         return obj;
                       }else{
                         return undefined;
@@ -143,9 +137,6 @@ const Model = function () {
               });
               resolve(currUserSearches);
             }
-            console.log("currUserSearches");
-            console.log(currUserSearches);
-
           });
         }else{
           reject("Must log in"); // user must log in
@@ -208,7 +199,6 @@ const Model = function () {
           tweetIndex = index;
         }
       });
-      console.log(tweetIndex)
       return mostPopularTweetId;
     }
     else{
@@ -232,7 +222,6 @@ const Model = function () {
       tweetIndex --;
       currentTweet = tweets[tweetIndex]
     }
-    console.log(tweetIndex);
     return currentTweet
     // if (tweetBucket.length === 0) tweetBucket = tweets; // reset bucket if empty
     // let index = Math.floor(Math.random()*tweetBucket.length);
@@ -277,7 +266,7 @@ const Model = function () {
     return location;
   }
 
-  this.getDateString = () => {
+  function getDateString() {
     let year = date.getFullYear();
     let month = date.getMonth()+1;
     let day = date.getDate();
@@ -376,13 +365,45 @@ const Model = function () {
     return tweets;
   }
 
-  this.setSentimentData = function(results){
-    sentimentData = results;
+  this.setSentimentDataFromTweets = function(tweets){
+    sentimentData = this.calculateSentiment(tweets);
     notifyObservers('sentimentSet');
+  }
+
+  this.setSentimentData = function(data){
+    sentimentData = data;
+    notifyObservers("sentimentSet");
   }
 
   this.getSentimentData = function(){
     return sentimentData;
+  }
+
+  this.calculateSentiment = function(results){
+    let sentiment = {positive: undefined, negative: undefined, neutral: undefined};
+    let pos = 0;
+    let neg = 0;
+    let neu = 0;
+
+    results.data.map(data =>{
+      switch(data.polarity){
+        case 4:
+          pos += 1
+          break
+        case 0:
+          neg += 1
+          break
+        case 2:
+          neu += 1
+          break
+      }
+    })
+
+    sentiment.positive = (pos/(pos+neg))*100;
+    sentiment.negative = (neg/(pos+neg))*100;
+    sentiment.noOfNeutral = neu;
+    sentiment.total = pos + neg + neu;
+    return sentiment;
   }
 
   this.deleteSearchHistory = function(selectedSearches) {
@@ -429,8 +450,6 @@ const Model = function () {
       else{
         notifyObservers('noSearchInputGiven');
       }
-      console.log(url);
-
     return fetch(url)
       .then(processResponse)
       .catch(handleError)

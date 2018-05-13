@@ -4,6 +4,10 @@
   position: absolute;
 }
 
+.sentiment-save{
+  margin-bottom: 8px !important;
+}
+
 .container-discover {
   height: 100%;
 }
