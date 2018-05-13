@@ -11,7 +11,7 @@ class SentimentPie extends React.Component {
   }
 
   render () {
-    let {x, y, data} = this.props;
+    let {x, y, data, onChartClick} = this.props;
     let pie = d3.layout.pie();
     return (
       <g transform={`translate(${x}, ${y})`}>

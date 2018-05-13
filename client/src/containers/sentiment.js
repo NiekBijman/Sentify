@@ -28,7 +28,7 @@ class Sentiment extends Component {
       positive: sentiment ? sentiment.positive : null,
       negative: sentiment ? sentiment.negative : null,
 //      noOfNeutral: sentiment ? sentiment.noOfNeutral : null,
-      quantity: sentiment ? sentiment.noOfNeutral+"/"+sentiment.total : null,
+      quantity: sentiment ? (sentiment.total - sentiment.noOfNeutral)+"/"+sentiment.total : null,
       sentiment: modelInstance.getSentimentData(),
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
@@ -82,7 +82,7 @@ class Sentiment extends Component {
         tweetAmount: modelInstance.getTweetAmount(),
         positive: (sentiment !== null) ? Math.round(sentiment.positive) : 60,
         negative:  (sentiment !== null) ? Math.round(sentiment.negative) : 40,
-        quantity:  (sentiment !== null) ? (sentiment.noOfNeutral + '/' + sentiment.total) : 0+"/"+0
+        quantity:  (sentiment !== null) ? ((sentiment.total - sentiment.noOfNeutral) + '/' + sentiment.total) : 0+"/"+0
       });
     }
 
@@ -167,47 +167,7 @@ class Sentiment extends Component {
       });
     }
   }
-/*
-  calculateSentiment = () => {
-    let result = modelInstance.getSentimentData();
-    let sentiment = {positive: undefined, negative: undefined, neutral: undefined};
-    let pos = 0;
-    let neg = 0;
-    let neu = 0;
-    let positiveTweets = [];
-    let negativeTweets = [];
 
-    // console.log(result);
-
-    result.data.map(data =>{
-      switch(data.polarity){
-        case 4:
-          pos += 1
-          positiveTweets.push({retweet_count: data.retweet_count, id_str: data.id_str})
-          break
-        case 0:
-          neg += 1
-          negativeTweets.push({retweet_count: data.retweet_count, id_str: data.id_str})
-          break
-        case 2:
-          neu += 1
-          break
-      }
-    })
-
-    let total = pos + neg + neu;
-    sentiment.positive = (pos/(pos+neg))*100;
-    sentiment.negative = (neg/(pos+neg))*100;
-
-    this.setState({
-      positive: (result !== null) ? Math.round(sentiment.positive) : 60,
-      negative:  (result !== null) ? Math.round(sentiment.negative) : 40,
-      quantity:  ((total - neu) + '/' + total),
-      positiveTweets: positiveTweets,
-      negativeTweets: negativeTweets,
-    })
-  }
-*/
   handleTweetLoadError = event => {
     console.log('Tweet loading failed');
   }
@@ -248,13 +208,7 @@ class Sentiment extends Component {
   };
 
   handleChartClick = polarity => {
-    console.log(polarity);
-    if(polarity === 'positive'){
-      modelInstance.setChartTweets(this.state.positiveTweets)
-    }
-    else if(polarity === 'negative'){
-      modelInstance.setChartTweets(this.state.negativeTweets)
-    }
+    modelInstance.setChartTweets(polarity);
   }
 
   handleNavigation = navigate => {

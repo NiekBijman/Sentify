@@ -41,7 +41,6 @@ const DrawCircle = (svg, locations) => {
 
         }
         else if(circleSelected){
-          // d3.event.stopPropagation();
           // start over
           circleCenter = null;
           circleOuter = null;

@@ -26,6 +26,9 @@ const Model = function () {
   let tweetAmount = null;
   let tweetsJSON = null;
   let tweets = null;
+  let allTweets = [];
+  let positiveTweets = [];
+  let negativeTweets = [];
   // tweet bucket for random draw
   let tweetBucket = null;
   let tweetIndex = null;
@@ -223,6 +226,7 @@ const Model = function () {
       tweetIndex --;
       currentTweet = tweets[tweetIndex]
     }
+    console.log(tweetIndex);
     return currentTweet
     // if (tweetBucket.length === 0) tweetBucket = tweets; // reset bucket if empty
     // let index = Math.floor(Math.random()*tweetBucket.length);
@@ -230,8 +234,16 @@ const Model = function () {
     // return randomTweet;
   }
 
-  this.setChartTweets = chartTweets => {
-    tweets = chartTweets;
+  this.setChartTweets = polarity => {
+    if(polarity === 'positive'){
+      tweets = positiveTweets
+    }
+    else if(polarity === 'negative'){
+      tweets = negativeTweets
+    }
+    else if(polarity === 'all'){
+      tweets = allTweets
+    }
     notifyObservers("chartTweetsSet");
   }
 
@@ -318,6 +330,7 @@ const Model = function () {
 
     //Set twitter responses
     tweets = results.data.statuses;
+    allTweets = tweets;
     // Set tweet bucket to draw randoms from
     tweetBucket = tweets.slice(0); // copying tweets array
     tweetAmount = results.data.statuses.length;
@@ -390,14 +403,18 @@ const Model = function () {
     let pos = 0;
     let neg = 0;
     let neu = 0;
+    positiveTweets = [];
+    negativeTweets = [];
 
     results.data.map(data =>{
       switch(data.polarity){
         case 4:
           pos += 1
+          positiveTweets.push({retweet_count: data.retweet_count, id_str: data.id_str})
           break
         case 0:
           neg += 1
+          negativeTweets.push({retweet_count: data.retweet_count, id_str: data.id_str})
           break
         case 2:
           neu += 1
