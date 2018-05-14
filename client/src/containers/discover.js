@@ -72,9 +72,9 @@ class DiscoverContainer extends React.Component {
 
     hasNecessaryURLParams = () => {
       if (
-        this.props.match.params.pos !== undefined && 
-        this.props.match.params.neg !== undefined && 
-        this.props.match.params.tot !== undefined && 
+        this.props.match.params.pos !== undefined &&
+        this.props.match.params.neg !== undefined &&
+        this.props.match.params.tot !== undefined &&
         this.props.match.params.noOfNeu !== undefined
       ){
         return true;
@@ -162,7 +162,14 @@ class DiscoverContainer extends React.Component {
                   </div>
               </div>
               <div className="container-discover-bottom">
-                  <SentimentContainer query={this.state.searchInput} hasNecessaryURLParams={this.hasNecessaryURLParams} status={this.state.status} positive={this.props.match.params.pos} negative={this.props.match.params.neg} total={this.props.match.params.tot} noOfNeutral={this.props.match.params.noOfNeu} until={this.props.match.params.until}/>
+                  <SentimentContainer query={this.state.searchInput}
+                                      hasNecessaryURLParams={this.hasNecessaryURLParams}
+                                      status={this.state.status}
+                                      positive={this.props.match.params.pos}
+                                      negative={this.props.match.params.neg}
+                                      total={this.props.match.params.tot}
+                                      noOfNeutral={this.props.match.params.noOfNeu}
+                                      until={this.props.match.params.until}/>
               </div>
             </div>
 

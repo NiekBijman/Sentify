@@ -31,8 +31,10 @@ class Sentiment extends Component {
     console.log("props:");
     console.log(this.props);
     this.state = {
-      positive: this.props.positive,
-      negative: this.props.negative,
+      // positive: this.props.positive,
+      positive: (this.props.positive !== null) ? this.props.positive : 60,
+      negative:  (this.props.negative !== null) ? this.props.negative : 40,
+      // negative: this.props.negative,
       noOfNeutral: this.props.noOfNeutral,
       total: this.props.total,
       withSentiment: this.props.hasNecessaryURLParams() ? withSentiment+"/"+this.props.total : null,
@@ -84,15 +86,14 @@ class Sentiment extends Component {
 
     if (details==="sentimentSet") {
       let sentiment = modelInstance.getSentimentData();
-      console.log("sentiment in sentiment.js:");
-      console.log(sentiment);
+
       this.setState({
         searchInput: modelInstance.getSearch(),
         tweetAmount: modelInstance.getTweetAmount(),
-        positive: (sentiment !== null) ? Math.round(sentiment.positive) : null,
-        negative:  (sentiment !== null) ? Math.round(sentiment.negative) : null,
-        noOfNeutral: (sentiment !== null) ? sentiment.noOfNeutral : null,
-        withSentiment:  (sentiment !== null) ? ((sentiment.total - sentiment.noOfNeutral) + '/' + sentiment.total) : 0+"/"+0,
+        positive: (sentiment !== null) ? Math.round(sentiment.positive) : 60,
+        negative:  (sentiment !== null) ? Math.round(sentiment.negative) : 40,
+        noOfNeutral: (sentiment !== null) ?  Math.round(sentiment.noOfNeutral) : null,
+        withSentiment:  (sentiment !== null) ? ( Math.round(sentiment.total - sentiment.noOfNeutral) + '/' + sentiment.total) : 0+"/"+0,
         total: (sentiment !== null) ? sentiment.total : null
       });
     }

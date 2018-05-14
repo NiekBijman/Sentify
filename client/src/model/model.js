@@ -229,20 +229,26 @@ const Model = function () {
   this.pickTweet = navigate => {
     if (tweets === null) return null;
     let currentTweet = 0;
+    let maxTweets = (tweets.length -1);
     if(navigate === 'next'){
-      tweetIndex ++;
+      if(tweetIndex === maxTweets){
+        tweetIndex = 0;
+      }
+      else{
+        tweetIndex ++;
+      }
       currentTweet = tweets[tweetIndex]
     }
     if(navigate === 'previous'){
-      tweetIndex --;
+      if(tweetIndex === 0){
+        tweetIndex = maxTweets;
+      }
+      else{
+        tweetIndex --;
+      }
       currentTweet = tweets[tweetIndex]
     }
-    console.log(tweetIndex);
     return currentTweet
-    // if (tweetBucket.length === 0) tweetBucket = tweets; // reset bucket if empty
-    // let index = Math.floor(Math.random()*tweetBucket.length);
-    // let randomTweet = tweetBucket.splice(index, 1)[0];
-    // return randomTweet;
   }
 
   this.setChartTweets = polarity => {
