@@ -26,6 +26,10 @@ const Model = function () {
   let tweetAmount = null;
   let tweetsJSON = null;
   let tweets = null;
+  let allTweets = [];
+  let positiveTweets = [];
+  let negativeTweets = [];
+  let chartPolarity = '';
   // tweet bucket for random draw
   let tweetBucket = null;
   let tweetIndex = null;
@@ -190,6 +194,7 @@ const Model = function () {
   }
 
   this.getMostPopularTweet = () => {
+    // console.log(tweets);
     let maxRetweets = 0;
     let mostPopularTweetId = null;
 
@@ -208,7 +213,7 @@ const Model = function () {
     }
   }
 
-  this.getTweetIndex = () =>{
+  this.getTweetIndex = () => {
     return tweetIndex;
   }
 
@@ -225,19 +230,44 @@ const Model = function () {
   this.pickTweet = navigate => {
     if (tweets === null) return null;
     let currentTweet = 0;
+    let maxTweets = (tweets.length -1);
     if(navigate === 'next'){
-      tweetIndex ++;
+      if(tweetIndex === maxTweets){
+        tweetIndex = 0;
+      }
+      else{
+        tweetIndex ++;
+      }
       currentTweet = tweets[tweetIndex]
     }
     if(navigate === 'previous'){
-      tweetIndex --;
+      if(tweetIndex === 0){
+        tweetIndex = maxTweets;
+      }
+      else{
+        tweetIndex --;
+      }
       currentTweet = tweets[tweetIndex]
     }
     return currentTweet
-    // if (tweetBucket.length === 0) tweetBucket = tweets; // reset bucket if empty
-    // let index = Math.floor(Math.random()*tweetBucket.length);
-    // let randomTweet = tweetBucket.splice(index, 1)[0];
-    // return randomTweet;
+  }
+
+  this.setChartTweets = polarity => {
+    chartPolarity = polarity;
+    if(polarity === 'Positive'){
+      tweets = positiveTweets
+    }
+    else if(polarity === 'Negative'){
+      tweets = negativeTweets
+    }
+    else if(polarity === 'All'){
+      tweets = allTweets
+    }
+    notifyObservers("chartTweetsSet");
+  }
+
+  this.getChartPolarity = () => {
+      return chartPolarity
   }
 
   // API Calls
@@ -319,6 +349,8 @@ const Model = function () {
 
     //Set twitter responses
     tweets = results.data.statuses;
+    allTweets = tweets;
+    chartPolarity = 'All';
     // Set tweet bucket to draw randoms from
     tweetBucket = tweets.slice(0); // copying tweets array
     tweetAmount = results.data.statuses.length;
@@ -327,7 +359,7 @@ const Model = function () {
 
     //Build the object to POST to Sentiment Analysis
     const tweetObject = results.data.statuses.map(function(tweet){
-      return {"text": tweet.text, "query": searchInput }
+      return {"text": tweet.text, "query": searchInput, "retweet_count": tweet.retweet_count, "id_str": tweet.id_str}
     })
     tweetsJSON = JSON.stringify({data: tweetObject})
     notifyObservers('tweetsSet');
@@ -391,14 +423,18 @@ const Model = function () {
     let pos = 0;
     let neg = 0;
     let neu = 0;
+    positiveTweets = [];
+    negativeTweets = [];
 
     results.data.map(data =>{
       switch(data.polarity){
         case 4:
           pos += 1
+          positiveTweets.push({retweet_count: data.retweet_count, id_str: data.id_str})
           break
         case 0:
           neg += 1
+          negativeTweets.push({retweet_count: data.retweet_count, id_str: data.id_str})
           break
         case 2:
           neu += 1

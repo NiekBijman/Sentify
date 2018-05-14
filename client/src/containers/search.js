@@ -77,7 +77,6 @@ class Search extends Component {
           modelInstance.setErrorMessages('NO_TWEETS');
           return
         }
-
         console.log(result);
         modelInstance.setTweets(result);
         this.setState({

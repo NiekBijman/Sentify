@@ -41,7 +41,6 @@ const DrawCircle = (svg, locations) => {
 
         }
         else if(circleSelected){
-          // d3.event.stopPropagation();
           // start over
           circleCenter = null;
           circleOuter = null;
@@ -150,7 +149,6 @@ const DrawCircle = (svg, locations) => {
     if(userLocations.locations.length === 0){
       container.selectAll("circle.dot").remove();
     }
-    console.log(userLocations);
 
     // USER LOCATIONS
     let dots = container.selectAll("circle.dot")

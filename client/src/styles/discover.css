@@ -103,7 +103,7 @@
 }
 
 .sentiment-tweet{
-    max-height:12vw;
+    max-height:11vw;
     overflow: auto;
 }
 
@@ -218,7 +218,7 @@ iframe, twitterwidget {
   #content-steps svg {
     width: 35%;
   }
-  
+
   .react-mapbox-ac-menu{
     max-height:30vw;
   }
