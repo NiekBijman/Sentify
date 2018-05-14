@@ -31,17 +31,15 @@ class Sentiment extends Component {
     console.log("props:");
     console.log(this.props);
     this.state = {
-      // positive: this.props.positive,
       positive: (this.props.positive !== null) ? this.props.positive : 60,
       negative:  (this.props.negative !== null) ? this.props.negative : 40,
-      // negative: this.props.negative,
       noOfNeutral: this.props.noOfNeutral,
       total: this.props.total,
       withSentiment: this.props.hasNecessaryURLParams() ? withSentiment+"/"+this.props.total : null,
-//      sentiment: modelInstance.getSentimentData(),
       searchInput: modelInstance.getSearch(),
       placeName: modelInstance.getPlaceName(),
       tweetAmount: modelInstance.getTweetAmount(),
+      tweetState: 'SINGLE/NONE',
       until: '',
       geoLocated: null,
       tweetID: tweetID+"",
@@ -76,6 +74,18 @@ class Sentiment extends Component {
     if(details ==='tweetsSet'){
       let mostPopularID = modelInstance.getMostPopularTweet();
       this.setState({tweetID: mostPopularID});
+
+      this.setState({
+        searchInput: modelInstance.getSearch(),
+        tweetAmount: modelInstance.getTweetAmount(),
+      });
+
+       if(this.state.tweetAmount > 1) {
+         this.setState({tweetState: "MULTIPLE"});
+        }
+      else {
+        this.setState({tweetState: "SINGLE/NONE"});
+        }
     }
 
     if(details ==='chartTweetsSet'){
@@ -88,8 +98,6 @@ class Sentiment extends Component {
       let sentiment = modelInstance.getSentimentData();
 
       this.setState({
-        searchInput: modelInstance.getSearch(),
-        tweetAmount: modelInstance.getTweetAmount(),
         positive: (sentiment !== null) ? Math.round(sentiment.positive) : 60,
         negative:  (sentiment !== null) ? Math.round(sentiment.negative) : 40,
         noOfNeutral: (sentiment !== null) ?  Math.round(sentiment.noOfNeutral) : null,
@@ -252,8 +260,7 @@ class Sentiment extends Component {
     // Centers the pie chart
     let x = width / 2;
     let y = height / 2;
-    let pieChart = null;
-    let notification = null;
+    let pieChart, notification, previous, next = null;
 
     switch (this.props.status) {
       case 'NULL' :
@@ -310,6 +317,27 @@ class Sentiment extends Component {
                       notifications={this.state.notifications} />
       break;
     }
+    // Error Messages for App 'misuses'
+    switch (this.state.tweetState) {
+      case 'SINGLE/NONE':
+          previous, next  = null;
+      break;
+
+      case 'MULTIPLE':
+        previous =
+          <Col className='sentiment-tweet-navigate' sm={1} md={1} xs={0}>
+            <Tooltip id="tooltip-icon" title="Previous Tweet">
+              <NavigateBefore onClick={ () => {this.handleNavigation('previous')}} aria-label="navigate_before" disabled={true}/>
+            </Tooltip>
+          </Col>
+        next =
+          <Col className='sentiment-tweet-navigate' sm={1} md={1} xs={0}>
+            <Tooltip id="tooltip-icon" title="Next Tweet">
+              <NavigateNext onClick={ () => {this.handleNavigation('next')}} aria-label="navigate_next" disabled={true}/>
+            </Tooltip>
+          </Col>
+        break;
+      }
 
     return(
       <div>
@@ -374,21 +402,11 @@ class Sentiment extends Component {
             </Hidden>
             {/* <Button variant="raised" onClick={this.chooseTweet}>New Tweet</Button> */}
             <Row>
-              <Col className='sentiment-tweet-navigate' sm={1} md={1} xs={0}>
-                <Tooltip id="tooltip-icon" title="Previous Tweet">
-                  <NavigateBefore onClick={ () => {this.handleNavigation('previous')}} aria-label="navigate_before" disabled={true}/>
-                </Tooltip>
-              </Col>
-
+              {previous}
               <Col sm={10} md={10} xs={12}>
                 <TweetEmbed className="sentiment-tweet" id={this.state.tweetID} options={{width:'100', cards: 'hidden'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
               </Col>
-
-              <Col className='sentiment-tweet-navigate' sm={1} md={1} xs={0}>
-                <Tooltip id="tooltip-icon" title="Next Tweet">
-                  <NavigateNext onClick={ () => {this.handleNavigation('next')}} aria-label="navigate_next" disabled={false}/>
-                </Tooltip>
-              </Col>
+              {next}
             </Row>
           </Col>
         </Row>
