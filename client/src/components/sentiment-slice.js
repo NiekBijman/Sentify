@@ -16,7 +16,6 @@ class SentimentSlice extends React.Component {
 
     onMouseOver() {
         this.setState({isHovered: true});
-        // console.log(this.state.isSelected);
     }
 
     onMouseOut() {
@@ -42,7 +41,7 @@ class SentimentSlice extends React.Component {
 
     handleOutsideClick = () => {
       // We want the chart to display all tweets again when the user clicks outside of the chart (in sentiment-pie div)
-      modelInstance.setChartTweets('all');
+      modelInstance.setChartTweets('All');
       this.setState({isSelected: false});
     }
 
@@ -59,10 +58,10 @@ class SentimentSlice extends React.Component {
         }
 
         if(sentiment === 0){
-          polarity = 'positive'
+          polarity = 'Positive'
         }
         else if(sentiment === 1){
-          polarity = 'negative'
+          polarity = 'Negative'
         }
 
         let arc = d3.svg.arc()
@@ -74,7 +73,6 @@ class SentimentSlice extends React.Component {
         return (
             <g onMouseOver={this.onMouseOver}
                onMouseOut={this.onMouseOut}
-               ref={node => { this.node = node;}}
                className='pieSlice'
 
                >

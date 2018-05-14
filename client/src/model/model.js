@@ -29,6 +29,7 @@ const Model = function () {
   let allTweets = [];
   let positiveTweets = [];
   let negativeTweets = [];
+  let chartPolarity = '';
   // tweet bucket for random draw
   let tweetBucket = null;
   let tweetIndex = null;
@@ -252,16 +253,21 @@ const Model = function () {
   }
 
   this.setChartTweets = polarity => {
-    if(polarity === 'positive'){
+    chartPolarity = polarity;
+    if(polarity === 'Positive'){
       tweets = positiveTweets
     }
-    else if(polarity === 'negative'){
+    else if(polarity === 'Negative'){
       tweets = negativeTweets
     }
-    else if(polarity === 'all'){
+    else if(polarity === 'All'){
       tweets = allTweets
     }
     notifyObservers("chartTweetsSet");
+  }
+
+  this.getChartPolarity = () => {
+      return chartPolarity
   }
 
   // API Calls
@@ -344,6 +350,7 @@ const Model = function () {
     //Set twitter responses
     tweets = results.data.statuses;
     allTweets = tweets;
+    chartPolarity = 'All';
     // Set tweet bucket to draw randoms from
     tweetBucket = tweets.slice(0); // copying tweets array
     tweetAmount = results.data.statuses.length;

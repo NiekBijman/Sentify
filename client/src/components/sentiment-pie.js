@@ -11,7 +11,7 @@ class SentimentPie extends React.Component {
   }
 
   render () {
-    let {x, y, data, onChartClick} = this.props;
+    let {x, y, data} = this.props;
     let pie = d3.layout.pie();
     return (
       <g transform={`translate(${x}, ${y})`}>
@@ -21,10 +21,9 @@ class SentimentPie extends React.Component {
   }
 
   renderSlice(value, i) {
-    let {innerRadius, outerRadius, cornerRadius, padAngle, onChartClick} = this.props;
+    let {innerRadius, outerRadius, cornerRadius, padAngle} = this.props;
     return (
       <SentimentSlice key={i}
-                      onChartClick={onChartClick}
                       innerRadius={innerRadius}
                       outerRadius={outerRadius}
                       cornerRadius={cornerRadius}

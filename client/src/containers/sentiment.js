@@ -22,8 +22,6 @@ class Sentiment extends Component {
   constructor(props){
     super(props);
     let tweetID = modelInstance.getMostPopularTweet();
-
-    //let sentiment = modelInstance.getSentimentData();
     let withSentiment;
     if (this.props.hasNecessaryURLParams()){
       withSentiment = Number(this.props.total) - Number(this.props.noOfNeutral);
@@ -48,6 +46,7 @@ class Sentiment extends Component {
       openNotification: false,
       positiveTweets: [],
       negativeTweets: [],
+      tweetTitle: 'Tweets',
     }
   }
 
@@ -78,20 +77,25 @@ class Sentiment extends Component {
       this.setState({
         searchInput: modelInstance.getSearch(),
         tweetAmount: modelInstance.getTweetAmount(),
+        tweetTitle: (modelInstance.getChartPolarity() + ' Tweets')
       });
 
        if(this.state.tweetAmount > 1) {
          this.setState({tweetState: "MULTIPLE"});
         }
-      else {
+       else {
         this.setState({tweetState: "SINGLE/NONE"});
         }
     }
 
     if(details ==='chartTweetsSet'){
       let mostPopularID = modelInstance.getMostPopularTweet();
+
       // console.log(mostPopularID);
-      this.setState({tweetID: mostPopularID});
+      this.setState({
+        tweetID: mostPopularID,
+        tweetTitle: (modelInstance.getChartPolarity() + ' Tweets')
+    });
     }
 
     if (details==="sentimentSet") {
@@ -227,10 +231,6 @@ class Sentiment extends Component {
     });
   };
 
-  handleChartClick = polarity => {
-    modelInstance.setChartTweets(polarity);
-  }
-
   handleNavigation = navigate => {
     let currentTweet = modelInstance.pickTweet(navigate);
     if(currentTweet !== null){
@@ -279,8 +279,7 @@ class Sentiment extends Component {
                               outerRadius={radius}
                               cornerRadius={2}
                               padAngle={.00}
-                              data={[this.state.positive, this.state.negative]}
-                              onChartClick={this.handleChartClick}/>
+                              data={[this.state.positive, this.state.negative]}/>
               </svg>
         break;
     }
@@ -345,8 +344,7 @@ class Sentiment extends Component {
           <Row id="title-steps">
             <Col sm={4} md={4}>Info</Col>
             <Col sm={4} md={4}>Sentiment</Col>
-            <Col sm={4} md={4}>
-              Tweets
+            <Col sm={4} md={4}>{this.state.tweetTitle}
               <div className="createPDF">
                 <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
               </div>
