@@ -143,6 +143,8 @@
   position: inherit;
   width: 100%;
   font-size: initial;
+  padding-top: 10%;
+  padding-bottom: 5%;
 }
 
 #create-pdf-modal button {
