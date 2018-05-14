@@ -1,6 +1,8 @@
 import React from 'react';
 import d3 from 'd3';
 import { modelInstance } from '../model/model';
+import Tooltip from 'material-ui/Tooltip';
+
 
 
 class SentimentSlice extends React.Component {
@@ -71,6 +73,7 @@ class SentimentSlice extends React.Component {
             .padAngle(padAngle);
 
         return (
+          <Tooltip open={!this.state.isSelected && this.state.isHovered} id="tooltip-icon" title={polarity + " tweets"} placement="right">
             <g onMouseOver={this.onMouseOver}
                onMouseOut={this.onMouseOut}
                className='pieSlice'
@@ -84,6 +87,8 @@ class SentimentSlice extends React.Component {
                 {label}
                 </text>
             </g>
+          </Tooltip>
+
         );
     }
 }
