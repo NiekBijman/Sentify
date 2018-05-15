@@ -266,16 +266,21 @@ const Model = function () {
 
   this.setChartTweets = polarity => {
     chartPolarity = polarity;
-    if(polarity === 'Positive'){
-      tweets = positiveTweets
+    if(tweets !== null) {
+      if(polarity === 'Positive' && positiveTweets.length !== 0){
+        tweets = positiveTweets
+      }
+      else if(polarity === 'Negative' && negativeTweets.length !== 0){
+        tweets = negativeTweets
+      }
+      else if(polarity === 'All'){
+        tweets = allTweets
+      }
+      notifyObservers("chartTweetsSet");
     }
-    else if(polarity === 'Negative'){
-      tweets = negativeTweets
+    else{
+      notifyObservers("noSearchInputGiven");
     }
-    else if(polarity === 'All'){
-      tweets = allTweets
-    }
-    notifyObservers("chartTweetsSet");
   }
 
   this.getChartPolarity = () => {
