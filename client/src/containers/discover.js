@@ -68,6 +68,8 @@ class DiscoverContainer extends React.Component {
           status: "LOADED"
         });
       }
+      //firebase anonymous sign in as default
+      modelInstance.anonymousSignIn();
     }
 
     hasNecessaryURLParams = () => {
