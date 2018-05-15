@@ -40,7 +40,7 @@ class Sentiment extends Component {
       tweetState: 'SINGLE/NONE',
       until: '',
       geoLocated: null,
-      tweetID: (modelInstance.getMostPopularTweet() !== null) ? modelInstance.getMostPopularTweet()+"" : '692527862369357824',
+      tweetID: (modelInstance.getMostPopularTweet() !== null) ? modelInstance.getMostPopularTweet()+"" : '996379393864892417',
       openPDFModal: false,
       notifications: 'INITIAL',
       openNotification: false,

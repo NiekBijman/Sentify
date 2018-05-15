@@ -6,7 +6,7 @@ import d3 from 'd3';
 class SentimentPie extends React.Component {
   constructor(props) {
     super(props);
-    this.colorScale = ['#A5C05B', '#D24136'];
+    this.colorScale = ['#A5C05B', '#D24136'] ;// ['#f44842', '#424242'] 
     this.renderSlice = this.renderSlice.bind(this);
   }
 
