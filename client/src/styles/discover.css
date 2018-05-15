@@ -143,6 +143,22 @@
   position: inherit;
   width: 100%;
   font-size: initial;
+  padding-top: 10%;
+  padding-bottom: 12%;
+}
+
+#create-pdf-modal i.negative {
+  color: #D24136;
+}
+
+#create-pdf-modal i.positive {
+  color: #A5C05B;
+}
+
+#divToPrint .pos, #divToPrint .neg {
+  padding-top: 5%;
+  font-size: medium;
+  text-align: center;
 }
 
 #create-pdf-modal button {

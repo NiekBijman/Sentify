@@ -20,6 +20,11 @@ import HistoryMySearches from '../components/history-my-searches';
 import SentimentPDF from '../components/sentiment-pdf';
 import DeleteMySearchesModal from '../components/delete-my-searches-modal';
 import CircularIndeterminate from '../components/circular-indeterminate';
+import CreatePDFModal from '../components/create-pdf-modal';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import SentimentPie from '../components/sentiment-pie';
+import Dimensions from 'react-dimensions';
 
 const columnData = [
   { id: 'subject', numeric: false, disablePadding: true, label: 'Subject' },
@@ -166,6 +171,13 @@ class MySearchesTable extends React.Component {
         page: 0,
         rowsPerPage: 5,
         open: false,
+        openPDFModal: false,
+        searchInput: "",
+        tweetAmount: null,
+        placeName: "",
+        date: "",
+        pos: null,
+        neg: null,
         status: "LOADING"
       };
 
@@ -205,10 +217,27 @@ class MySearchesTable extends React.Component {
   }
 
   handleCloseModal = () => {
-      this.setState({
-          open: false
-      });
+    this.setState({
+        open: false
+    });
   };
+
+  handleClosePDFModal = () => {
+    this.setState({
+        openPDFModal: false
+    });
+  }
+
+  handlePDFCreation = event => {
+    let input = document.getElementById('divToPrint');
+    html2canvas(input)
+      .then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        pdf.addImage(imgData, 'JPEG', 0, 0);
+        pdf.save(this.state.searchInput + ".pdf");
+      });
+  }
 
   handleConfirm = () => {
       modelInstance.deleteSearchHistory(this.state.selected);
@@ -232,7 +261,23 @@ class MySearchesTable extends React.Component {
 
   handleRedirection = (event, id) => {
       if (event.target.tagName === "I") {
-          alert("Creating PDF file for download");
+        //getSearchInformation from firebase to create pdf
+        modelInstance.getSearchFromDB(id).then( (searchObject) => {
+          console.log(searchObject);
+          this.setState({
+            searchInput: searchObject.query,
+            tweetAmount: searchObject.amount,
+            placeName: searchObject.location,
+            date: searchObject.until,
+            pos: searchObject.positive,
+            neg: searchObject.negative, 
+          });                  
+        }).catch( (err) => {
+          console.log(err);
+        });
+        this.setState({
+          openPDFModal: true
+        });
       } else if (event.target.tagName !== "INPUT" && !event.target.getAttribute("class").includes("checkbox")) {
         //get search query from firebase
         modelInstance.getSearchFromDB(id).then( (searchObject) => {
@@ -296,6 +341,26 @@ class MySearchesTable extends React.Component {
     const { data, selected, rowsPerPage, page } = this.state;
     let tableBody;
     let emptyRows;
+    let width = this.props.containerWidth / 3;
+    let height = width / 2;
+    let minViewportSize = Math.min(width, height);
+    // This sets the radius of the pie chart to fit within
+    // the current window size, with some additional padding
+    let radius = (minViewportSize * 1.1) / 2;
+    // Centers the pie chart
+    let x = width / 2;
+    let y = height / 2;
+    let pieChart = <svg width="120%" height="120%">
+                      <SentimentPie x={x}
+                                    y={y}
+                                    innerRadius={radius * .00}
+                                    outerRadius={radius}
+                                    cornerRadius={2}
+                                    padAngle={.00}
+                                    data={[this.state.pos, this.state.neg]}
+                        />
+                    </svg>
+    
     switch(this.state.status){
       case "LOADING":
     tableBody = (
@@ -385,6 +450,16 @@ class MySearchesTable extends React.Component {
           onChangePage={this.handleChangePage}
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
         />
+        <CreatePDFModal
+          open={this.state.openPDFModal}
+          handleClose={this.handleClosePDFModal}
+          handleSavePDF={this.handlePDFCreation}
+          searchInput={this.state.searchInput}
+          tweetAmount={this.state.tweetAmount}
+          placeName={this.state.placeName}
+          date={this.state.until}
+          pieChart={pieChart}
+        />
       </Paper>
     );
   }
@@ -394,4 +469,5 @@ MySearchesTable.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
+MySearchesTable = Dimensions()(MySearchesTable);
 export default withStyles(styles)(MySearchesTable);

@@ -61,6 +61,18 @@ class CreatePDFModal extends React.Component {
                         <Col xs={6} className="tweets-info-value">{this.props.date}</Col>
                     </Row>
                     {this.props.pieChart}
+                    <div className="pos">
+                      <i className="material-icons negative">
+                        fiber_manual_record
+                      </i>
+                      negative tweets
+                    </div>
+                    <div className="neg">
+                      <i className="material-icons positive">
+                        fiber_manual_record
+                      </i>
+                      positive tweets
+                    </div>
                 </div>
             </div>
             <Button onClick={this.props.handleSavePDF} color="secondary">
