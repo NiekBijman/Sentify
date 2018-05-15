@@ -161,14 +161,6 @@ const Model = function () {
     });
    }
 
-   this.anonymousSignIn = function () {
-     firebase.auth().signInAnonymously().catch(function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // ...
-});
-   }
 
   this.googleSignIn = function () {
     var provider = new firebase.auth.GoogleAuthProvider();
