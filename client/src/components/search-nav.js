@@ -20,8 +20,8 @@ class SearchNav extends React.Component {
   handleChange = (event) => {
     if (event.target.innerText === "SENTIMENT" && this.state.value !== 0)
       window.location.assign('/discover');
-    else if (event.target.innerText === "LIVE TWEETS" && this.state.value !== 1)
-      window.location.assign('/live-tweets');
+    // else if (event.target.innerText === "LIVE TWEETS" && this.state.value !== 1)
+    //   window.location.assign('/live-tweets');
     else if (event.target.innerText === "MY SEARCHES" && this.state.value !== 2)
       window.location.assign('/my-searches');
   };
@@ -41,7 +41,7 @@ class SearchNav extends React.Component {
             scrollButtons="auto"
           >
             <Tab label="SENTIMENT" />
-            <Tab label="LIVE TWEETS" />
+            {/* <Tab label="LIVE TWEETS" /> */}
             <Tab label="MY SEARCHES" />
           </Tabs>
         </AppBar>

@@ -327,11 +327,6 @@ const Model = function () {
 
   this.setPlaceName = function(place){
     placeName = place;
-    // console.log(suggestions.places);
-    // placeOptions = suggestions.places.map(data => {
-    //     // return {label: data.full_name};
-    //     return {value: data.full_name, label: data.full_name}
-    // });
     notifyObservers('placeNameSet');
   }
 
@@ -347,8 +342,26 @@ const Model = function () {
     // Number of API calls remaining (renews each 15 minutes)
     console.log('Search API calls remaining: ' + results.resp.headers["x-rate-limit-remaining"]); //.x-rate-limit-remaining ["x-rate-limit-remaining"]
 
+    // First we filter our retweets to avoid duplicate tweets in the Sentiment Analysis
+    // console.log(results);
+    // tweets = results.data.statuses.map(function(tweet){
+    //   if(tweet.retweeted_status === null){
+    //     return tweets.push(tweet);
+    //   }
+    // });
+    // console.log(results.data.statuses.map(tweet=>{tweet.retweeted_status}));
+    //
+    // console.log(results);
+    //
+    // tweets = results.data.statuses.filter(tweet => {
+    //   tweet.retweeted_status //=== undefined
+    // });
+    //
+    // console.log(tweets);
+
     //Set twitter responses
     tweets = results.data.statuses;
+
     allTweets = tweets;
     chartPolarity = 'All';
     // Set tweet bucket to draw randoms from

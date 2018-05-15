@@ -21,7 +21,7 @@ import Tooltip from 'material-ui/Tooltip';
 class Sentiment extends Component {
   constructor(props){
     super(props);
-    let tweetID = modelInstance.getMostPopularTweet();
+    // let tweetID = ;
     let withSentiment;
     if (this.props.hasNecessaryURLParams()){
       withSentiment = Number(this.props.total) - Number(this.props.noOfNeutral);
@@ -40,7 +40,7 @@ class Sentiment extends Component {
       tweetState: 'SINGLE/NONE',
       until: '',
       geoLocated: null,
-      tweetID: tweetID+"",
+      tweetID: (modelInstance.getMostPopularTweet() !== null) ? modelInstance.getMostPopularTweet()+"" : '692527862369357824',
       openPDFModal: false,
       notifications: 'INITIAL',
       openNotification: false,
@@ -357,7 +357,7 @@ class Sentiment extends Component {
               <p>Info</p>
             </Hidden>
             <div className="tweets-info">
-                <Button className="sentiment-save" onClick={this.saveSearch} variant="raised" color="primary">Save Search</Button>
+                <Button className="sentiment-save" onClick={this.saveSearch} variant="outlined" color="primary">Save Search</Button>
               <Row>
                 <Col xs={6} className="tweets-info-title">Search:</Col>
                 <Col xs={6} className="tweets-info-value">{this.state.searchInput}</Col>
