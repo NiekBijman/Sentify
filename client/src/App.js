@@ -21,7 +21,7 @@ class App extends Component {
         <div className="App">
           <header className="App-header">
             {/* <Route path="/login" component={Login}/> */}
-            <Route exact path="/" component={Welcome}/>
+            <Route exact path="/" component={Discover}/>
             <Route path="/discover/:query?/:pos?/:neg?/:noOfNeu?/:tot?/:until?" component={Discover}/>
             <Route path="/my-searches" component={MySearches}/>
             {/* <Route path="/database" component={Database}/> */}

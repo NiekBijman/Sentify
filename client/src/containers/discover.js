@@ -57,12 +57,12 @@ class DiscoverContainer extends React.Component {
 
     componentDidMount() {
       let query = this.props.match.params.query;
-      console.log("query: "+query);
+      // console.log("query: "+query);
       if (query !== undefined){
-        console.log("set search");
+        // console.log("set search");
         modelInstance.setSearch(query, true);
       }
-      console.log(this.props.match.params);
+      // console.log(this.props.match.params);
       if (this.hasNecessaryURLParams()){
         this.setState({
           status: "LOADED"

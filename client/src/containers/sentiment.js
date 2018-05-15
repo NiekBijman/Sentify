@@ -21,16 +21,15 @@ import Tooltip from 'material-ui/Tooltip';
 class Sentiment extends Component {
   constructor(props){
     super(props);
-    // let tweetID = ;
     let withSentiment;
     if (this.props.hasNecessaryURLParams()){
       withSentiment = Number(this.props.total) - Number(this.props.noOfNeutral);
     }
-    console.log("props:");
-    console.log(this.props);
+    // console.log("props:");
+    // console.log(this.props);
     this.state = {
-      positive: (this.props.positive !== null) ? this.props.positive : 60,
-      negative:  (this.props.negative !== null) ? this.props.negative : 40,
+      positive: (this.props.positive !== undefined) ? this.props.positive : 60,
+      negative:  (this.props.negative !== undefined) ? this.props.negative : 40,
       noOfNeutral: this.props.noOfNeutral,
       total: this.props.total,
       withSentiment: this.props.hasNecessaryURLParams() ? withSentiment+"/"+this.props.total : null,
@@ -102,12 +101,13 @@ class Sentiment extends Component {
       let sentiment = modelInstance.getSentimentData();
 
       this.setState({
-        positive: (sentiment !== null) ? Math.round(sentiment.positive) : 60,
-        negative:  (sentiment !== null) ? Math.round(sentiment.negative) : 40,
+        positive: (sentiment !== null) ? Math.round(sentiment.positive) : null,
+        negative:  (sentiment !== null) ? Math.round(sentiment.negative) : null,
         noOfNeutral: (sentiment !== null) ?  Math.round(sentiment.noOfNeutral) : null,
         withSentiment:  (sentiment !== null) ? ( Math.round(sentiment.total - sentiment.noOfNeutral) + '/' + sentiment.total) : 0+"/"+0,
         total: (sentiment !== null) ? sentiment.total : null
       });
+      console.log(this.state.positive)
     }
 
     if(details==='userLocationsSet'){
@@ -123,73 +123,27 @@ class Sentiment extends Component {
       })
     }
 
-    if(details==='geoIDSet'){
-      this.setState({
-        tweetID: modelInstance.getGeoTweetID()
-      })
-    }
+    if(details==='geoIDSet'){this.setState({tweetID: modelInstance.getGeoTweetID()})}
 
-    if(details === "dateSet"){
-      this.setState({
-        until: modelInstance.getDateString()
-      });
-    }
+    if(details === "dateSet"){this.setState({until: modelInstance.getDateString()});}
 
-    if(details==="placeNameSet"){
-      this.setState({
-        placeName: modelInstance.getPlaceName()
-      });
-    }
+    if(details==="placeNameSet"){this.setState({placeName: modelInstance.getPlaceName()});}
 
-    if(details ==='placeNameReset'){
-        this.setState({
-          placeName: ''
-        })
-    }
+    if(details ==='placeNameReset'){this.setState({placeName: ''})}
 
-    //Notifications
-    if(details==="networkError"){
-      this.setState({
-        notifications:'ERROR',
-        openNotification: true
-      });
-    }
 
-    if(details==="noTweetsFound"){
+    //NOTIFICATIONS
+    if(details==="networkError"){this.setState({notifications:'ERROR',openNotification: true});}
 
-      this.setState({
-        notifications:'NO_TWEETS',
-        openNotification: true
-      });
-    }
+    if(details==="noTweetsFound"){this.setState({notifications:'NO_TWEETS',openNotification: true});}
 
-    if(details==="noSearchInputGiven"){
-      // Notify user that he/she needs to input a search
-      this.setState({
-        notifications: "NO_SEARCH",
-        openNotification: true
-      });
-    }
+    if(details==="noSearchInputGiven"){this.setState({notifications: "NO_SEARCH",openNotification: true});}
 
-    if(details==="rateLimited"){
-      this.setState({
-        notifications:'RATE_LIMITED',
-        openNotification: true
-      });
-    }
+    if(details==="rateLimited"){this.setState({notifications:'RATE_LIMITED',openNotification: true});}
 
-    if(details==="locationNotFound"){
-      this.setState({
-        notifications:'NO_LOCATION',
-        openNotification: true
-      });
-    }
-    if(details==="signInFailed"){
-      this.setState({
-        notifications:'SIGN_IN_FAILED',
-        openNotification: true
-      });
-    }
+    if(details==="locationNotFound"){this.setState({notifications:'NO_LOCATION',openNotification: true});}
+
+    if(details==="signInFailed"){this.setState({notifications:'SIGN_IN_FAILED',openNotification: true});}
   }
 
   handleTweetLoadError = event => {
@@ -357,7 +311,7 @@ class Sentiment extends Component {
               <p>Info</p>
             </Hidden>
             <div className="tweets-info">
-                <Button className="sentiment-save" onClick={this.saveSearch} variant="outlined" color="primary">Save Search</Button>
+                <Button className="sentiment-save" onClick={this.saveSearch} variant="flat" color="primary">Save Search</Button>
               <Row>
                 <Col xs={6} className="tweets-info-title">Search:</Col>
                 <Col xs={6} className="tweets-info-value">{this.state.searchInput}</Col>
