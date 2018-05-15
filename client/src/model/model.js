@@ -105,7 +105,6 @@ const Model = function () {
         user = null;
       }
     });
-
   }
 
   /*
@@ -180,6 +179,19 @@ const Model = function () {
         // Sign-out successful.
       }).catch(function(error) {
         // An error happened.
+    });
+  }
+
+  this.getSignInStatus = function () {
+    return new Promise((resolve, reject)=>{
+      firebase.auth().onAuthStateChanged(function(user){
+        if (user){
+          resolve(true);
+        }
+        else {
+          resolve(false);
+        }
+      });
     });
   }
 

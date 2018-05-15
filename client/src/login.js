@@ -11,7 +11,7 @@ export default class Login extends Component {
     super(props);
     this.update = this.update.bind(this);
     this.state = {
-      userName: 'Sign in',
+      userName: '',
       anchorEl: null,
       logged_in: false
     }
@@ -19,6 +19,13 @@ export default class Login extends Component {
 
   componentDidMount() {
     modelInstance.addObserver(this);
+    modelInstance.getSignInStatus().then((loggedIn)=>{
+      this.setState({
+        userName: loggedIn ? modelInstance.getUserName() : "Sign in",
+        logged_in: loggedIn
+
+      });
+    });
   }
 
   handleClick = event => {
