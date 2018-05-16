@@ -196,7 +196,8 @@ const Model = function () {
 
   this.getUserName = function () {
     var user = firebase.auth().currentUser;
-    if (user) {
+    console.log(user);
+    if (user !== null) {
       return (user.displayName.toString());
     }
     else{
@@ -281,7 +282,7 @@ const Model = function () {
     else{
       notifyObservers("noSearchInputGiven");
     }
-    console.log(tweetIndex)
+    // console.log(tweetIndex)
   }
 
   this.getChartPolarity = () => {

@@ -15,15 +15,15 @@ const styles = theme => ({
 
 class SearchNav extends React.Component {
   state = {
-    value: this.props.page,
+    page: this.props.page,
   };
 
   handleChange = (event) => {
     var buttonTitle = event.target.innerText;
     modelInstance.getSignInStatus().then((loggedIn)=>{
-      if (buttonTitle === "SENTIMENT" && this.state.value !== 0)
+      if (buttonTitle === "SENTIMENT" && this.state.page !== 0)
         window.location.assign('/discover');
-      else if (buttonTitle === "MY SEARCHES" && this.state.value !== 2 && loggedIn){
+      else if (buttonTitle === "MY SEARCHES" && this.state.page !== 2 && loggedIn){
         //trigger notification "please sign in to visit this page"
         window.location.assign('/my-searches');
       }
@@ -37,7 +37,7 @@ class SearchNav extends React.Component {
       <div className={classes.root} id="search-nav">
         <AppBar position="static" color="default">
           <Tabs
-            value={this.state.value}
+            value={this.state.page}
             onChange={this.handleChange}
             indicatorColor="primary"
             textColor="primary"

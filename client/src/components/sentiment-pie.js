@@ -6,7 +6,7 @@ import d3 from 'd3';
 class SentimentPie extends React.Component {
   constructor(props) {
     super(props);
-    this.colorScale = ['#A5C05B', '#D24136'] ;// ['#f44842', '#424242'] 
+    this.colorScale = ['#A5C05B', '#D24136'] ;// ['#f44842', '#424242']
     this.renderSlice = this.renderSlice.bind(this);
   }
 
@@ -21,7 +21,7 @@ class SentimentPie extends React.Component {
   }
 
   renderSlice(value, i) {
-    let {innerRadius, outerRadius, cornerRadius, padAngle} = this.props;
+    let {innerRadius, outerRadius, cornerRadius, padAngle, status} = this.props;
     return (
       <SentimentSlice key={i}
                       innerRadius={innerRadius}
@@ -31,7 +31,8 @@ class SentimentPie extends React.Component {
                       value={value}
                       sentiment={i}
                       label={value.data +" %"}
-                      fill={this.colorScale[i]} />
+                      fill={this.colorScale[i]}
+                      status = {status}/>
     );
   }
 }

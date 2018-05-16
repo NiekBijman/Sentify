@@ -50,7 +50,8 @@ class SentimentSlice extends React.Component {
     render() {
         let {value, label, fill, innerRadius = 0, outerRadius, cornerRadius, padAngle, onChartClick, sentiment} = this.props;
         let polarity = '';
-        if (this.state.isSelected) {
+        let percentage, chartFill, tooltipText = null;
+        if (this.state.isSelected && (this.props.status !== 'NULL')) {
             outerRadius *= 1.1;
         }
         if (this.state.isHovered) {
@@ -72,19 +73,31 @@ class SentimentSlice extends React.Component {
             .cornerRadius(cornerRadius)
             .padAngle(padAngle);
 
+      switch (this.props.status) {
+        case 'NULL' :
+          chartFill ="url(#GraphGradient)"
+          percentage = null;
+          tooltipText = "Sentiment Chart"
+          break;
+        case 'LOADED':
+          chartFill = fill
+          percentage = label;
+          tooltipText = polarity + " tweets"
+          break;
+        }
         return (
-          <Tooltip open={!this.state.isSelected && this.state.isHovered} id="tooltip-icon" title={polarity + " tweets"} placement="right">
+          <Tooltip open={!this.state.isSelected && this.state.isHovered} id="tooltip-icon" title={tooltipText} placement="right">
             <g onMouseOver={this.onMouseOver}
                onMouseOut={this.onMouseOut}
                className='pieSlice'
 
                >
-                <path onClick={() => {this.handleClick(polarity)}}  d={arc(value)} fill={fill} /> {/*,*/}
+                <path onClick={() => {this.handleClick(polarity)}}  d={arc(value)} fill={chartFill} /> {/* */}
                 <text transform={`translate(${arc.centroid(value)})`}
                     dy=".35em"
                     textAnchor="middle"
                     fill="white">
-                {label}
+                {percentage}
                 </text>
             </g>
           </Tooltip>

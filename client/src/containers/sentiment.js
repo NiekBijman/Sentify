@@ -220,7 +220,24 @@ class Sentiment extends Component {
 
     switch (this.props.status) {
       case 'NULL' :
-        pieChart = null;
+        pieChart =
+          <svg >
+            <defs>
+                <linearGradient id="GraphGradient">
+                    <stop offset="5%"  stopColor='#A5C05B'/>
+                    <stop offset="95%" stopColor='#D24136'/>
+                </linearGradient>
+            </defs>
+            <SentimentPie x={x}
+                          y={y}
+                          innerRadius={radius * 0.95}
+                          outerRadius={radius}
+                          cornerRadius={2}
+                          padAngle={.02}
+                          data={[0,100]}
+                          status= {this.props.status}
+                        />
+          </svg>
         break;
 
       case 'INITIAL':
@@ -235,7 +252,9 @@ class Sentiment extends Component {
                               outerRadius={radius}
                               cornerRadius={2}
                               padAngle={.00}
-                              data={[this.state.positive, this.state.negative]}/>
+                              data={[this.state.positive, this.state.negative]}
+                              status= {this.props.status}
+                            />
               </svg>
         break;
     }
