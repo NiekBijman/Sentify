@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Tabs, { Tab } from 'material-ui/Tabs';
+import { modelInstance } from '../model/model';
 
 const styles = theme => ({
   root: {
@@ -18,10 +19,15 @@ class SearchNav extends React.Component {
   };
 
   handleChange = (event) => {
-    if (event.target.innerText === "SENTIMENT" && this.state.value !== 0)
-      window.location.assign('/discover');
-    else if (event.target.innerText === "MY SEARCHES" && this.state.value !== 2)
-      window.location.assign('/my-searches');
+    var buttonTitle = event.target.innerText;
+    modelInstance.getSignInStatus().then((loggedIn)=>{
+      if (buttonTitle === "SENTIMENT" && this.state.value !== 0)
+        window.location.assign('/discover');
+      else if (buttonTitle === "MY SEARCHES" && this.state.value !== 2 && loggedIn){
+        //trigger notification "please sign in to visit this page"
+        window.location.assign('/my-searches');
+      }
+    });
   };
 
   render() {

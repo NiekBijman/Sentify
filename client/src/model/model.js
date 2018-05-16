@@ -105,7 +105,6 @@ const Model = function () {
         user = null;
       }
     });
-
   }
 
   /*
@@ -161,14 +160,6 @@ const Model = function () {
     });
    }
 
-   this.anonymousSignIn = function () {
-     firebase.auth().signInAnonymously().catch(function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // ...
-});
-   }
 
   this.googleSignIn = function () {
     var provider = new firebase.auth.GoogleAuthProvider();
@@ -187,6 +178,19 @@ const Model = function () {
         // Sign-out successful.
       }).catch(function(error) {
         // An error happened.
+    });
+  }
+
+  this.getSignInStatus = function () {
+    return new Promise((resolve, reject)=>{
+      firebase.auth().onAuthStateChanged(function(user){
+        if (user){
+          resolve(true);
+        }
+        else {
+          resolve(false);
+        }
+      });
     });
   }
 
