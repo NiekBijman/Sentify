@@ -107,7 +107,6 @@ class Sentiment extends Component {
         withSentiment:  (sentiment !== null) ? ( Math.round(sentiment.total - sentiment.noOfNeutral) + '/' + sentiment.total) : 0+"/"+0,
         total: (sentiment !== null) ? sentiment.total : null
       });
-      console.log(this.state.positive)
     }
 
     if(details==='userLocationsSet'){
@@ -144,6 +143,9 @@ class Sentiment extends Component {
     if(details==="locationNotFound"){this.setState({notifications:'NO_LOCATION',openNotification: true});}
 
     if(details==="signInFailed"){this.setState({notifications:'SIGN_IN_FAILED',openNotification: true});}
+
+    if(details==="noSentimentFound"){this.setState({notifications:'NO_SENTIMENT',openNotification: true});}
+
   }
 
   handleTweetLoadError = event => {
@@ -261,6 +263,9 @@ class Sentiment extends Component {
       break;
       case 'SEARCH_SAVED':
       notification = <Notification text="Search saved" open={this.state.openNotification} handleClose={this.handleClose} />
+      break;
+      case 'NO_SENTIMENT':
+      notification = <Notification text="Tweets do not contain sentiment" open={this.state.openNotification} handleClose={this.handleClose} />
       break;
       case 'SIGN_IN_FAILED':
       notification = <Notification

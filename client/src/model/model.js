@@ -177,7 +177,6 @@ const Model = function () {
 
     }).catch(function(error) {
       if (error.code === "auth/web-storage-unsupported") {
-        console.log("fail XD");
         notifyObservers("signInFailed");
       }
     });
@@ -202,7 +201,6 @@ const Model = function () {
   }
 
   this.getMostPopularTweet = () => {
-    // console.log(tweets);
     let maxRetweets = 0;
     let mostPopularTweetId = null;
 
@@ -257,6 +255,8 @@ const Model = function () {
       }
       currentTweet = tweets[tweetIndex]
     }
+    console.log(maxTweets)
+    console.log(tweetIndex)
     return currentTweet
   }
 
@@ -277,6 +277,7 @@ const Model = function () {
     else{
       notifyObservers("noSearchInputGiven");
     }
+    console.log(tweetIndex)
   }
 
   this.getChartPolarity = () => {
@@ -356,35 +357,23 @@ const Model = function () {
     console.log('Search API calls remaining: ' + results.resp.headers["x-rate-limit-remaining"]); //.x-rate-limit-remaining ["x-rate-limit-remaining"]
 
     // First we filter our retweets to avoid duplicate tweets in the Sentiment Analysis
-    // console.log(results);
-    // tweets = results.data.statuses.map(function(tweet){
-    //   if(tweet.retweeted_status === null){
-    //     return tweets.push(tweet);
+    // tweets = results.data.statuses.filter(tweet => {
+    //   if (tweet.retweeted_status === undefined) {
+    //     return true;
+    //   }
+    //   else{
+    //     return false;
     //   }
     // });
-    // console.log(results.data.statuses.map(tweet=>{tweet.retweeted_status}));
-    //
-    // console.log(results);
-    //
-    // tweets = results.data.statuses.filter(tweet => {
-    //   tweet.retweeted_status //=== undefined
-    // });
-    //
-    // console.log(tweets);
-
-    //Set twitter responses
     tweets = results.data.statuses;
-
     allTweets = tweets;
     chartPolarity = 'All';
-    // Set tweet bucket to draw randoms from
-    tweetBucket = tweets.slice(0); // copying tweets array
-    tweetAmount = results.data.statuses.length;
+    tweetAmount = tweets.length;
     this.setUserLocations(results);
 
 
     //Build the object to POST to Sentiment Analysis
-    const tweetObject = results.data.statuses.map(function(tweet){
+    const tweetObject = tweets.map(function(tweet){
       return {"text": tweet.text, "query": searchInput, "retweet_count": tweet.retweet_count, "id_str": tweet.id_str}
     })
     tweetsJSON = JSON.stringify({data: tweetObject})
@@ -394,7 +383,6 @@ const Model = function () {
   this.setUserLocations = tweets => {
     var coordinates = tweets.data.statuses.reduce((coordinates, tweet) => {
       if(tweet.coordinates !== null){
-        // console.log(tweets.indexOf(tweet.id_str));
         coordinates.push({lng: tweet.coordinates.coordinates[0], lat: tweet.coordinates.coordinates[1], id: tweet.id_str}); //, index: tweets.indexOf(tweet)
       }
       return coordinates;
@@ -467,6 +455,10 @@ const Model = function () {
           break
       }
     })
+
+    if((pos && neg) === 0){
+      notifyObservers("noSentimentFound");
+    }
 
     sentiment.positive = (pos/(pos+neg))*100;
     sentiment.negative = (neg/(pos+neg))*100;
