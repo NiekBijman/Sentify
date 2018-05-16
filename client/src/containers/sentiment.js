@@ -146,6 +146,7 @@ class Sentiment extends Component {
 
     if(details==="noSentimentFound"){this.setState({notifications:'NO_SENTIMENT',openNotification: true});}
 
+    if(details==="pleaseLogIn"){this.setState({notifications:'LOGIN_REQUIRED',openNotification: true});}
   }
 
   handleTweetLoadError = event => {
@@ -285,6 +286,9 @@ class Sentiment extends Component {
       break;
       case 'NO_SENTIMENT':
       notification = <Notification text="Tweets do not contain sentiment" open={this.state.openNotification} handleClose={this.handleClose} />
+      break;
+      case 'LOGIN_REQUIRED':
+      notification = <Notification text="Please sign in to access my-Searches" open={this.state.openNotification} handleClose={this.handleClose} />
       break;
       case 'SIGN_IN_FAILED':
       notification = <Notification

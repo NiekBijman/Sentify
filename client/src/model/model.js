@@ -174,10 +174,13 @@ const Model = function () {
   }
 
   this.signOut = function () {
-    firebase.auth().signOut().then(function() {
+    firebase.auth().signOut().then( message => {
         // Sign-out successful.
+        console.log(message);
+        notifyObservers("signOutSucceeded");
       }).catch(function(error) {
         // An error happened.
+        console.log(error);
     });
   }
 
@@ -210,14 +213,21 @@ const Model = function () {
     let mostPopularTweetId = null;
 
     if (tweets !== null) {
-      tweets.forEach(function (tweet, index) {
-        if (tweet.retweet_count > maxRetweets) {
-          maxRetweets = tweet.retweet_count;
-          mostPopularTweetId = tweet.id_str;
-          tweetIndex = index;
-        }
-      });
-      return mostPopularTweetId;
+      if(tweets.length === 1 ) {
+        mostPopularTweetId = tweets[0].id_str
+        return mostPopularTweetId;
+      }
+      if(tweets.length > 1 ) {
+        tweets.forEach(function (tweet, index) {
+          if (tweet.retweet_count > maxRetweets) {
+            maxRetweets = tweet.retweet_count;
+            mostPopularTweetId = tweet.id_str;
+            tweetIndex = index;
+            console.log(tweet);
+          }
+        });
+        return mostPopularTweetId;
+      }
     }
     else{
       return null
@@ -370,6 +380,7 @@ const Model = function () {
     //     return false;
     //   }
     // });
+    console.log(results);
     tweets = results.data.statuses;
     allTweets = tweets;
     chartPolarity = 'All';
@@ -461,7 +472,7 @@ const Model = function () {
       }
     })
 
-    if((pos && neg) === 0){
+    if(pos === 0 && neg === 0){
       notifyObservers("noSentimentFound");
     }
 
@@ -501,6 +512,10 @@ const Model = function () {
       }
       if(error === 'NO_TWEETS'){
         notifyObservers('noTweetsFound');
+        return
+      }
+      if(error === 'LOGIN_REQUIRED'){
+        notifyObservers('pleaseLogIn');
         return
       }
     }
