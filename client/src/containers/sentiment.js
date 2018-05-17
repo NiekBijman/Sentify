@@ -16,30 +16,36 @@ import jsPDF from 'jspdf';
 import NavigateBefore from '@material-ui/icons/NavigateBefore';
 import NavigateNext from '@material-ui/icons/NavigateNext';
 import Tooltip from 'material-ui/Tooltip';
+import { isNull } from 'util';
 
 
 class Sentiment extends Component {
   constructor(props){
     super(props);
-    let withSentiment;
-    if (this.props.hasNecessaryURLParams()){
-      withSentiment = Number(this.props.total) - Number(this.props.noOfNeutral);
-    }
     // console.log("props:");
     // console.log(this.props);
+    let withSentiment = (this.props.total - this.props.noOfNeutral);
+    let tweetID;
+    if (this.props.status === "LOADED"){
+      tweetID = null;
+    }else if(modelInstance.getMostPopularTweet() !== null){
+      tweetID = modelInstance.getMostPopularTweet()+"";
+    }else{
+      tweetID = "996379393864892417";
+    }
     this.state = {
-      positive: (this.props.positive !== undefined) ? this.props.positive : 60,
-      negative:  (this.props.negative !== undefined) ? this.props.negative : 40,
+      positive: this.props.positive,
+      negative:  this.props.negative,
       noOfNeutral: this.props.noOfNeutral,
       total: this.props.total,
-      withSentiment: this.props.hasNecessaryURLParams() ? withSentiment+"/"+this.props.total : null,
-      searchInput: modelInstance.getSearch(),
-      placeName: modelInstance.getPlaceName(),
+      withSentiment: !isNaN(withSentiment) && this.props.total !== undefined ? withSentiment+"/"+this.props.total : null,
+      searchInput: this.props.query,
+      placeName: this.props.placeName,
       tweetAmount: modelInstance.getTweetAmount(),
       tweetState: 'SINGLE/NONE',
-      until: '',
+      until: this.props.until,
       geoLocated: null,
-      tweetID: (modelInstance.getMostPopularTweet() !== null) ? modelInstance.getMostPopularTweet()+"" : '996379393864892417',
+      tweetID: tweetID,
       openPDFModal: false,
       notifications: 'INITIAL',
       openNotification: false,
@@ -110,7 +116,9 @@ class Sentiment extends Component {
         negative:  (sentiment !== null) ? Math.round(sentiment.negative) : null,
         noOfNeutral: (sentiment !== null) ?  Math.round(sentiment.noOfNeutral) : null,
         withSentiment:  (sentiment !== null) ? ( Math.round(sentiment.total - sentiment.noOfNeutral) + '/' + sentiment.total) : 0+"/"+0,
-        total: (sentiment !== null) ? sentiment.total : null
+        total: (sentiment !== null) ? sentiment.total : null,
+        placeName: modelInstance.getPlaceName(),
+        until: modelInstance.getDateString()
       });
     }
 

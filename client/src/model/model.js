@@ -54,6 +54,17 @@ const Model = function () {
   //database instantiaton
   var database = firebase.database();
 
+  this.setSearchParams = function(searchObject) {
+    localStorage.setItem("searchObject", JSON.stringify(searchObject));
+  }
+
+  this.getSearchParams = function(){
+    let searchObjectStr = localStorage.getItem("searchObject");
+    let searchObject = JSON.parse(searchObjectStr);
+    localStorage.removeItem("searchObject");
+    return searchObject;
+  }
+
   /*
   * Inserts a search into the database
   */
