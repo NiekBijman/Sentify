@@ -17,7 +17,7 @@ class Search extends Component {
       searchSuggestion: 'Search for tweets here',
       anchorEl: null,
       page: 0,
-      placeName: "LOCATION", // === '' ? "LOCATION" : modelInstance.getPlaceName()
+      placeName: null, // === '' ? "LOCATION" : modelInstance.getPlaceName()
       placeOptions: modelInstance.getPlaceOptions(),
       searchInput: modelInstance.getSearch(),
       disabledDate: false
@@ -119,6 +119,8 @@ class Search extends Component {
       this.searchTweets();
     };
     if(details ==='placeNameSet'){
+      console.log("placeNameSet sets placename to");
+      console.log(modelInstance.getPlaceName());
       this.setState({
         placeName: modelInstance.getPlaceName(), //.toUpperCase()
         disabledDate: false,
@@ -143,7 +145,6 @@ class Search extends Component {
       });
     };
     if(details === 'searchInputSet-NoSearch'){
-      console.log("disabling date");
       this.setState({
         searchInput: modelInstance.getSearch(),
         disabledDate: true,

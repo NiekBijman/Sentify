@@ -57,10 +57,11 @@ class DiscoverContainer extends React.Component {
     }
 
     componentDidMount() {
-      let searchObject = modelInstance.getSearchParams(); // function that gets search params and eliminates them from localStorage
+      let searchObject = modelInstance.getMySearchesParams(); // function that gets search params and eliminates them from localStorage
       console.log("searchObject:");
       console.log(searchObject);
       if(searchObject){
+        console.log("had search object");
         this.setState({
           status: "LOADED",
           positive: searchObject.positive,
@@ -73,9 +74,12 @@ class DiscoverContainer extends React.Component {
         });
         modelInstance.setSearch(searchObject.query, true);
         modelInstance.setPlaceName(searchObject.location, true);
+      }else{
+        console.log("didn't have search obj");
+        modelInstance.setSearchParamsFromLocalStorage();
+        modelInstance.searchTweets();
       }
     }
-
   
     handleStatusChange = newStatus => {
       this.setState({

@@ -25,8 +25,11 @@ class Map extends React.Component {
 
   componentDidMount() {
       modelInstance.addObserver(this);
-      this.mapBox(this.state.coordinates, this.state.zoom);
-
+      // check if there are coordinates in localStorage
+      let coords = modelInstance.getStoredCoordinates();
+      if (coords){
+        this.mapBox(coords, 7);
+      }
   }
 
   mapBox = (coordinates, zoom) => {
