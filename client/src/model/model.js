@@ -188,7 +188,7 @@ const Model = function () {
     return new Promise((resolve, reject)=>{
       firebase.auth().onAuthStateChanged(function(user){
         if (user){
-          resolve(true);
+          resolve(user);
         }
         else {
           resolve(false);
@@ -199,9 +199,13 @@ const Model = function () {
 
   this.getUserName = function () {
     var user = firebase.auth().currentUser;
+    console.log("user:");
     console.log(user);
     if (user !== null) {
-      return (user.displayName.toString());
+      if(user.displayName !== null){
+        return (user.displayName.toString());
+      }
+      return "Logged In";
     }
     else{
       return "Sign in";

@@ -67,6 +67,11 @@ class Sentiment extends Component {
       this.setState({
         searchInput: modelInstance.getSearch()
       });
+      if (modelInstance.getSearch() === ""){
+        this.setState({
+          withSentiment: null
+        });
+      }
     }
 
     if(details ==='tweetsSet'){

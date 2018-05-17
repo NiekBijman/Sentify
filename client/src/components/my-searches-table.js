@@ -403,7 +403,9 @@ class MySearchesTable extends React.Component {
             );
           });
         }else{
-          tableBody = null;
+          tableBody = (<TableRow>
+                        <TableCell colSpan="6">No searches have been saved yet. Go save some!</TableCell>
+                      </TableRow>);
           emptyRows = rowsPerPage;
         }
         break;

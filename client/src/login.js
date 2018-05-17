@@ -19,10 +19,10 @@ export default class Login extends Component {
 
   componentDidMount() {
     modelInstance.addObserver(this);
-    modelInstance.getSignInStatus().then((loggedIn)=>{
+    modelInstance.getSignInStatus().then((user)=>{
       this.setState({
-        userName: loggedIn ? modelInstance.getUserName() : "Sign in",
-        logged_in: loggedIn
+        userName: user !== false ? user.displayName : "Sign in",
+        logged_in: user !== false ? true : false
 
       });
     });
