@@ -532,19 +532,6 @@ const Model = function () {
     return sentiment;
   }
 
-<<<<<<< HEAD
-  this.deleteSearchHistory = function(selectedSearches) {
-    /*
-    searchHistory.data = searchHistory.data.filter(function(el) {
-      return !selectedSearches.includes(el.id);
-    });
-    */
-    notifyObservers();
-  }
-
-
-=======
->>>>>>> 37256448a18fae8305a16ded6ade5b2efdfe4c2d
     this.setErrorMessages = function(error){
       if(error === 'RATE_LIMITED'){
         notifyObservers('rateLimited');

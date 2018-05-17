@@ -301,13 +301,8 @@ class MySearchesTable extends React.Component {
       */
      modelInstance.getSearchFromDB(id).then((searchObject) => {
       console.log(searchObject);
-<<<<<<< HEAD
       modelInstance.setMySearchesParams(searchObject); // Save search params to localStorage
       
-=======
-      modelInstance.setSearchParams(searchObject); // Save search params to localStorage
-
->>>>>>> 37256448a18fae8305a16ded6ade5b2efdfe4c2d
       window.location.assign("/discover");
      })
 
