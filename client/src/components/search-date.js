@@ -26,8 +26,10 @@ const fromToday = num => {
 };
 
 const SearchDate = props => {
-  const { classes,handleClose, anchorEl, click, dayChange } = props;
+  const { classes,handleClose, anchorEl, click, dayChange, disabled } = props;
   const ITEM_HEIGHT = 48;
+
+  console.log("got "+disabled);
   /*
   *  Sets dateString variable to a string that tells us how far back we are searching.
   *  Dates in the future will be treated as today.
@@ -55,6 +57,9 @@ const SearchDate = props => {
   }
   else{
     dateString = diffDays + " DAYS BACK";
+  }
+  if (disabled){
+    dateString = "";
   }
 
     return(
@@ -86,7 +91,7 @@ const SearchDate = props => {
         onClose={ () => handleClose() }
       >
         {/* {daysList} */}
-        <MenuItem onClick={ () => dayChange( fromToday(0) ) }>Today</MenuItem>
+        <MenuItem onClick={ () => dayChange( fromToday(0) ) } >Today</MenuItem>
         <MenuItem onClick={ () => dayChange( fromToday(-1) ) }>Yesterday</MenuItem>
         <MenuItem onClick={ () => dayChange( fromToday(-2) ) }>2 days ago</MenuItem>
         <MenuItem onClick={ () => dayChange( fromToday(-3) ) }>3 days ago</MenuItem>

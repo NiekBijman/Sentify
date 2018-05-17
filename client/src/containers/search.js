@@ -20,15 +20,13 @@ class Search extends Component {
       placeName: "LOCATION", // === '' ? "LOCATION" : modelInstance.getPlaceName()
       placeOptions: modelInstance.getPlaceOptions(),
       searchInput: modelInstance.getSearch(),
-    }
+      disabledDate: false
+    };
     // Defining debounce is needed in constructor https://goo.gl/3D3vdf
     this.searchTweets = debounce(500, this.searchTweets);
   }
 
   componentDidMount() {
-    // check if url id param was provided
-
-
     modelInstance.addObserver(this);
     //this.searchTweets();
   }
@@ -38,7 +36,10 @@ class Search extends Component {
   };
 
   onDayChange = date => {
-    this.setState({ anchorEl: null });
+    this.setState({ 
+      anchorEl: null,
+      disabledDate: false
+    });
     modelInstance.setDate(date);
     this.searchTweets();
   };
@@ -112,26 +113,42 @@ class Search extends Component {
 
   update(details){
     if(details ==='geoCodeSet' && modelInstance.getGeocode() !== ''){
+      this.setState({
+        disabledDate: false
+      });
       this.searchTweets();
-    }
+    };
     if(details ==='placeNameSet'){
       this.setState({
         placeName: modelInstance.getPlaceName(), //.toUpperCase()
-      })
+        disabledDate: false,
+      });
+    };
+    if(details === 'placeNameSet-NoSearch'){
+      this.setState({
+        placeName: modelInstance.getPlaceName(),
+      });
     }
     if(details ==='placeNameReset'){ // && modelInstance.getSearch() !== ''
         this.searchTweets();
         this.setState({
           placeName: "LOCATION", //.toUpperCase()
         })
-
-    }
+    };
     if(details === 'searchInputSet'){
       this.searchTweets();
       this.setState({
-        searchInput: modelInstance.getSearch()
-      })
-    }
+        searchInput: modelInstance.getSearch(),
+        disabledDate: false,
+      });
+    };
+    if(details === 'searchInputSet-NoSearch'){
+      console.log("disabling date");
+      this.setState({
+        searchInput: modelInstance.getSearch(),
+        disabledDate: true,
+      });
+    };
   }
 
   render(){
@@ -146,7 +163,7 @@ class Search extends Component {
               <p>SINCE</p>
             </Col>
             <Col xs={3} sm={3} md={3} className='date'>
-              <SearchDate handleClose={this.handleClose} anchorEl={this.state.anchorEl} click={this.handleClick} dayChange={this.onDayChange}/>
+              <SearchDate handleClose={this.handleClose} anchorEl={this.state.anchorEl} click={this.handleClick} dayChange={this.onDayChange} disabled={this.state.disabledDate}/>
             </Col>
             <Col xs={2} sm={2} md={2} className='text'>
               <p>LOCATION</p>
