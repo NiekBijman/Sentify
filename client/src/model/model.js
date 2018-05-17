@@ -336,6 +336,7 @@ const Model = function () {
   this.setSearch = function(search, noNotification){
     searchInput = search;
     if(noNotification){
+      notifyObservers("searchInputSet-NoSearch");
       return;
     }
     notifyObservers("searchInputSet");
@@ -369,8 +370,12 @@ const Model = function () {
     longitude = lng;
   }
 
-  this.setPlaceName = function(place){
+  this.setPlaceName = function(place, noNotification){
     placeName = place;
+    if(noNotification){
+      notifyObservers("placeNameSet-NoSearch");
+      return;
+    }
     notifyObservers('placeNameSet');
   }
 
@@ -499,6 +504,8 @@ const Model = function () {
   }
 
   this.deleteSearchHistory = function(selectedSearches) {
+    console.log("selectedSearches");
+    console.log(selectedSearches);
     /*
     searchHistory.data = searchHistory.data.filter(function(el) {
       return !selectedSearches.includes(el.id);

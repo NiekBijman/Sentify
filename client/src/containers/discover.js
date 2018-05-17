@@ -63,15 +63,16 @@ class DiscoverContainer extends React.Component {
       if(searchObject){
         this.setState({
           status: "LOADED",
-          searchInput: searchObject.query,
           positive: searchObject.positive,
           negative: searchObject.negative,
           total: searchObject.total,
           noOfNeutral: searchObject.noOfNeutral,
           until: searchObject.until,
           placeName: searchObject.location,
-          
+          searchInput: searchObject.query
         });
+        modelInstance.setSearch(searchObject.query, true);
+        modelInstance.setPlaceName(searchObject.location, true);
       }
     }
 
@@ -152,7 +153,7 @@ class DiscoverContainer extends React.Component {
                       <Login toggleSteps={this.toggleSteps.bind(this)}/>
                   </div>
                   <div className='container-search'>
-                    <Search handleStatusChange={this.handleStatusChange}/>
+                    <Search handleStatusChange={this.handleStatusChange} searchInput={this.state.searchInput}/>
                   </div>
               </div>
               <div className="container-discover-bottom">
