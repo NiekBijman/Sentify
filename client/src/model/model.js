@@ -189,6 +189,7 @@ const Model = function () {
       notifyObservers("signInSuccess");
 
     }).catch(function(error) {
+      console.log(error.message);
       if (error.code === "auth/web-storage-unsupported") {
         notifyObservers("signInFailed");
       }
@@ -220,18 +221,16 @@ const Model = function () {
   }
 
   this.getUserName = function () {
-    var user = firebase.auth().currentUser;
-    console.log("user:");
-    console.log(user);
-    if (user !== null) {
-      if(user.displayName !== null){
-        return (user.displayName.toString());
-      }
-      return "Logged In";
-    }
-    else{
-      return "Sign in";
-    }
+    return new Promise((resolve)=>{
+      firebase.auth().onAuthStateChanged(function(user){
+        if (user){
+          resolve(user.displayName.toString());
+        }
+        else {
+          resolve("Sign in");
+        }
+      });
+    });
   }
 
   this.getMostPopularTweet = () => {

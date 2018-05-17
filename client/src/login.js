@@ -53,9 +53,11 @@ export default class Login extends Component {
 
   update(details){
     if (details === "signInSuccess") {
-      this.setState({
-        userName: modelInstance.getUserName(),
-        logged_in: true
+      modelInstance.getUserName().then(name => {
+        this.setState({
+          userName: name,
+          logged_in: true
+        });
       });
     }
   }
