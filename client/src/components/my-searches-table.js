@@ -267,42 +267,52 @@ class MySearchesTable extends React.Component {
   };
 
   handleRedirection = (event, id) => {
-      if (event.target.tagName === "I") {
-        //getSearchInformation from firebase to create pdf
-        modelInstance.getSearchFromDB(id).then( (searchObject) => {
-          console.log(searchObject);
-          this.setState({
-            searchInput: searchObject.query,
-            tweetAmount: searchObject.amount,
-            placeName: searchObject.location,
-            date: searchObject.until,
-            pos: searchObject.positive,
-            neg: searchObject.negative,
-          });
-        }).catch( (err) => {
-          console.log(err);
-        });
+    if (event.target.tagName === "I") {
+      //getSearchInformation from firebase to create pdf
+      modelInstance.getSearchFromDB(id).then( (searchObject) => {
+        console.log(searchObject);
         this.setState({
-          openPDFModal: true
+          searchInput: searchObject.query,
+          tweetAmount: searchObject.amount,
+          placeName: searchObject.location,
+          date: searchObject.until,
+          pos: searchObject.positive,
+          neg: searchObject.negative,
         });
-      } else if (event.target.tagName !== "INPUT" && !event.target.getAttribute("class").includes("checkbox")) {
-        //get search query from firebase
-        modelInstance.getSearchFromDB(id).then( (searchObject) => {
-          console.log(searchObject);
-          let query = searchObject.query;
-          let pos = searchObject.positive;
-          let neg = searchObject.negative;
-          let noOfNeu = searchObject.noOfNeutral;
-          let tot = searchObject.total;
-          let withSentiment = searchObject.withSentiment;
-          let until = searchObject.until;
+      }).catch( (err) => {
+        console.log(err);
+      });
+      this.setState({
+        openPDFModal: true
+      });
+    } else if (event.target.tagName !== "INPUT" && !event.target.getAttribute("class").includes("checkbox")) {
+      //get search query from firebase
+      /*
+      modelInstance.getSearchFromDB(id).then( (searchObject) => {
+        console.log(searchObject);
+        let query = searchObject.query;
+        let pos = searchObject.positive;
+        let neg = searchObject.negative;
+        let noOfNeu = searchObject.noOfNeutral;
+        let tot = searchObject.total;
+        let withSentiment = searchObject.withSentiment;
+        let until = searchObject.until;
 
-          window.location.assign('/discover/'+encodeURIComponent(query)+"/"+pos+"/"+neg+"/"+noOfNeu+"/"+tot+"/"+until);
-        }).catch( (err) => {
-          console.log(err);
-        });
-      }
-  };
+        window.location.assign('/discover/'+encodeURIComponent(query)+"/"+pos+"/"+neg+"/"+noOfNeu+"/"+tot+"/"+until);
+      }).catch( (err) => {
+        console.log(err);
+      });
+      */
+     modelInstance.getSearchFromDB(id).then((searchObject) => {
+      console.log(searchObject);
+      modelInstance.setSearchParams(searchObject); // Save search params to localStorage
+
+      window.location.assign("/discover");
+     })
+
+    }
+};
+
 
   handleSelectAllClick = (event, checked) => {
     if (checked) {
@@ -411,7 +421,9 @@ class MySearchesTable extends React.Component {
             );
           });
         }else{
-          tableBody = null;
+          tableBody = (<TableRow>
+                        <TableCell colSpan="6">No searches have been saved yet. Go save some!</TableCell>
+                      </TableRow>);
           emptyRows = rowsPerPage;
         }
         break;

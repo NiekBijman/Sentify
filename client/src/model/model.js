@@ -54,6 +54,17 @@ const Model = function () {
   //database instantiaton
   var database = firebase.database();
 
+  this.setSearchParams = function(searchObject) {
+    localStorage.setItem("searchObject", JSON.stringify(searchObject));
+  }
+
+  this.getSearchParams = function(){
+    let searchObjectStr = localStorage.getItem("searchObject");
+    let searchObject = JSON.parse(searchObjectStr);
+    localStorage.removeItem("searchObject");
+    return searchObject;
+  }
+
   /*
   * Inserts a search into the database
   */
@@ -207,7 +218,7 @@ const Model = function () {
     return new Promise((resolve, reject)=>{
       firebase.auth().onAuthStateChanged(function(user){
         if (user){
-          resolve(true);
+          resolve(user);
         }
         else {
           resolve(false);
@@ -218,9 +229,13 @@ const Model = function () {
 
   this.getUserName = function () {
     var user = firebase.auth().currentUser;
+    console.log("user:");
     console.log(user);
     if (user !== null) {
-      return (user.displayName.toString());
+      if(user.displayName !== null){
+        return (user.displayName.toString());
+      }
+      return "Logged In";
     }
     else{
       return "Sign in";

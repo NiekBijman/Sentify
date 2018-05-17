@@ -18,6 +18,7 @@ class DiscoverContainer extends React.Component {
 
         this.state = {
             status: 'NULL',
+            searchInput: "",
 
             //Intro.js
             initialStep: 0,
@@ -56,32 +57,25 @@ class DiscoverContainer extends React.Component {
     }
 
     componentDidMount() {
-      let query = this.props.match.params.query;
-      // console.log("query: "+query);
-      if (query !== undefined){
-        // console.log("set search");
-        modelInstance.setSearch(query, true);
-      }
-      // console.log(this.props.match.params);
-      if (this.hasNecessaryURLParams()){
+      let searchObject = modelInstance.getSearchParams(); // function that gets search params and eliminates them from localStorage
+      console.log("searchObject:");
+      console.log(searchObject);
+      if(searchObject){
         this.setState({
-          status: "LOADED"
+          status: "LOADED",
+          searchInput: searchObject.query,
+          positive: searchObject.positive,
+          negative: searchObject.negative,
+          total: searchObject.total,
+          noOfNeutral: searchObject.noOfNeutral,
+          until: searchObject.until,
+          placeName: searchObject.location,
+          
         });
       }
     }
 
-    hasNecessaryURLParams = () => {
-      if (
-        this.props.match.params.pos !== undefined &&
-        this.props.match.params.neg !== undefined &&
-        this.props.match.params.tot !== undefined &&
-        this.props.match.params.noOfNeu !== undefined
-      ){
-        return true;
-      }
-      return false;
-    }
-
+  
     handleStatusChange = newStatus => {
       this.setState({
           status: newStatus
@@ -163,13 +157,13 @@ class DiscoverContainer extends React.Component {
               </div>
               <div className="container-discover-bottom">
                   <SentimentContainer query={this.state.searchInput}
-                                      hasNecessaryURLParams={this.hasNecessaryURLParams}
                                       status={this.state.status}
-                                      positive={this.props.match.params.pos}
-                                      negative={this.props.match.params.neg}
-                                      total={this.props.match.params.tot}
-                                      noOfNeutral={this.props.match.params.noOfNeu}
-                                      until={this.props.match.params.until}/>
+                                      positive={this.state.positive}
+                                      negative={this.state.negative}
+                                      total={this.state.total}
+                                      noOfNeutral={this.state.noOfNeutral}
+                                      until={this.state.until}
+                                      placeName={this.state.placeName}/>
               </div>
             </div>
 
