@@ -184,26 +184,8 @@ class MySearchesTable extends React.Component {
   }
 
   componentDidMount() {
-      modelInstance.getSearchHistory().then( (promises) => {
-        // get the resolve value of all promises in `promises`
-        // console.log("promises:");
-        // console.log(promises);
-        if (promises === null || promises === undefined){
-          this.setState({
-            data: null,
-            status: "LOADED"
-          });
-        }else{
-          Promise.all(promises).then(data => {
-            data = data.filter( val => val !== undefined);
-            this.setState({
-              data: data,
-              status: "LOADED"
-            });
-          });
-        }
-      });
-      modelInstance.addObserver(this);
+     modelInstance.addObserver(this);
+     this.getAllSearches();
   }
 
   componentWillUnmount() {
@@ -211,16 +193,29 @@ class MySearchesTable extends React.Component {
   }
 
   update = details => {
-      // this.setState({
-      //     data: modelInstance.getSearchHistory().data,
-      // });
       if(details === 'searchesDeleted'){
-        modelInstance.getSearchHistory();
-        this.setState({
-            data: modelInstance.getSearchHistory().data,
-        });
-        console.log(this.state.data)
+        this.getAllSearches();
       }
+  }
+
+  getAllSearches = () => {
+    modelInstance.getSearchHistory().then( (promises) => {
+      // get the resolve value of all promises in `promises`
+      if (promises === null || promises === undefined){
+        this.setState({
+          data: null,
+          status: "LOADED"
+        });
+      }else{
+        Promise.all(promises).then(data => {
+          data = data.filter( val => val !== undefined);
+          this.setState({
+            data: data,
+            status: "LOADED"
+          });
+        });
+      }
+    });
   }
 
   handleCloseModal = () => {
@@ -251,7 +246,8 @@ class MySearchesTable extends React.Component {
       console.log("Deletion completed");
       this.handleCloseModal();
       this.setState({
-        selected: []
+        selected: [],
+        status: 'LOADING'
       });
   }
 
