@@ -198,13 +198,19 @@ class Sentiment extends Component {
   saveSearch = () => {
     console.log("total in saveSearch:");
     console.log(this.state.total);
-
-    modelInstance.addSearchToDB(this.state.positive, this.state.negative, this.state.noOfNeutral, this.state.total);
-
-    this.setState({
-      notifications: 'SEARCH_SAVED',
-      openNotification: true,
-    })
+    if(this.state.searchInput !== '') {
+      modelInstance.addSearchToDB(this.state.positive, this.state.negative, this.state.noOfNeutral, this.state.total);
+      this.setState({
+        notifications: 'SEARCH_SAVED',
+        openNotification: true,
+      })
+    }
+    else{
+      this.setState({
+        notifications: 'NO_SEARCH',
+        openNotification: true,
+      })
+    }
   }
 
   render(){
