@@ -161,6 +161,25 @@ const Model = function () {
    }
 
 
+   this.deleteSearchHistory = function(selectedSearches, allSearches) {
+     console.log(selectedSearches);
+
+     console.log(allSearches);
+
+     //setup of path to reference the data
+     var searchesRef = database.ref("searches");
+     selectedSearches.forEach( search => {
+       searchesRef.child(search).remove()
+     });
+     notifyObservers("searchesDeleted");
+     allSearches.filter(search => {
+       return !selectedSearches.includes(search.selectedSearches);
+     });
+     return allSearches
+     // notifyObservers();
+   }
+
+
   this.googleSignIn = function () {
     var provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider).then(function(result) {
@@ -482,16 +501,6 @@ const Model = function () {
     sentiment.total = pos + neg + neu;
     return sentiment;
   }
-
-  this.deleteSearchHistory = function(selectedSearches) {
-    /*
-    searchHistory.data = searchHistory.data.filter(function(el) {
-      return !selectedSearches.includes(el.id);
-    });
-    */
-    notifyObservers();
-  }
-
 
     this.setErrorMessages = function(error){
       if(error === 'RATE_LIMITED'){

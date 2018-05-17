@@ -186,8 +186,8 @@ class MySearchesTable extends React.Component {
   componentDidMount() {
       modelInstance.getSearchHistory().then( (promises) => {
         // get the resolve value of all promises in `promises`
-        console.log("promises:");
-        console.log(promises);
+        // console.log("promises:");
+        // console.log(promises);
         if (promises === null || promises === undefined){
           this.setState({
             data: null,
@@ -210,10 +210,17 @@ class MySearchesTable extends React.Component {
       modelInstance.removeObserver(this);
   }
 
-  update() {
-      this.setState({
-          data: modelInstance.getSearchHistory().data,
-      });
+  update = details => {
+      // this.setState({
+      //     data: modelInstance.getSearchHistory().data,
+      // });
+      if(details === 'searchesDeleted'){
+        modelInstance.getSearchHistory();
+        this.setState({
+            data: modelInstance.getSearchHistory().data,
+        });
+        console.log(this.state.data)
+      }
   }
 
   handleCloseModal = () => {
@@ -240,7 +247,7 @@ class MySearchesTable extends React.Component {
   }
 
   handleConfirm = () => {
-      modelInstance.deleteSearchHistory(this.state.selected);
+      modelInstance.deleteSearchHistory(this.state.selected, this.state.data);
       console.log("Deletion completed");
       this.handleCloseModal();
       this.setState({
@@ -270,8 +277,8 @@ class MySearchesTable extends React.Component {
             placeName: searchObject.location,
             date: searchObject.until,
             pos: searchObject.positive,
-            neg: searchObject.negative, 
-          });                  
+            neg: searchObject.negative,
+          });
         }).catch( (err) => {
           console.log(err);
         });
@@ -289,7 +296,7 @@ class MySearchesTable extends React.Component {
           let tot = searchObject.total;
           let withSentiment = searchObject.withSentiment;
           let until = searchObject.until;
-                    
+
           window.location.assign('/discover/'+encodeURIComponent(query)+"/"+pos+"/"+neg+"/"+noOfNeu+"/"+tot+"/"+until);
         }).catch( (err) => {
           console.log(err);
@@ -358,9 +365,10 @@ class MySearchesTable extends React.Component {
                                     cornerRadius={2}
                                     padAngle={.00}
                                     data={[this.state.pos, this.state.neg]}
+                                    status= {'LOADED'}
                         />
                     </svg>
-    
+
     switch(this.state.status){
       case "LOADING":
     tableBody = (

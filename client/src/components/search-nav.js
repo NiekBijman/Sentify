@@ -25,7 +25,6 @@ class SearchNav extends React.Component {
     modelInstance.getSignInStatus().then( loggedIn => {
       if(loggedIn){
         this.setState({disabled: false})
-        console.log(this.state.disabled);
       }
       else{
         this.setState({disabled: true})
