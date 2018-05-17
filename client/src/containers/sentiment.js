@@ -36,8 +36,8 @@ class Sentiment extends Component {
       tweetID = "996379393864892417";
     }
     this.state = {
-      positive: this.props.positive,
-      negative:  this.props.negative,
+      positive: (this.props.positive !== undefined) ? this.props.positive : 60,
+      negative:  (this.props.negative !== undefined) ? this.props.negative : 40,
       noOfNeutral: this.props.noOfNeutral,
       total: this.props.total,
       withSentiment: !isNaN(withSentiment) && this.props.total !== undefined ? withSentiment+"/"+this.props.total : null,
