@@ -36,7 +36,7 @@ class Search extends Component {
   };
 
   onDayChange = date => {
-    this.setState({ 
+    this.setState({
       anchorEl: null,
       disabledDate: false
     });
@@ -98,7 +98,7 @@ class Search extends Component {
   sentimentAnalysis = () => {
     modelInstance.analyzeSentiment().then(result => {
       this.props.handleStatusChange('LOADED');
-      modelInstance.setSentimentDataFromTweets(result);
+      modelInstance.setSentimentData(result);
     }).catch( e => {
       console.log(e);
       // modelInstance.setErrorMessages('ERROR')

@@ -184,36 +184,38 @@ class MySearchesTable extends React.Component {
   }
 
   componentDidMount() {
-      modelInstance.getSearchHistory().then( (promises) => {
-        // get the resolve value of all promises in `promises`
-        console.log("promises:");
-        console.log(promises);
-        if (promises === null || promises === undefined){
-          this.setState({
-            data: null,
-            status: "LOADED"
-          });
-        }else{
-          Promise.all(promises).then(data => {
-            data = data.filter( val => val !== undefined);
-            this.setState({
-              data: data,
-              status: "LOADED"
-            });
-          });
-        }
-      });
-      modelInstance.addObserver(this);
+     modelInstance.addObserver(this);
+     this.getAllSearches();
   }
 
   componentWillUnmount() {
       modelInstance.removeObserver(this);
   }
 
-  update() {
-      this.setState({
-          data: modelInstance.getSearchHistory().data,
-      });
+  update = details => {
+      if(details === 'searchesDeleted'){
+        this.getAllSearches();
+      }
+  }
+
+  getAllSearches = () => {
+    modelInstance.getSearchHistory().then( (promises) => {
+      // get the resolve value of all promises in `promises`
+      if (promises === null || promises === undefined){
+        this.setState({
+          data: null,
+          status: "LOADED"
+        });
+      }else{
+        Promise.all(promises).then(data => {
+          data = data.filter( val => val !== undefined);
+          this.setState({
+            data: data,
+            status: "LOADED"
+          });
+        });
+      }
+    });
   }
 
   handleCloseModal = () => {
@@ -244,7 +246,8 @@ class MySearchesTable extends React.Component {
       console.log("Deletion completed");
       this.handleCloseModal();
       this.setState({
-        selected: []
+        selected: [],
+        status: 'LOADING'
       });
   }
 
@@ -270,8 +273,8 @@ class MySearchesTable extends React.Component {
           placeName: searchObject.location,
           date: searchObject.until,
           pos: searchObject.positive,
-          neg: searchObject.negative, 
-        });                  
+          neg: searchObject.negative,
+        });
       }).catch( (err) => {
         console.log(err);
       });
@@ -290,7 +293,7 @@ class MySearchesTable extends React.Component {
         let tot = searchObject.total;
         let withSentiment = searchObject.withSentiment;
         let until = searchObject.until;
-                  
+
         window.location.assign('/discover/'+encodeURIComponent(query)+"/"+pos+"/"+neg+"/"+noOfNeu+"/"+tot+"/"+until);
       }).catch( (err) => {
         console.log(err);
@@ -298,11 +301,16 @@ class MySearchesTable extends React.Component {
       */
      modelInstance.getSearchFromDB(id).then((searchObject) => {
       console.log(searchObject);
+<<<<<<< HEAD
       modelInstance.setMySearchesParams(searchObject); // Save search params to localStorage
       
+=======
+      modelInstance.setSearchParams(searchObject); // Save search params to localStorage
+
+>>>>>>> 37256448a18fae8305a16ded6ade5b2efdfe4c2d
       window.location.assign("/discover");
      })
-      
+
     }
 };
 
@@ -368,9 +376,10 @@ class MySearchesTable extends React.Component {
                                     cornerRadius={2}
                                     padAngle={.00}
                                     data={[this.state.pos, this.state.neg]}
+                                    status= {'LOADED'}
                         />
                     </svg>
-    
+
     switch(this.state.status){
       case "LOADING":
     tableBody = (

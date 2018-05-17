@@ -17,6 +17,8 @@ import NavigateBefore from '@material-ui/icons/NavigateBefore';
 import NavigateNext from '@material-ui/icons/NavigateNext';
 import Tooltip from 'material-ui/Tooltip';
 import { isNull } from 'util';
+import SaveButton from '../components/button-save-search';
+
 
 
 class Sentiment extends Component {
@@ -34,8 +36,8 @@ class Sentiment extends Component {
       tweetID = "996379393864892417";
     }
     this.state = {
-      positive: this.props.positive,
-      negative:  this.props.negative,
+      positive: (this.props.positive !== undefined) ? this.props.positive : 60,
+      negative:  (this.props.negative !== undefined) ? this.props.negative : 40,
       noOfNeutral: this.props.noOfNeutral,
       total: this.props.total,
       withSentiment: !isNaN(withSentiment) && this.props.total !== undefined ? withSentiment+"/"+this.props.total : null,
@@ -358,7 +360,7 @@ class Sentiment extends Component {
               <p>Info</p>
             </Hidden>
             <div className="tweets-info">
-                <Button className="sentiment-save" onClick={this.saveSearch} variant="flat" color="primary">Save Search</Button>
+                <SaveButton className="sentiment-save" handleClick={this.saveSearch} variant="flat" color="primary" text='Save Search'></SaveButton>
               <Row>
                 <Col xs={6} className="tweets-info-title">Search:</Col>
                 <Col xs={6} className="tweets-info-value">{this.state.searchInput}</Col>

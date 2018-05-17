@@ -188,6 +188,17 @@ const Model = function () {
    }
 
 
+   this.deleteSearchHistory = function(selectedSearches) {
+     //setup of path to reference the data
+     var searchesRef = database.ref("searches");
+     selectedSearches.forEach( search => {
+       //Remove selected searches
+       searchesRef.child(search).remove()
+     });
+     notifyObservers("searchesDeleted");
+   }
+
+
   this.googleSignIn = function () {
     var provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider).then(function(result) {
@@ -477,14 +488,9 @@ const Model = function () {
     return tweets;
   }
 
-  this.setSentimentDataFromTweets = function(tweets){
+  this.setSentimentData = function(tweets){
     sentimentData = this.calculateSentiment(tweets);
     notifyObservers('sentimentSet');
-  }
-
-  this.setSentimentData = function(data){
-    sentimentData = data;
-    notifyObservers("sentimentSet");
   }
 
   this.getSentimentData = function(){
@@ -526,6 +532,7 @@ const Model = function () {
     return sentiment;
   }
 
+<<<<<<< HEAD
   this.deleteSearchHistory = function(selectedSearches) {
     /*
     searchHistory.data = searchHistory.data.filter(function(el) {
@@ -536,6 +543,8 @@ const Model = function () {
   }
 
 
+=======
+>>>>>>> 37256448a18fae8305a16ded6ade5b2efdfe4c2d
     this.setErrorMessages = function(error){
       if(error === 'RATE_LIMITED'){
         notifyObservers('rateLimited');
