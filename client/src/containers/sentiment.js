@@ -17,6 +17,8 @@ import NavigateBefore from '@material-ui/icons/NavigateBefore';
 import NavigateNext from '@material-ui/icons/NavigateNext';
 import Tooltip from 'material-ui/Tooltip';
 import { isNull } from 'util';
+import SaveButton from '../components/button-save-search';
+
 
 
 class Sentiment extends Component {
@@ -358,7 +360,7 @@ class Sentiment extends Component {
               <p>Info</p>
             </Hidden>
             <div className="tweets-info">
-                <Button className="sentiment-save" onClick={this.saveSearch} variant="flat" color="primary">Save Search</Button>
+                <SaveButton className="sentiment-save" handleClick={this.saveSearch} variant="flat" color="primary" text='Save Search'></SaveButton>
               <Row>
                 <Col xs={6} className="tweets-info-title">Search:</Col>
                 <Col xs={6} className="tweets-info-value">{this.state.searchInput}</Col>
