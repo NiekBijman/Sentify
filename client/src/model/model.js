@@ -71,7 +71,7 @@ const Model = function () {
     this.setDate(new Date(localStorage.getItem("date")));
     this.setPlaceName(localStorage.getItem("placeName"));
     let coordinates = JSON.parse(localStorage.getItem("coordinates"));
-    
+
   }
   this.getStoredCoordinates = function () {
     let coordinates = JSON.parse(localStorage.getItem("coordinates"));
@@ -237,7 +237,6 @@ const Model = function () {
   }
 
   this.getUserName = function () {
-<<<<<<< HEAD
     return new Promise((resolve)=>{
       firebase.auth().onAuthStateChanged(function(user){
         if (user){
@@ -248,18 +247,6 @@ const Model = function () {
         }
       });
     });
-=======
-    var user = firebase.auth().currentUser;
-    if (user !== null) {
-      if(user.displayName !== null){
-        return (user.displayName.toString());
-      }
-      return "Logged In";
-    }
-    else{
-      return "Sign in";
-    }
->>>>>>> a9f723ab62fabaad2f9a0a31c333f92ed1ee7878
   }
 
   this.getMostPopularTweet = () => {
