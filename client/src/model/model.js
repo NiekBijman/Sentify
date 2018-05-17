@@ -54,15 +54,31 @@ const Model = function () {
   //database instantiaton
   var database = firebase.database();
 
-  this.setSearchParams = function(searchObject) {
-    localStorage.setItem("searchObject", JSON.stringify(searchObject));
-  }
+  this.setMySearchesParams = function(searchObject) {
+    localStorage.setItem("mySearchesObject", JSON.stringify(searchObject));
+  };
 
-  this.getSearchParams = function(){
-    let searchObjectStr = localStorage.getItem("searchObject");
+  this.getMySearchesParams = function(){
+    let searchObjectStr = localStorage.getItem("mySearchesObject");
     let searchObject = JSON.parse(searchObjectStr);
-    localStorage.removeItem("searchObject");
+    localStorage.removeItem("mySearchesObject");
     return searchObject;
+  };
+
+  this.setSearchParamsFromLocalStorage = function(){
+    this.setSearch(localStorage.getItem("searchInput"));
+    this.setGeocode(localStorage.getItem("location"));
+    this.setDate(new Date(localStorage.getItem("date")));
+    this.setPlaceName(localStorage.getItem("placeName"));
+    let coordinates = JSON.parse(localStorage.getItem("coordinates"));
+    
+  }
+  this.getStoredCoordinates = function () {
+    let coordinates = JSON.parse(localStorage.getItem("coordinates"));
+    if (coordinates){
+      return coordinates;
+    }
+    return null;
   }
 
   /*
@@ -140,16 +156,16 @@ const Model = function () {
             }else{
               let currUserSearches = currUserSearchesIDs.map( searchID => {
                 return database.ref("searches/"+searchID).once("value")
-                    .then( (value) => {
-                      let obj = value.val();
+                  .then( (value) => {
+                    let obj = value.val();
 
-                      if (obj){
-                        obj["id"] = searchID;
-                        return obj;
-                      }else{
-                        return undefined;
-                      }
-                    });
+                    if (obj){
+                      obj["id"] = searchID;
+                      return obj;
+                    }else{
+                      return undefined;
+                    }
+                  });
               });
               resolve(currUserSearches);
             }
@@ -210,8 +226,6 @@ const Model = function () {
 
   this.getUserName = function () {
     var user = firebase.auth().currentUser;
-    console.log("user:");
-    console.log(user);
     if (user !== null) {
       if(user.displayName !== null){
         return (user.displayName.toString());
@@ -238,7 +252,7 @@ const Model = function () {
             maxRetweets = tweet.retweet_count;
             mostPopularTweetId = tweet.id_str;
             tweetIndex = index;
-            console.log(tweet);
+
           }
         });
         return mostPopularTweetId;
@@ -285,8 +299,6 @@ const Model = function () {
       }
       currentTweet = tweets[tweetIndex]
     }
-    console.log(maxTweets)
-    console.log(tweetIndex)
     return currentTweet
   }
 
@@ -318,6 +330,8 @@ const Model = function () {
   this.setDate = function(dateIn){
     date = dateIn;
     dateParam = this.getDateString();
+
+    localStorage.setItem("date", date);
     notifyObservers("dateSet");
   }
   this.getDate = function(){
@@ -339,6 +353,7 @@ const Model = function () {
       notifyObservers("searchInputSet-NoSearch");
       return;
     }
+    localStorage.setItem("searchInput", searchInput);
     notifyObservers("searchInputSet");
   }
 
@@ -348,6 +363,9 @@ const Model = function () {
 
   this.setGeocode = function(geocode){
     location = geocode;
+    if (location !== null){
+      localStorage.setItem("location", location);
+    }
     notifyObservers('geoCodeSet');
   }
 
@@ -357,6 +375,7 @@ const Model = function () {
 
   this.setCoordinates = (lng, lat ) =>{
     coordinates = [lng, lat];
+    localStorage.setItem("coordinates", JSON.stringify(coordinates));
     // location
     notifyObservers('jumpToCoordinates');
   }
@@ -372,6 +391,11 @@ const Model = function () {
 
   this.setPlaceName = function(place, noNotification){
     placeName = place;
+    if(placeName){
+      console.log("setting placeName to ");
+      console.log(placeName);
+      localStorage.setItem("placeName", placeName);
+    }
     if(noNotification){
       notifyObservers("placeNameSet-NoSearch");
       return;
@@ -400,7 +424,6 @@ const Model = function () {
     //     return false;
     //   }
     // });
-    console.log(results);
     tweets = results.data.statuses;
     allTweets = tweets;
     chartPolarity = 'All';
@@ -504,8 +527,6 @@ const Model = function () {
   }
 
   this.deleteSearchHistory = function(selectedSearches) {
-    console.log("selectedSearches");
-    console.log(selectedSearches);
     /*
     searchHistory.data = searchHistory.data.filter(function(el) {
       return !selectedSearches.includes(el.id);
@@ -548,7 +569,7 @@ const Model = function () {
     let url = '/api/twitter/search?'
 
       if (searchInput !=='') {
-        url += 'q=' + encodeURIComponent(searchInput) + '&geocode=' + location + '&until=' + dateParam;
+        url += 'q=' + encodeURIComponent(searchInput) + '&geocode=' + (location ? location : "") + '&until=' + (dateParam ? dateParam : "");
         }
       else{
         notifyObservers('noSearchInputGiven');

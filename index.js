@@ -96,7 +96,7 @@ app.get('/api/twitter/search', (req, res) => {
     include_entities: true,
   }
   // console.log(q);
-  console.log("Searching, q="+q+", geocode="+geocode+"until="+until)
+  console.log("Searching, q="+q+", geocode="+geocode+", until="+until)
   Twitter.get('search/tweets', parameters)
     .then(response => {
        res.send(response);
