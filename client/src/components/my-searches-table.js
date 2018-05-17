@@ -242,7 +242,7 @@ class MySearchesTable extends React.Component {
   }
 
   handleConfirm = () => {
-      modelInstance.deleteSearchHistory(this.state.selected, this.state.data);
+      modelInstance.deleteSearchHistory(this.state.selected);
       console.log("Deletion completed");
       this.handleCloseModal();
       this.setState({

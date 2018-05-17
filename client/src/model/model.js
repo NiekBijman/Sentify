@@ -172,22 +172,14 @@ const Model = function () {
    }
 
 
-   this.deleteSearchHistory = function(selectedSearches, allSearches) {
-     console.log(selectedSearches);
-
-     console.log(allSearches);
-
+   this.deleteSearchHistory = function(selectedSearches) {
      //setup of path to reference the data
      var searchesRef = database.ref("searches");
      selectedSearches.forEach( search => {
+       //Remove selected searches
        searchesRef.child(search).remove()
      });
      notifyObservers("searchesDeleted");
-     allSearches.filter(search => {
-       return !selectedSearches.includes(search.selectedSearches);
-     });
-     return allSearches
-     // notifyObservers();
    }
 
 
@@ -473,14 +465,9 @@ const Model = function () {
     return tweets;
   }
 
-  this.setSentimentDataFromTweets = function(tweets){
+  this.setSentimentData = function(tweets){
     sentimentData = this.calculateSentiment(tweets);
     notifyObservers('sentimentSet');
-  }
-
-  this.setSentimentData = function(data){
-    sentimentData = data;
-    notifyObservers("sentimentSet");
   }
 
   this.getSentimentData = function(){
