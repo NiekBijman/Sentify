@@ -114,14 +114,12 @@ class DiscoverContainer extends React.Component {
         // this.step.updateStepElement(nextStepIndex);
       }
 
-      else{
+      else {
         this.setState({
           introState: 'INITIAL'
         })
       }
-      }
-
-
+    }
 
     render () {
       const { stepsEnabled, steps, initialStep} = this.state;

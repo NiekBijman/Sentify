@@ -29,6 +29,8 @@ class Map extends React.Component {
       let coords = modelInstance.getStoredCoordinates();
       if (coords){
         this.mapBox(coords, 7);
+      } else {
+        this.mapBox(this.state.coordinates, this.state.zoom);
       }
   }
 
