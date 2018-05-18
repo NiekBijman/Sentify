@@ -53,11 +53,24 @@ const Model = function () {
   };
 
   this.setSearchParamsFromLocalStorage = function(){
-    this.setSearch(localStorage.getItem("searchInput"));
-    this.setGeocode(localStorage.getItem("location"));
-    this.setDate(new Date(localStorage.getItem("date")));
-    this.setPlaceName(localStorage.getItem("placeName"));
-    let coordinates = JSON.parse(localStorage.getItem("coordinates"));
+    let searchInputParam = localStorage.getItem("searchInput");
+    if (searchInputParam){
+      this.setSearch(searchInputParam);  
+    }
+    let locationParam = localStorage.getItem("location");
+    if (locationParam){
+      this.setGeocode(locationParam);
+    }
+    let dateParam = localStorage.getItem("date");
+    if (dateParam){
+      this.setDate(new Date(dateParam));
+    }
+    let placeNameParam = localStorage.getItem("placeName");
+    if(placeNameParam){
+      this.setPlaceName(placeNameParam);
+    }
+    
+    //let coordinates = JSON.parse(localStorage.getItem("coordinates"));
   }
 
   this.getStoredCoordinates = function () {
