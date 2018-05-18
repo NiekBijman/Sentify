@@ -15,8 +15,6 @@ This is the file structure of our project:
 * `/client/public/index.html` - this is the static html file
 * `/client/src/components` - contains all the presentation components that we use in our application
 * `/client/src/containers` - includes the container components responsible for fetching and changing the data shown in the presentation components
-* `/helpers` - contains files that will help with the authentication through google
-* `/img` - contains images
 * `/media` - contains icons and loaders
 * `/styles` - contains the css files for our containers and components
 * `discover.js`, `my-searches.js` and `welcome.js` correspond to the pages the user can visit, they reference container components
