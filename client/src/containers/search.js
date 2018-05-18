@@ -162,16 +162,16 @@ class Search extends Component {
           </Row>
           <SearchNav page={this.state.page}/>
           <Row id='date-location'>
-            <Col xs={2} sm={2} md={2} className='text'>
+            <Col xs={6} sm={6} md={2} className='text'>
               <p>SINCE</p>
             </Col>
-            <Col xs={3} sm={3} md={3} className='date'>
+            <Col xs={6} sm={6} md={2} className='date'>
               <SearchDate handleClose={this.handleClose} anchorEl={this.state.anchorEl} click={this.handleClick} dayChange={this.onDayChange} disabled={this.state.disabledDate}/>
             </Col>
-            <Col xs={2} sm={2} md={2} className='text'>
+            <Col xs={6} sm={6} md={4} className='text'>
               <p>LOCATION</p>
             </Col>
-            <Col xs={5} sm={5} md={5} className='location'>
+            <Col xs={6} sm={6} md={4} className='location'>
               <SearchLocation placeName = {this.state.placeName} placeOptions = {this.state.placeOptions}  handleLocation={this.handleLocation.bind(this)}/>
             </Col>
 

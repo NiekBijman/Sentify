@@ -235,6 +235,22 @@ iframe, twitterwidget {
   width: 100%;
 }
 
+#date-location p {
+  font-size: medium;
+}
+
+@media screen and (max-width: 1028px) {
+  #date-location p {
+    font-size: small;
+  }
+}
+
+@media screen and (max-width: 938px) {
+  #date-location p {
+    font-size: x-small;
+  }
+}
+
 @media screen and (max-width: 807px) {
   .react-mapbox-ac-menu{
     max-height:15vw;
@@ -290,6 +306,11 @@ iframe, twitterwidget {
     max-height: fit-content;
     overflow: auto;
     margin-left: 8%;
+  }
+
+  #date-location {
+    width: 50%;
+    padding-top: 0;
   }
 }
 
