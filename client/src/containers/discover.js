@@ -130,9 +130,10 @@ class DiscoverContainer extends React.Component {
         case 'INITIAL':
             media = null
             break;
-
         case 'MAP':
             media = <DrawingAnimation />
+          break;
+        default: 
           break;
       }
 

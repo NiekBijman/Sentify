@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Hidden from 'material-ui/Hidden';
-import Button from 'material-ui/Button';
 import { Row, Col } from 'react-flexbox-grid';
 import SentimentPie from '../components/sentiment-pie';
 import CircularIndeterminate from '../components/circular-indeterminate';
@@ -16,10 +15,7 @@ import jsPDF from 'jspdf';
 import NavigateBefore from '@material-ui/icons/NavigateBefore';
 import NavigateNext from '@material-ui/icons/NavigateNext';
 import Tooltip from 'material-ui/Tooltip';
-import { isNull } from 'util';
 import SaveButton from '../components/button-save-search';
-
-
 
 class Sentiment extends Component {
   constructor(props){
@@ -107,7 +103,7 @@ class Sentiment extends Component {
       this.setState({
         tweetID: mostPopularID,
         tweetTitle: (modelInstance.getChartPolarity() + ' Tweets')
-    });
+      });
     }
 
     if (details==="sentimentSet") {
@@ -261,7 +257,6 @@ class Sentiment extends Component {
                         />
           </svg>
         break;
-
       case 'INITIAL':
         pieChart = <CircularIndeterminate/>
         break;
@@ -279,52 +274,55 @@ class Sentiment extends Component {
                             />
               </svg>
         break;
+      default:
+        break;
     }
-
 
     // Error Messages for App 'misuses'
     switch (this.state.notifications) {
       case 'INITIAL':
         notification = null;
-      break;
+        break;
       case 'ERROR':
         notification = <Notification text='Failed to load data, please try again' open={this.state.openNotification} handleClose={this.handleClose}/>
-      break;
+        break;
       case 'NO_TWEETS':
         notification = <Notification text="We couldn't find any tweets for that search" open={this.state.openNotification} handleClose={this.handleClose}/>
-      break;
+        break;
       case 'NO_SEARCH':
         notification = <Notification text="Please input a search query" open={this.state.openNotification} handleClose={this.handleClose}/>
-      break;
+        break;
       case 'RATE_LIMITED':
         notification = <Notification text="Can't update location because the App has been Rate Limited by Twitter" open={this.state.openNotification} handleClose={this.handleClose}/>
-      break;
+        break;
       case 'NO_LOCATION':
-      notification = <Notification text="We couldn't find that location" open={this.state.openNotification} handleClose={this.handleClose}/>
-      break;
+        notification = <Notification text="We couldn't find that location" open={this.state.openNotification} handleClose={this.handleClose}/>
+        break;
       case 'SEARCH_SAVED':
-      notification = <Notification text="Search saved" open={this.state.openNotification} handleClose={this.handleClose} />
-      break;
+        notification = <Notification text="Search saved" open={this.state.openNotification} handleClose={this.handleClose} />
+        break;
       case 'NO_SENTIMENT':
-      notification = <Notification text="Tweets do not contain sentiment" open={this.state.openNotification} handleClose={this.handleClose} />
-      break;
+        notification = <Notification text="Tweets do not contain sentiment" open={this.state.openNotification} handleClose={this.handleClose} />
+        break;
       case 'LOGIN_REQUIRED':
-      notification = <Notification text="Please sign in to access my-Searches" open={this.state.openNotification} handleClose={this.handleClose} />
-      break;
+        notification = <Notification text="Please sign in to access my-Searches" open={this.state.openNotification} handleClose={this.handleClose} />
+        break;
       case 'SIGN_IN_FAILED':
-      notification = <Notification
-                      text="Unable to login. Please change your browser cookie settings"
-                      open={this.state.openNotification}
-                      handleClose={this.handleClose}
-                      notifications={this.state.notifications} />
-      break;
+        notification = <Notification
+                        text="Unable to login. Please change your browser cookie settings"
+                        open={this.state.openNotification}
+                        handleClose={this.handleClose}
+                        notifications={this.state.notifications} />
+        break;
+      default:
+        break;
     }
     // Error Messages for App 'misuses'
     switch (this.state.tweetState) {
       case 'SINGLE/NONE':
-          previous, next  = null;
-      break;
-
+        previous = null;
+        next  = null;
+        break;
       case 'MULTIPLE':
         previous =
           <Col className='sentiment-tweet-navigate' sm={1} md={1} xs={0}>
@@ -338,6 +336,8 @@ class Sentiment extends Component {
               <NavigateNext onClick={ () => {this.handleNavigation('next')}} aria-label="navigate_next" disabled={true}/>
             </Tooltip>
           </Col>
+        break;
+      default:
         break;
       }
 
@@ -401,7 +401,6 @@ class Sentiment extends Component {
                 <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
               </div>
             </Hidden>
-            {/* <Button variant="raised" onClick={this.chooseTweet}>New Tweet</Button> */}
             <Row>
               {previous}
               <Col sm={10} md={10} xs={12}>

@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import './styles/app.css';
 import { Route } from 'react-router-dom';
-import Welcome from './welcome';
 import Discover from './discover';
 import MySearches from './my-searches';
 import Login from './login';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-// import Database from './database';
 
 class App extends Component {
   constructor(props) {
@@ -24,7 +22,6 @@ class App extends Component {
             <Route exact path="/" component={Discover}/>
             <Route path="/discover" component={Discover}/>
             <Route path="/my-searches" component={MySearches}/>
-            {/* <Route path="/database" component={Database}/> */}
           </header>
         </div>
     );

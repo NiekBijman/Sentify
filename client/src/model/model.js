@@ -1,4 +1,3 @@
-import {Key} from '../config';
 import { firebaseConfig } from '../config';
 
 const Model = function () {
@@ -30,22 +29,10 @@ const Model = function () {
   let positiveTweets = [];
   let negativeTweets = [];
   let chartPolarity = '';
-  // tweet bucket for random draw
-  let tweetBucket = null;
   let tweetIndex = null;
 
   //Sentiment data. Changed to {positive: undefined, negative: undefined}
   let sentimentData = null;
-
-  let searchHistory = {"data": [
-    {"id": 1, "query":"#LastWeekTonight", "location": "America", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"id": 2, "query":"FrenchElection", "location": "Europe", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"id": 3, "query":"CharlieHebdo", "location": "Europe", "until": "14-05-17", "dateCreated": "15-05-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"id": 4, "query":"@JaneGoodman", "location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"id": 5, "query":"NATO", "location": "Europe", "until": "26-02-18", "dateCreated": "27-02-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"id": 6, "query":"#SomosJuntos", "location": "South-America", "until": "16-03-18", "dateCreated": "17-03-18", "amount":100, "positive":50, "negative": 25, "neutral":25},
-    {"id": 7, "query":"#FindKadyrovsCat", "location": "Europe", "until": "05-11-17", "dateCreated": "06-11-17", "amount":100, "positive":50, "negative": 25, "neutral":25}
-  ]};
 
   // firebase
   let firebase = require("firebase");

@@ -79,7 +79,7 @@ const SearchDate = props => {
           style: {
             maxHeight: ITEM_HEIGHT * 4.5,
             // width: 200,
-            'border-radius': '10',
+            borderRadius: '10',
             background: 'rgba(255, 255, 255, 0.48)!important',
 
           },

@@ -54,6 +54,24 @@
   font-family: Roboto thin;
 }
 
+.container-search {
+  width: 35%;
+  padding: 7% 0 0 2%;
+  text-align: right;
+}
+
+.container-search > .search {
+  background: rgba(255, 255, 255, 0.48);
+  border-radius: 10px;
+  position: relative;
+  padding: 0% 10% 0% 10%;
+  width: 100%;
+}
+
+.text{
+  text-align: right;
+  margin: 0;
+}
 
 #title-steps {
   font-family: Roboto medium;
@@ -227,6 +245,18 @@ iframe, twitterwidget {
   }
 }
 
+@media screen and (min-width: 576px) and (max-width: 807px) {
+  .container-search {
+    width: 80%;
+    padding: 0 5%;
+  }
+
+  .container-search > .search {
+    width: 100%;
+    padding: 0 5%;
+  }
+}
+
 @media screen and (min-width: 576px) and (max-width: 599px) {
   .createPDF {
     float: none;
@@ -258,5 +288,10 @@ iframe, twitterwidget {
       max-height:100vw;
       overflow: none;
       margin-left: 4%;
+  }
+
+  .container-search > .search {
+    width: 100%;
+    padding: 0 5%;
   }
 }

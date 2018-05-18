@@ -12,7 +12,7 @@ import { Row, Col } from 'react-flexbox-grid';
 class Search extends Component {
   constructor(props){
     super(props);
-    var today = new Date();
+
     this.state = {
       searchSuggestion: 'Search for tweets here',
       anchorEl: null,

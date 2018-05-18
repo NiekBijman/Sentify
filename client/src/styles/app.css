@@ -5,3 +5,10 @@ html, body {
 body {
   margin: 0;
 }
+
+#root, .App, .App-header {
+  height: 100%;
+  width: 100%;
+  font-family: Roboto light;
+  margin: 0;
+}

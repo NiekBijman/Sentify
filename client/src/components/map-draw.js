@@ -21,7 +21,6 @@ const DrawCircle = (svg, locations) => {
 
   reverseGeocode = debounce(500, reverseGeocode);
 
-
   // The user provides an svg element to listen on events
   svg.on("click", function() {
     if(dragging && circleSelected) return;
