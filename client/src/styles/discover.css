@@ -171,8 +171,7 @@
   position: inherit;
   width: 100%;
   font-size: initial;
-  padding-top: 10%;
-  padding-bottom: 12%;
+  padding: 5%;
 }
 
 #create-pdf-modal i.negative {
@@ -325,5 +324,18 @@ iframe, twitterwidget {
       max-height:100vw;
       overflow: none;
       margin-left: 4%;
+  }
+
+  #create-pdf-modal {
+    width: 60%;
+  }
+
+  #divToPrint .tweets-info {
+    font-size: x-large;
+  }
+
+  #divToPrint svg {
+    width: 60%;
+    padding: 10%;
   }
 }
