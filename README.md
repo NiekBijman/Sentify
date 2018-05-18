@@ -7,17 +7,6 @@ Sentify is an application that provides sentiment analysis based on user-chosen 
 
 Go to this site: https://marvelapp.com/867200h to explore the prototyped app, and press the settings symbol in the top right corner (only certain screens) to display the annotations.
 
-## What we have done
-- Setup the backend
-- Created the initial layout of our application
-
-## What remains to be done
-- Implement more interaction with the map
-- Setup the live-tweets
-- Setup the login -> replace the hardcoded data in my-searches with data from the database
-- Implement the localStorage
-- Clean the code, retest the app
-
 ### Architecture
 This is the file structure of our project:
 
