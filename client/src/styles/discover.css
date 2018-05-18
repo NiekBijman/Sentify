@@ -247,8 +247,8 @@ iframe, twitterwidget {
 
 @media screen and (min-width: 576px) and (max-width: 807px) {
   .container-search {
-    width: 80%;
-    padding: 0 5%;
+    width: 55%;
+    margin-top: -15%;
   }
 
   .container-search > .search {
@@ -260,6 +260,17 @@ iframe, twitterwidget {
 @media screen and (min-width: 576px) and (max-width: 599px) {
   .createPDF {
     float: none;
+  }
+}
+
+@media screen and (max-width: 607px) {
+  .container-search > .search {
+    width: 100%;
+    padding: 0 5%;
+  }
+
+  .intro {
+    text-align: center;
   }
 }
 
@@ -288,10 +299,5 @@ iframe, twitterwidget {
       max-height:100vw;
       overflow: none;
       margin-left: 4%;
-  }
-
-  .container-search > .search {
-    width: 100%;
-    padding: 0 5%;
   }
 }
