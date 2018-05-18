@@ -6,7 +6,8 @@ import { Steps } from 'intro.js-react';
 import { modelInstance } from '../model/model';
 import DrawingAnimation from '../components/intro-drawing-animation'
 import {withRouter} from 'react-router';
-import Login from '../login'
+import Login from '../login';
+import { Row, Col } from 'react-flexbox-grid';
 
 import 'intro.js/introjs.css';
 import '../styles/discover.css';
@@ -151,13 +152,25 @@ class DiscoverContainer extends React.Component {
                   <div className='map'>
                     <Map/>
                   </div>
-                  <div className="intro">
-                      {media}
-                      <Login toggleSteps={this.toggleSteps.bind(this)}/>
-                  </div>
-                  <div className='container-search'>
-                    <Search handleStatusChange={this.handleStatusChange} searchInput={this.state.searchInput}/>
-                  </div>
+                  <Row className="discover-top">
+                    <Col xs={12} sm={12} md={8} className="hidden-xl hidden-lg hidden-md visible-sm visible-xs">
+                      <div className="intro">
+                          {media}
+                          <Login toggleSteps={this.toggleSteps.bind(this)}/>
+                      </div>
+                    </Col>
+                    <Col xs={12} sm={12} md={4}>
+                      <div className='container-search'>
+                        <Search handleStatusChange={this.handleStatusChange} searchInput={this.state.searchInput}/>
+                      </div>
+                    </Col>
+                    <Col xs={12} sm={12} md={8} className="hidden-sm hidden-xs">
+                      <div className="intro">
+                          {media}
+                          <Login toggleSteps={this.toggleSteps.bind(this)}/>
+                      </div>
+                    </Col>
+                  </Row>
               </div>
               <div className="container-discover-bottom">
                   <SentimentContainer query={this.state.searchInput}

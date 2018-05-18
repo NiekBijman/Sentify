@@ -54,9 +54,13 @@
   font-family: Roboto thin;
 }
 
+.row.discover-top {
+  margin: 0;
+}
+
 .container-search {
-  width: 35%;
-  padding: 7% 0 0 2%;
+  width: 100%;
+  padding: 5% 5%;
   text-align: right;
 }
 
@@ -73,13 +77,14 @@
   margin: 0;
 }
 
-#title-steps {
+.title-steps {
   font-family: Roboto medium;
   height: auto;
   margin: -4% 0 0 0;
   font-size: x-large;
   color: #3e4040;
   text-align: center;
+  width: 100%;
 }
 
 .container-discover-bottom {
@@ -227,13 +232,11 @@ iframe, twitterwidget {
   color: #2c3e50;
 }
 
-@media screen and (max-width: 807px) {
-  .container-discover #search-nav {
-      margin-left: 0 !important;
-      width: 100% !important;
-      transform: none !important;
-  }
+.tweet > .row {
+  width: 100%;
+}
 
+@media screen and (max-width: 807px) {
   .react-mapbox-ac-menu{
     max-height:15vw;
   }
@@ -245,15 +248,49 @@ iframe, twitterwidget {
   }
 }
 
-@media screen and (min-width: 576px) and (max-width: 807px) {
-  .container-search {
-    width: 55%;
-    margin-top: -15%;
+@media screen and (max-width: 767px) {
+  .intro {
+    text-align: center;
   }
 
-  .container-search > .search {
-    width: 100%;
-    padding: 0 5%;
+  .container-search {
+    width: 60%;
+    padding: 0;
+    margin-left: 15%;
+  }
+
+  .container-discover #search-nav {
+    margin-left: 0 !important;
+    width: 100% !important;
+    transform: none !important;
+  }
+
+  .title-steps {
+    margin: 0;
+  }
+
+  .tweets-info {
+    padding-top: 0;
+    padding-bottom: 5%;
+  }
+
+  #content-steps .sentiment-pie {
+    margin-top: 5%;
+    margin-bottom: 5%;
+  }
+
+  #content-steps .sentiment-pie svg {
+    width: 35%;
+  }
+
+  .createPDF {
+    float: none;
+  }
+
+  .sentiment-tweet {
+    max-height: fit-content;
+    overflow: auto;
+    margin-left: 8%;
   }
 }
 
@@ -263,19 +300,8 @@ iframe, twitterwidget {
   }
 }
 
-@media screen and (max-width: 607px) {
-  .container-search > .search {
-    width: 100%;
-    padding: 0 5%;
-  }
-
-  .intro {
-    text-align: center;
-  }
-}
-
 @media screen and (max-width: 575px) {
-  #content-steps svg {
+  #content-steps svg#pie-chart {
     width: 35%;
   }
 

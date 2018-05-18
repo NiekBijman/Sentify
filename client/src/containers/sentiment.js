@@ -262,7 +262,7 @@ class Sentiment extends Component {
         break;
       case 'LOADED':
         pieChart =
-              <svg width="120%" height="120%">
+              <svg width="120%" height="120%" id="pie-chart">
                 <SentimentPie x={x}
                               y={y}
                               innerRadius={radius * .00}
@@ -325,13 +325,13 @@ class Sentiment extends Component {
         break;
       case 'MULTIPLE':
         previous =
-          <Col className='sentiment-tweet-navigate' sm={1} md={1} xs={0}>
+          <Col className='sentiment-tweet-navigate' sm={1} md={1} xs={1}>
             <Tooltip id="tooltip-icon" title="Previous Tweet">
               <NavigateBefore onClick={ () => {this.handleNavigation('previous')}} aria-label="navigate_before" disabled={true}/>
             </Tooltip>
           </Col>
         next =
-          <Col className='sentiment-tweet-navigate' sm={1} md={1} xs={0}>
+          <Col className='sentiment-tweet-navigate' sm={1} md={1} xs={1}>
             <Tooltip id="tooltip-icon" title="Next Tweet">
               <NavigateNext onClick={ () => {this.handleNavigation('next')}} aria-label="navigate_next" disabled={true}/>
             </Tooltip>
@@ -343,22 +343,18 @@ class Sentiment extends Component {
 
     return(
       <div>
-        <Hidden only="xs">
-          <Row id="title-steps">
-            <Col sm={4} md={4}>Info</Col>
-            <Col sm={4} md={4}>Sentiment</Col>
-            <Col sm={4} md={4}>{this.state.tweetTitle}
-              <div className="createPDF">
-                <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
-              </div>
-            </Col>
-          </Row>
-        </Hidden>
+        <Row className="hidden-sm hidden-xs title-steps">
+          <Col md={4}>Info</Col>
+          <Col md={4}>Sentiment</Col>
+          <Col md={4}>{this.state.tweetTitle}
+            <div className="createPDF">
+              <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
+            </div>
+          </Col>
+        </Row>
         <Row id="content-steps">
-          <Col sm={4} md={4} xs={12}>
-            <Hidden smUp>
-              <p>Info</p>
-            </Hidden>
+          <Col sm={12} xs={12} className="title-steps hidden-xl hidden-lg hidden-md visible-sm visible-xs">Info</Col>
+          <Col md={4} sm={12} xs={12}>
             <div className="tweets-info">
                 <SaveButton className="sentiment-save" handleClick={this.saveSearch} variant="flat" color="primary" text='Save Search'></SaveButton>
               <Row>
@@ -380,30 +376,27 @@ class Sentiment extends Component {
 
             </div>
           </Col>
-
-          <Col sm={4} md={4} xs={12}
+          <Col sm={12} xs={12} className="title-steps hidden-xl hidden-lg hidden-md visible-sm visible-xs">Sentiment</Col>
+          <Col md={4} sm={12} xs={12}
             style={{
               width: this.props.containerWidth,
               height: this.props.containerHeight
             }}
             className="sentiment-pie"
           >
-            <Hidden smUp>
-              <p>Sentiment</p>
-            </Hidden>
             {pieChart}
             {notification}
           </Col>
-          <Col sm={4} md={4} xs={12} className="tweet">
-            <Hidden smUp>
-              <p>Tweets</p>
-              <div className="createPDF">
-                <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
-              </div>
-            </Hidden>
+          <Col sm={12} xs={12} className="title-steps hidden-xl hidden-lg hidden-md visible-sm visible-xs">
+            Tweets
+            <div className="createPDF">
+              <SentimentPDF handlePDFCreation={this.handleOpenPDFModal} page={0}/>
+            </div>
+          </Col>
+          <Col md={4} sm={12} xs={12} className="tweet">
             <Row>
               {previous}
-              <Col sm={10} md={10} xs={12}>
+              <Col sm={10} md={10} xs={10}>
                 <TweetEmbed className="sentiment-tweet" id={this.state.tweetID} options={{width:'100', cards: 'hidden', conversation: 'none', align: 'center'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
               </Col>
               {next}
