@@ -58,8 +58,8 @@ const Model = function () {
     this.setDate(new Date(localStorage.getItem("date")));
     this.setPlaceName(localStorage.getItem("placeName"));
     let coordinates = JSON.parse(localStorage.getItem("coordinates"));
-
   }
+
   this.getStoredCoordinates = function () {
     let coordinates = JSON.parse(localStorage.getItem("coordinates"));
     if (coordinates){
@@ -125,8 +125,8 @@ const Model = function () {
   * Gets searches for logged in user
   */
   this.getSearchHistory = function(){
-
     let currUserSearches;
+
     return new Promise((resolve, reject)=>{
       firebase.auth().onAuthStateChanged(function(user){
         if(user){
@@ -496,16 +496,18 @@ const Model = function () {
     results.data.map(data =>{
       switch(data.polarity){
         case 4:
-          pos += 1
-          positiveTweets.push({retweet_count: data.retweet_count, id_str: data.id_str})
-          break
+          pos += 1;
+          positiveTweets.push({retweet_count: data.retweet_count, id_str: data.id_str});
+          break;
         case 0:
-          neg += 1
-          negativeTweets.push({retweet_count: data.retweet_count, id_str: data.id_str})
-          break
+          neg += 1;
+          negativeTweets.push({retweet_count: data.retweet_count, id_str: data.id_str});
+          break;
         case 2:
-          neu += 1
-          break
+          neu += 1;
+          break;
+        default:
+          break;
       }
     })
 
@@ -576,15 +578,6 @@ const Model = function () {
       })
       .then(processResponse)
       .catch(handleError)
-  }
-
-  const httpOptions = {
-    method: "POST",
-    headers: {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
-    },
-    body: {data: tweets}
   }
 
   this.reverseGeocode = function () {
