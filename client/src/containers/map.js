@@ -4,9 +4,7 @@ import * as d3 from "d3";
 import DrawCircle from '../components/map-draw'
 import LocationInfo from '../components/map-location-info';
 import '../styles/map.css';
-import Button from 'material-ui/Button';
 import { modelInstance } from '../model/model';
-import { Row, Col } from 'react-flexbox-grid';
 
 class Map extends React.Component {
 
@@ -28,7 +26,9 @@ class Map extends React.Component {
       // check if there are coordinates in localStorage
       let coords = modelInstance.getStoredCoordinates();
       if (coords){
-        this.mapBox(coords, 7.5);
+        this.mapBox(coords, 7);
+      } else {
+        this.mapBox(this.state.coordinates, this.state.zoom);
       }
   }
 

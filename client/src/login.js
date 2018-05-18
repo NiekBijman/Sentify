@@ -23,7 +23,6 @@ export default class Login extends Component {
       this.setState({
         userName: user !== false ? user.displayName : "Sign in",
         logged_in: user !== false ? true : false
-
       });
     });
   }
@@ -53,9 +52,11 @@ export default class Login extends Component {
 
   update(details){
     if (details === "signInSuccess") {
-      this.setState({
-        userName: modelInstance.getUserName(),
-        logged_in: true
+      modelInstance.getUserName().then(name => {
+        this.setState({
+          userName: name,
+          logged_in: true
+        });
       });
     }
   }
@@ -74,6 +75,10 @@ export default class Login extends Component {
           // onClick = {this.handleSignIn}
         >
           {this.state.userName}
+          {(this.state.logged_in
+              ? <i className="fas fa-sign-out-alt"></i>
+              : <i className="fas fa-sign-in-alt"></i>
+          )}
         </Button>
 
         <Menu

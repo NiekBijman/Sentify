@@ -2,9 +2,7 @@ import React from 'react';
 import '../styles/search.css';
 import { withStyles } from 'material-ui/styles';
 import TextField from 'material-ui/TextField';
-import { modelInstance } from '../model/model';
 
-//This is the Presentation component
 const styles = theme => ({
   container: {
     display: 'flex',

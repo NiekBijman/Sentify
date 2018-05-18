@@ -1,7 +1,6 @@
 import React from 'react';
 import '../styles/search.css';
 import { withStyles } from 'material-ui/styles';
-import TextField from 'material-ui/TextField';
 import MapboxAutocomplete from 'react-mapbox-autocomplete';
 
 const styles = theme => ({
@@ -10,7 +9,6 @@ const styles = theme => ({
     // flexWrap: 'wrap',
     // align: 'center',
     // 'margin-top': '10',
-
   },
   textField: {
     marginLeft: 'auto',

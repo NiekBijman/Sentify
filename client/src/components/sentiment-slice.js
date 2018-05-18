@@ -3,8 +3,6 @@ import d3 from 'd3';
 import { modelInstance } from '../model/model';
 import Tooltip from 'material-ui/Tooltip';
 
-
-
 class SentimentSlice extends React.Component {
     constructor(props) {
         super(props);
@@ -48,7 +46,7 @@ class SentimentSlice extends React.Component {
     }
 
     render() {
-        let {value, label, fill, innerRadius = 0, outerRadius, cornerRadius, padAngle, onChartClick, sentiment} = this.props;
+        let {value, label, fill, innerRadius = 0, outerRadius, cornerRadius, padAngle, sentiment} = this.props;
         let polarity = '';
         let percentage, chartFill, tooltipText = null;
         if (this.state.isSelected && (this.props.status !== 'NULL')) {
@@ -84,7 +82,10 @@ class SentimentSlice extends React.Component {
           percentage = label;
           tooltipText = polarity + " tweets"
           break;
+        default:
+          break;
         }
+
         return (
           <Tooltip open={!this.state.isSelected && this.state.isHovered} id="tooltip-icon" title={tooltipText} placement="right">
             <g onMouseOver={this.onMouseOver}
@@ -101,7 +102,6 @@ class SentimentSlice extends React.Component {
                 </text>
             </g>
           </Tooltip>
-
         );
     }
 }

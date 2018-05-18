@@ -282,33 +282,14 @@ class MySearchesTable extends React.Component {
         openPDFModal: true
       });
     } else if (event.target.tagName !== "INPUT" && !event.target.getAttribute("class").includes("checkbox")) {
-      //get search query from firebase
-      /*
-      modelInstance.getSearchFromDB(id).then( (searchObject) => {
+      modelInstance.getSearchFromDB(id).then((searchObject) => {
         console.log(searchObject);
-        let query = searchObject.query;
-        let pos = searchObject.positive;
-        let neg = searchObject.negative;
-        let noOfNeu = searchObject.noOfNeutral;
-        let tot = searchObject.total;
-        let withSentiment = searchObject.withSentiment;
-        let until = searchObject.until;
-
-        window.location.assign('/discover/'+encodeURIComponent(query)+"/"+pos+"/"+neg+"/"+noOfNeu+"/"+tot+"/"+until);
-      }).catch( (err) => {
-        console.log(err);
+        modelInstance.setMySearchesParams(searchObject); // Save search params to localStorage
+        window.location.assign("/discover");
       });
-      */
-     modelInstance.getSearchFromDB(id).then((searchObject) => {
-      console.log(searchObject);
-      modelInstance.setMySearchesParams(searchObject); // Save search params to localStorage
-      
-      window.location.assign("/discover");
-     })
 
     }
-};
-
+  };
 
   handleSelectAllClick = (event, checked) => {
     if (checked) {
@@ -377,13 +358,13 @@ class MySearchesTable extends React.Component {
 
     switch(this.state.status){
       case "LOADING":
-    tableBody = (
-              <tr>
-                <td colSpan="6">
-                  <CircularIndeterminate/>
-                </td>
-              </tr>
-              );
+        tableBody = (
+                  <tr>
+                    <td colSpan="6">
+                      <CircularIndeterminate/>
+                    </td>
+                  </tr>
+                  );
         emptyRows = undefined;
         break;
       case "LOADED":
@@ -422,6 +403,8 @@ class MySearchesTable extends React.Component {
                       </TableRow>);
           emptyRows = rowsPerPage;
         }
+        break;
+      default:
         break;
     }
 
