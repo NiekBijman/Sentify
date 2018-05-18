@@ -361,11 +361,13 @@ const Model = function () {
 
   this.setSearch = function(search, noNotification){
     searchInput = search;
+    console.log("searchInput set in setSearch to: "+searchInput);
     if(noNotification){
       notifyObservers("searchInputSet-NoSearch");
       return;
     }
     localStorage.setItem("searchInput", searchInput);
+    console.log("localStorage.searchInput set to: "+localStorage.getItem("searchInput"));
     notifyObservers("searchInputSet");
   }
 

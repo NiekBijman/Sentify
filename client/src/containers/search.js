@@ -45,6 +45,8 @@ class Search extends Component {
   };
 
   handleInput = event => {
+    console.log("search.handleInput event.target.value");
+    console.log(event.target.value);
     modelInstance.setSearch(event.target.value);
   }
 
