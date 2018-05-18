@@ -23,7 +23,6 @@ export default class Login extends Component {
       this.setState({
         userName: user !== false ? user.displayName : "Sign in",
         logged_in: user !== false ? true : false
-
       });
     });
   }
@@ -76,6 +75,10 @@ export default class Login extends Component {
           // onClick = {this.handleSignIn}
         >
           {this.state.userName}
+          {(this.state.logged_in
+              ? <i className="fas fa-sign-out-alt"></i>
+              : <i className="fas fa-sign-in-alt"></i>
+          )}
         </Button>
 
         <Menu

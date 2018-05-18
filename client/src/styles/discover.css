@@ -28,6 +28,10 @@
   text-align: right;
 }
 
+.intro [class*="fa-sign-"] {
+  padding-left: 5%;
+}
+
 .intro-button{
   text-align: left;
   padding-top: 8px;
@@ -182,7 +186,7 @@ iframe, twitterwidget {
   transform: scale(0.7);
   width: 50vw;
   padding: 0;
-  margin: 0 0 0 -36%;
+  margin: 0 0 0 -25%;
 }
 
 .container-discover #search-nav > header {
@@ -233,6 +237,10 @@ iframe, twitterwidget {
     width: 35%;
   }
 
+  .createPDF {
+    float: none;
+  }
+
   .react-mapbox-ac-menu{
     max-height:30vw;
   }
@@ -248,5 +256,6 @@ iframe, twitterwidget {
   .sentiment-tweet{
       max-height:100vw;
       overflow: none;
+      margin-left: 4%;
   }
 }
