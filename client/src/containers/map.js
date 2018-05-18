@@ -28,7 +28,7 @@ class Map extends React.Component {
       // check if there are coordinates in localStorage
       let coords = modelInstance.getStoredCoordinates();
       if (coords){
-        this.mapBox(coords, 7);
+        this.mapBox(coords, 7.5);
       }
   }
 
