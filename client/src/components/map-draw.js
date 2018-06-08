@@ -21,7 +21,15 @@ const DrawCircle = (svg, locations) => {
 
   reverseGeocode = debounce(500, reverseGeocode);
 
-  // The user provides an svg element to listen on events
+  // Function for detecting map dragging events
+  let mapDrag = d3.behavior.drag()
+    .on("drag", () => {
+      dragging = true;
+      setTimeout(function() {
+        dragging = false;
+      },800)
+    })
+  // svg
   svg.on("click", function() {
     if(dragging && circleSelected) return;
 
@@ -55,12 +63,15 @@ const DrawCircle = (svg, locations) => {
 
       }
     else {
-      // We set the center to the initial click
-      circleCenter = ll;
-      circleOuter = ll;
+      // If the map is dragged the circle should not be drawn
+      if(!dragging){
+        // We set the center to the initial click
+        circleCenter = ll;
+        circleOuter = ll;
 
-      //Search the place name for this coordinate
-      reverseGeocode(circleCenter.lat, circleCenter.lng)
+        //Search the place name for this coordinate
+        reverseGeocode(circleCenter.lat, circleCenter.lng)
+      }
     }
 
 
@@ -74,6 +85,8 @@ const DrawCircle = (svg, locations) => {
     doubleClicked = false;
     update()
   })
+  .call(mapDrag)
+
 
   svg.on("dblclick",function(){
     // start over
@@ -98,6 +111,8 @@ const DrawCircle = (svg, locations) => {
     circleOuter = ll;
     update();
   })
+
+
 
   let drag = d3.behavior.drag()
     .on('dragstart', function(){
@@ -126,15 +141,14 @@ const DrawCircle = (svg, locations) => {
         geoCode(circleCenter.lat, circleCenter.lng, calcDist(circleCenter, circleOuter));
 
         update();
-      } else {
+      }
+       else {
         return false;
       }
     })
     .on("dragend", function() {
       setTimeout(function() {
         dragging = false;
-        // d3.event.sourceEvent.stopPropagation(); // silence other listeners
-
       },100)
     })
 
@@ -290,8 +304,6 @@ const DrawCircle = (svg, locations) => {
       "cursor": active ? "move" : null
     })
     .call(drag)
-
-
 
     dispatch.update();
   }
