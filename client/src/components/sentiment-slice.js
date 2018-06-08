@@ -23,7 +23,7 @@ class SentimentSlice extends React.Component {
     }
 
     handleClick = polarity => {
-      var chartContainer = document.querySelector("div.col-sm-4.col-md-4.col-xs-12.sentiment-pie");
+      var chartContainer = document.querySelector("#pie-chart");
       if(!this.state.isSelected){
         this.setState({isSelected: true});
         modelInstance.setChartTweets(polarity);
@@ -35,7 +35,6 @@ class SentimentSlice extends React.Component {
         this.setState({isSelected: false});
         //remove event handler
         chartContainer.removeEventListener('click', this.handleOutsideClick, false);
-
       }
     }
 
