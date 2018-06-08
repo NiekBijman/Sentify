@@ -10,8 +10,6 @@ firebase.initializeApp(firebaseConfig);
 //database instiation
 var database = firebase.database();
 
-
-
 export default class Database extends Component{
   constructor(props){
     super(props);
@@ -35,7 +33,7 @@ export default class Database extends Component{
     var searchObjRef = database.ref('searches/' + "1");
     searchObjRef.once('value', function(snapshot) {
     //value retreived from firebase
-    console.log(snapshot.val());
+    //console.log(snapshot.val());
     });
   }
 

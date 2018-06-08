@@ -27,9 +27,8 @@ const styles = theme => ({
 
 const SearchLocation = props => {
   const { classes } = props;
-  console.log("props.placeName in search-location:");
-  console.log(props.placeName);
   let placeName = props.placeName;
+  
   return (
     <div className={classes.container}>
       <MapboxAutocomplete

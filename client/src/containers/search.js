@@ -45,18 +45,14 @@ class Search extends Component {
   };
 
   handleInput = event => {
-    console.log("search.handleInput event.target.value");
-    console.log(event.target.value);
     modelInstance.setSearch(event.target.value);
   }
 
   handleLocation = (result, lat, lng, text) => {
-    console.log(result);
     modelInstance.setPlaceName(this.capitalize(result));
 
     //When the data arrives we want to set the Coordinates to update the Map
     modelInstance.setCoordinates(lng, lat);
-    console.log(lng, lat);
 
     let location = lat + ',' + lng + ',100km';
 
@@ -121,8 +117,6 @@ class Search extends Component {
       this.searchTweets();
     };
     if(details ==='placeNameSet'){
-      console.log("placeNameSet sets placename to");
-      console.log(modelInstance.getPlaceName());
       this.setState({
         placeName: modelInstance.getPlaceName(), //.toUpperCase()
         disabledDate: false,

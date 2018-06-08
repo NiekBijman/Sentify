@@ -59,10 +59,8 @@ class DiscoverContainer extends React.Component {
 
     componentDidMount() {
       let searchObject = modelInstance.getMySearchesParams(); // function that gets search params and eliminates them from localStorage
-      console.log("searchObject:");
-      console.log(searchObject);
+
       if(searchObject){
-        console.log("had search object");
         this.setState({
           status: "LOADED",
           positive: searchObject.positive,
@@ -75,8 +73,7 @@ class DiscoverContainer extends React.Component {
         });
         modelInstance.setSearch(searchObject.query, true);
         modelInstance.setPlaceName(searchObject.location, true);
-      }else{
-        console.log("didn't have search obj");
+      } else{
         modelInstance.setSearchParamsFromLocalStorage();
         modelInstance.searchTweets();
       }
@@ -97,7 +94,6 @@ class DiscoverContainer extends React.Component {
 
     toggleSteps = () => {
       this.setState(prevState => ({ stepsEnabled: !prevState.stepsEnabled }));
-      // this.onAfterChange(prevState);
     };
 
     onAfterChange = nextStepIndex => {
@@ -105,14 +101,12 @@ class DiscoverContainer extends React.Component {
         this.setState({
           status: 'LOADED'
         })
-        // this.step.updateStepElement(nextStepIndex);
       }
 
       else if (nextStepIndex === 4) {
         this.setState({
           introState: 'MAP'
         })
-        // this.step.updateStepElement(nextStepIndex);
       }
 
       else {

@@ -243,7 +243,6 @@ class MySearchesTable extends React.Component {
 
   handleConfirm = () => {
       modelInstance.deleteSearchHistory(this.state.selected);
-      console.log("Deletion completed");
       this.handleCloseModal();
       this.setState({
         selected: [],
@@ -252,7 +251,6 @@ class MySearchesTable extends React.Component {
   }
 
   handleCancel = () => {
-      console.log("Deletion canceled.");
       this.handleCloseModal();
   }
 
@@ -266,7 +264,6 @@ class MySearchesTable extends React.Component {
     if (event.target.tagName === "I") {
       //getSearchInformation from firebase to create pdf
       modelInstance.getSearchFromDB(id).then( (searchObject) => {
-        console.log(searchObject);
         this.setState({
           searchInput: searchObject.query,
           tweetAmount: searchObject.amount,
@@ -283,7 +280,6 @@ class MySearchesTable extends React.Component {
       });
     } else if (event.target.tagName !== "INPUT" && !event.target.getAttribute("class").includes("checkbox")) {
       modelInstance.getSearchFromDB(id).then((searchObject) => {
-        console.log(searchObject);
         modelInstance.setMySearchesParams(searchObject); // Save search params to localStorage
         window.location.assign("/discover");
       });

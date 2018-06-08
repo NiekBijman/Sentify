@@ -123,9 +123,6 @@ const Model = function () {
           })
           .then( () => {
             return database.ref("users/"+uid).once("value");
-          })
-          .then( (value) => {
-            console.log(value.val());
           });
 
       } else {
@@ -205,7 +202,6 @@ const Model = function () {
       notifyObservers("signInSuccess");
 
     }).catch(function(error) {
-      console.log(error.message);
       if (error.code === "auth/web-storage-unsupported") {
         notifyObservers("signInFailed");
       }
@@ -215,7 +211,7 @@ const Model = function () {
   this.signOut = function () {
     firebase.auth().signOut().then( message => {
         // Sign-out successful.
-        console.log(message);
+        //console.log(message);
         notifyObservers("signOutSucceeded");
       }).catch(function(error) {
         // An error happened.
@@ -331,7 +327,6 @@ const Model = function () {
     else{
       notifyObservers("noSearchInputGiven");
     }
-    // console.log(tweetIndex)
   }
 
   this.getChartPolarity = () => {
@@ -361,13 +356,12 @@ const Model = function () {
 
   this.setSearch = function(search, noNotification){
     searchInput = search;
-    console.log("searchInput set in setSearch to: "+searchInput);
+
     if(noNotification){
       notifyObservers("searchInputSet-NoSearch");
       return;
     }
     localStorage.setItem("searchInput", searchInput);
-    console.log("localStorage.searchInput set to: "+localStorage.getItem("searchInput"));
     notifyObservers("searchInputSet");
   }
 
@@ -406,8 +400,6 @@ const Model = function () {
   this.setPlaceName = function(place, noNotification){
     placeName = place;
     if(placeName){
-      console.log("setting placeName to ");
-      console.log(placeName);
       localStorage.setItem("placeName", placeName);
     }
     if(noNotification){
@@ -427,7 +419,7 @@ const Model = function () {
 
   this.setTweets = function(results){
     // Number of API calls remaining (renews each 15 minutes)
-    console.log('Search API calls remaining: ' + results.resp.headers["x-rate-limit-remaining"]); //.x-rate-limit-remaining ["x-rate-limit-remaining"]
+    //console.log('Search API calls remaining: ' + results.resp.headers["x-rate-limit-remaining"]); //.x-rate-limit-remaining ["x-rate-limit-remaining"]
 
     // First we filter our retweets to avoid duplicate tweets in the Sentiment Analysis
     // tweets = results.data.statuses.filter(tweet => {

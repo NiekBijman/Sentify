@@ -20,10 +20,9 @@ import SaveButton from '../components/button-save-search';
 class Sentiment extends Component {
   constructor(props){
     super(props);
-    // console.log("props:");
-    // console.log(this.props);
     let withSentiment = (this.props.total - this.props.noOfNeutral);
     let tweetID;
+
     if (this.props.status === "LOADED"){
       tweetID = null;
     }else if(modelInstance.getMostPopularTweet() !== null){
@@ -31,6 +30,7 @@ class Sentiment extends Component {
     }else{
       tweetID = "996379393864892417";
     }
+
     this.state = {
       positive: (this.props.positive !== undefined) ? this.props.positive : 60,
       negative:  (this.props.negative !== undefined) ? this.props.negative : 40,
@@ -99,7 +99,6 @@ class Sentiment extends Component {
     if(details ==='chartTweetsSet'){
       let mostPopularID = modelInstance.getMostPopularTweet();
 
-      // console.log(mostPopularID);
       this.setState({
         tweetID: mostPopularID,
         tweetTitle: (modelInstance.getChartPolarity() + ' Tweets')
@@ -161,7 +160,7 @@ class Sentiment extends Component {
   }
 
   handleTweetLoadError = event => {
-    console.log('Tweet loading failed');
+    // console.log('Tweet loading failed');
   }
 
   handleTweetLoadSuccess = event => {
@@ -207,8 +206,6 @@ class Sentiment extends Component {
   }
 
   saveSearch = () => {
-    console.log("total in saveSearch:");
-    console.log(this.state.total);
     if(this.state.searchInput !== '') {
       modelInstance.addSearchToDB(this.state.positive, this.state.negative, this.state.noOfNeutral, this.state.total);
       this.setState({

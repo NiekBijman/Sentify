@@ -98,7 +98,6 @@ class Map extends React.Component {
 
   circleRender(circleControl, svg, userLocations) {
     circleControl.update(svg, userLocations)
-    // console.log(circleControl,svg, userLocations);
   }
 
   update(details) {
