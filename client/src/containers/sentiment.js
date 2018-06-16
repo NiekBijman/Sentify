@@ -50,6 +50,9 @@ class Sentiment extends Component {
       positiveTweets: [],
       negativeTweets: [],
       tweetTitle: 'Tweets',
+      mySearchLoaded: this.props.mySearchLoaded,
+      saveButtonState: '',
+      searchID: this.props.searchID
     }
   }
 
@@ -60,6 +63,7 @@ class Sentiment extends Component {
 
   componentDidMount() {
     modelInstance.addObserver(this);
+    this.handleSaveButton();
   }
 
   componentWillUnmount() {
@@ -159,14 +163,6 @@ class Sentiment extends Component {
     if(details==="pleaseLogIn"){this.setState({notifications:'LOGIN_REQUIRED',openNotification: true});}
   }
 
-  handleTweetLoadError = event => {
-    // console.log('Tweet loading failed');
-  }
-
-  handleTweetLoadSuccess = event => {
-    // console.log('Tweet loaded successfully');
-  }
-
   handlePDFCreation = event => {
     let input = document.getElementById('divToPrint');
     html2canvas(input)
@@ -205,13 +201,32 @@ class Sentiment extends Component {
       }
   }
 
+  handleSaveButton = () => {
+      if(this.props.mySearchLoaded === true){
+        this.setState({saveButtonState: 'Update Search'})
+      }
+      else if(this.props.mySearchLoaded === false){
+        this.setState({saveButtonState: 'Save Search'})
+      }
+  }
+
   saveSearch = () => {
     if(this.state.searchInput !== '') {
-      modelInstance.addSearchToDB(this.state.positive, this.state.negative, this.state.noOfNeutral, this.state.total);
-      this.setState({
-        notifications: 'SEARCH_SAVED',
-        openNotification: true,
-      })
+      console.log(this.state.mySearchLoaded)
+      if(this.state.mySearchLoaded === false){
+        modelInstance.mySearchData(this.state.mySearchLoaded, this.state.positive, this.state.negative, this.state.noOfNeutral, this.state.total);
+        this.setState({
+          notifications: 'SEARCH_SAVED',
+          openNotification: true,
+        })
+      }
+      else if(this.state.mySearchLoaded === true){
+        modelInstance.mySearchData(this.state.mySearchLoaded, this.state.positive, this.state.negative, this.state.noOfNeutral, this.state.total, this.props.searchID);
+        this.setState({
+          notifications: 'SEARCH_UPDATED',
+          openNotification: true,
+        })
+      }
     }
     else{
       this.setState({
@@ -231,7 +246,7 @@ class Sentiment extends Component {
     // Centers the pie chart
     let x = width / 2;
     let y = height / 2;
-    let pieChart, notification, previous, next = null;
+    let pieChart,saveButton, notification, previous, next = null;
 
     switch (this.props.status) {
       case 'NULL' :
@@ -255,9 +270,11 @@ class Sentiment extends Component {
           </svg>
         break;
       case 'INITIAL':
+        saveButton = <SaveButton className="sentiment-save" handleClick={this.saveSearch} variant="flat" color="primary" text={this.state.saveButtonState} disabled ></SaveButton>
         pieChart = <CircularIndeterminate/>
         break;
       case 'LOADED':
+        saveButton = <SaveButton className="sentiment-save" handleClick={this.saveSearch} variant="flat" color="primary" text={this.state.saveButtonState}></SaveButton>
         pieChart =
               <svg width="120%" height="120%" id="pie-chart">
                 <SentimentPie x={x}
@@ -297,6 +314,9 @@ class Sentiment extends Component {
         break;
       case 'SEARCH_SAVED':
         notification = <Notification text="Search saved" open={this.state.openNotification} handleClose={this.handleClose} />
+        break;
+      case 'SEARCH_UPDATED':
+        notification = <Notification text="Search updated" open={this.state.openNotification} handleClose={this.handleClose} />
         break;
       case 'NO_SENTIMENT':
         notification = <Notification text="Tweets do not contain sentiment" open={this.state.openNotification} handleClose={this.handleClose} />
@@ -353,7 +373,7 @@ class Sentiment extends Component {
           <Col sm={12} xs={12} className="title-steps hidden-xl hidden-lg hidden-md visible-sm visible-xs">Info</Col>
           <Col md={4} sm={12} xs={12}>
             <div className="tweets-info">
-                <SaveButton className="sentiment-save" handleClick={this.saveSearch} variant="flat" color="primary" text='Save Search'></SaveButton>
+              {saveButton}
               <Row>
                 <Col xs={6} className="tweets-info-title">Search:</Col>
                 <Col xs={6} className="tweets-info-value">{this.state.searchInput}</Col>
@@ -394,7 +414,7 @@ class Sentiment extends Component {
             <Row>
               {previous}
               <Col sm={10} md={10} xs={10}>
-                <TweetEmbed className="sentiment-tweet" id={this.state.tweetID} options={{width:'100', cards: 'hidden', conversation: 'none', align: 'center'}} onTweetLoadError={evt => this.handleTweetLoadError(evt)} onTweetLoadSuccess={evt => this.handleTweetLoadSuccess(evt)}/>
+                <TweetEmbed className="sentiment-tweet" id={this.state.tweetID} options={{width:'100', cards: 'hidden', conversation: 'none', align: 'center'}}/>
               </Col>
               {next}
             </Row>

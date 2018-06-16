@@ -34,57 +34,17 @@ const Model = function () {
   //Sentiment data. Changed to {positive: undefined, negative: undefined}
   let sentimentData = null;
 
-  // firebase
+  // FIREBASE
   let firebase = require("firebase");
   //firebase initialization
   firebase.initializeApp(firebaseConfig);
   //database instantiaton
   var database = firebase.database();
 
-  this.setMySearchesParams = function(searchObject) {
-    localStorage.setItem("mySearchesObject", JSON.stringify(searchObject));
-  };
-
-  this.getMySearchesParams = function(){
-    let searchObjectStr = localStorage.getItem("mySearchesObject");
-    let searchObject = JSON.parse(searchObjectStr);
-    localStorage.removeItem("mySearchesObject");
-    return searchObject;
-  };
-
-  this.setSearchParamsFromLocalStorage = function(){
-    let searchInputParam = localStorage.getItem("searchInput");
-    if (searchInputParam){
-      this.setSearch(searchInputParam);  
-    }
-    let locationParam = localStorage.getItem("location");
-    if (locationParam){
-      this.setGeocode(locationParam);
-    }
-    let dateParam = localStorage.getItem("date");
-    if (dateParam){
-      this.setDate(new Date(dateParam));
-    }
-    let placeNameParam = localStorage.getItem("placeName");
-    if(placeNameParam){
-      this.setPlaceName(placeNameParam);
-    }
-    
-    //let coordinates = JSON.parse(localStorage.getItem("coordinates"));
-  }
-
-  this.getStoredCoordinates = function () {
-    let coordinates = JSON.parse(localStorage.getItem("coordinates"));
-    if (coordinates){
-      return coordinates;
-    }
-    return null;
-  }
-
   /*
   * Inserts a search into the database
   */
-  this.addSearchToDB = function(positive, negative, noOfNeutral, total){
+  this.mySearchData = (mySearchLoaded, positive, negative, noOfNeutral, total, searchID) => {
     let today = new Date();
     let dateCreated = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate();
     let until = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
@@ -99,9 +59,20 @@ const Model = function () {
                 "noOfNeutral": noOfNeutral,
                 "total": total,
                 };
+    if(!mySearchLoaded){
+      this.addSearchToDB(search)
+    }
+    if(mySearchLoaded){
+      search.searchID = searchID;
+      this.editSearchInDB(search)
+    }
+
+  }
+  this.addSearchToDB = search => {
     //setup of path to reference the data
     var searchesRef = database.ref("searches");
     var newSearchKey = searchesRef.push(search).key;
+    search.searchID = newSearchKey;
 
     // Check if user is logged in
     firebase.auth().onAuthStateChanged(function(user) {
@@ -116,7 +87,6 @@ const Model = function () {
 
             if (currUserSearches === undefined || currUserSearches === null)
               currUserSearches = [];
-
             currUserSearches.push(newSearchKey);
 
             return userRef.set(currUserSearches);
@@ -129,6 +99,30 @@ const Model = function () {
         user = null;
       }
     });
+  }
+  /*
+  * Get search object for provided search ID
+  */
+   this.getSearchFromDB = function(searchID) {
+    return database.ref("searches/"+searchID).once("value").then( result => {
+      let searchObject = result.val();
+      searchObject.searchID = searchID;
+      return searchObject;
+    });
+   }
+
+  this.editSearchInDB = (search) => {
+    database.ref("searches").child(search.searchID).update({
+        "query": search.query,
+        "location": search.location,
+        "until": search.until,
+        "dateCreated": search.dateCreated,
+        "amount": search.amount,
+        "positive": search.positive,
+        "negative": search.negative,
+        "noOfNeutral": search.noOfNeutral,
+        "total": search.total
+    })
   }
 
   /*
@@ -174,17 +168,6 @@ const Model = function () {
     });
   }
 
-    /*
-    * Get search object for provided search ID
-    */
-   this.getSearchFromDB = function(searchID) {
-    return database.ref("searches/"+searchID).once("value").then( (result) => {
-      let searchObject = result.val();
-      return searchObject;
-    });
-   }
-
-
    this.deleteSearchHistory = function(selectedSearches) {
      //setup of path to reference the data
      var searchesRef = database.ref("searches");
@@ -194,7 +177,6 @@ const Model = function () {
      });
      notifyObservers("searchesDeleted");
    }
-
 
   this.googleSignIn = function () {
     var provider = new firebase.auth.GoogleAuthProvider();
@@ -245,6 +227,51 @@ const Model = function () {
     });
   }
 
+
+
+  // LOCAL STORAGE
+
+    this.setMySearchesParams = function(searchObject) {
+      localStorage.setItem("mySearchesObject", JSON.stringify(searchObject));
+    };
+
+    this.getMySearchesParams = function(){
+      let searchObjectStr = localStorage.getItem("mySearchesObject");
+      let searchObject = JSON.parse(searchObjectStr);
+      localStorage.removeItem("mySearchesObject");
+      return searchObject;
+    };
+
+    this.setSearchParamsFromLocalStorage = function(){
+      let searchInputParam = localStorage.getItem("searchInput");
+      if (searchInputParam){
+        this.setSearch(searchInputParam);
+      }
+      let locationParam = localStorage.getItem("location");
+      if (locationParam){
+        this.setGeocode(locationParam);
+      }
+      let dateParam = localStorage.getItem("date");
+      if (dateParam){
+        this.setDate(new Date(dateParam));
+      }
+      let placeNameParam = localStorage.getItem("placeName");
+      if(placeNameParam){
+        this.setPlaceName(placeNameParam);
+      }
+
+      //let coordinates = JSON.parse(localStorage.getItem("coordinates"));
+    }
+
+    this.getStoredCoordinates = function () {
+      let coordinates = JSON.parse(localStorage.getItem("coordinates"));
+      if (coordinates){
+        return coordinates;
+      }
+      return null;
+    }
+
+  // BUSINESS LOGIC
   this.getMostPopularTweet = () => {
     let maxRetweets = 0;
     let mostPopularTweetId = null;
@@ -418,24 +445,11 @@ const Model = function () {
   }
 
   this.setTweets = function(results){
-    // Number of API calls remaining (renews each 15 minutes)
-    //console.log('Search API calls remaining: ' + results.resp.headers["x-rate-limit-remaining"]); //.x-rate-limit-remaining ["x-rate-limit-remaining"]
-
-    // First we filter our retweets to avoid duplicate tweets in the Sentiment Analysis
-    // tweets = results.data.statuses.filter(tweet => {
-    //   if (tweet.retweeted_status === undefined) {
-    //     return true;
-    //   }
-    //   else{
-    //     return false;
-    //   }
-    // });
     tweets = results.data.statuses;
     allTweets = tweets;
     chartPolarity = 'All';
     tweetAmount = tweets.length;
     this.setUserLocations(results);
-
 
     //Build the object to POST to Sentiment Analysis
     const tweetObject = tweets.map(function(tweet){

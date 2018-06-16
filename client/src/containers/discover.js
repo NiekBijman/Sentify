@@ -20,6 +20,7 @@ class DiscoverContainer extends React.Component {
         this.state = {
             status: 'NULL',
             searchInput: "",
+            mySearchLoaded: false,
 
             //Intro.js
             initialStep: 0,
@@ -61,7 +62,10 @@ class DiscoverContainer extends React.Component {
       let searchObject = modelInstance.getMySearchesParams(); // function that gets search params and eliminates them from localStorage
 
       if(searchObject){
+        this.state.mySearchLoaded = true;
+        console.log(searchObject);
         this.setState({
+          searchID: searchObject.searchID,
           status: "LOADED",
           positive: searchObject.positive,
           negative: searchObject.negative,
@@ -78,7 +82,7 @@ class DiscoverContainer extends React.Component {
         modelInstance.searchTweets();
       }
     }
-  
+
     handleStatusChange = newStatus => {
       this.setState({
           status: newStatus
@@ -128,7 +132,7 @@ class DiscoverContainer extends React.Component {
         case 'MAP':
             media = <DrawingAnimation />
           break;
-        default: 
+        default:
           break;
       }
 
@@ -174,7 +178,9 @@ class DiscoverContainer extends React.Component {
                                       total={this.state.total}
                                       noOfNeutral={this.state.noOfNeutral}
                                       until={this.state.until}
-                                      placeName={this.state.placeName}/>
+                                      placeName={this.state.placeName}
+                                      searchID={this.state.searchID}
+                                      mySearchLoaded={this.state.mySearchLoaded}/>
               </div>
             </div>
 

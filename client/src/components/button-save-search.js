@@ -33,6 +33,7 @@ const SaveButton = props =>  {
   return (
     <Button
       variant="raised"
+      disabled={props.disabled}
       className={classes.button}
       onClick = {props.handleClick}
       >

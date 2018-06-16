@@ -209,6 +209,7 @@ class MySearchesTable extends React.Component {
       }else{
         Promise.all(promises).then(data => {
           data = data.filter( val => val !== undefined);
+          console.log(data);
           this.setState({
             data: data,
             status: "LOADED"
